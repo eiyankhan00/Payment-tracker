@@ -2,7 +2,7 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Payment Tracker</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -13,49 +13,158 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700;800&display=swap');
         
+        :root {
+            --m3-sys-light-primary: #4f378b;
+            --m3-sys-light-on-primary: #ffffff;
+            --m3-sys-light-primary-container: #eaddff;
+            --m3-sys-light-on-primary-container: #21005d;
+            --m3-sys-light-secondary: #625b71;
+            --m3-sys-light-secondary-container: #e8def8;
+            --m3-sys-light-tertiary: #7d5260;
+            --m3-sys-light-tertiary-container: #ffd8e4;
+            --m3-sys-light-surface: #fef7ff;
+            --m3-sys-light-surface-variant: #e7e0ec;
+            --m3-sys-light-outline: #79747e;
+            --m3-sys-light-error: #b3261e;
+            --m3-sys-light-error-container: #f9dedc;
+        }
+
         body {
-            font-family: 'Hind Siliguri', sans-serif;
-            background-color: #f1f5f9;
-            background-image: radial-gradient(circle at top right, #e0e7ff, transparent 40%),
-                              radial-gradient(circle at bottom left, #e0e7ff, transparent 40%);
+            font-family: 'Outfit', 'Hind Siliguri', sans-serif;
+            background-color: var(--m3-sys-light-surface);
+            -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
+        }
+        
+        /* Organic M3 Background Mesh */
+        .mesh-bg {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: -1;
+            background: 
+                radial-gradient(at 0% 0%, hsla(253,16%,7%,0.03) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(225,39%,30%,0.04) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(339,49%,30%,0.04) 0, transparent 50%);
             background-attachment: fixed;
         }
-        
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-        
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+
+        /* Hidden scrollbar */
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
+
+        /* M3 Spring Animation */
+        @keyframes m3-spring-up {
+            0% { opacity: 0; transform: translateY(20px) scale(0.98); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .animate-m3-spring {
+            animation: m3-spring-up 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
         }
 
-        /* Animations */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in {
-            animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-        
-        /* Loader Animation */
-        @keyframes pulse-ring {
-            0% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(79, 70, 229, 0); }
-            100% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(79, 70, 229, 0); }
-        }
-        .animate-pulse-ring {
-            animation: pulse-ring 2s infinite;
+        /* M3 Card Elevation */
+        .m3-card {
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.03), 0 0 3px rgba(0,0,0,0.02);
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
-        /* Printable Area - Hidden from UI */
+        .m3-list-item {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            border: 1px solid rgba(0,0,0,0.02);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+        }
+        .m3-list-item:active {
+            transform: scale(0.98);
+            background: var(--m3-sys-light-surface-variant);
+        }
+
+        /* M3 Filled Input Style */
+        .m3-input-container {
+            background-color: var(--m3-sys-light-surface-variant);
+            border-radius: 16px;
+            padding: 8px 16px;
+            position: relative;
+            transition: background-color 0.3s, box-shadow 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+        .m3-input-container:focus-within {
+            background-color: #ffffff;
+            border-bottom-color: var(--m3-sys-light-primary);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-radius: 16px 16px 4px 4px;
+        }
+        .m3-input-container label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--m3-sys-light-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: block;
+            margin-bottom: 2px;
+        }
+        .m3-input-container input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            font-weight: 600;
+            color: #1c1b1f;
+        }
+
+        /* M3 FAB / Primary Button */
+        .m3-fab {
+            background-color: var(--m3-sys-light-primary);
+            color: var(--m3-sys-light-on-primary);
+            border-radius: 100px;
+            font-weight: 700;
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            box-shadow: 0 4px 14px rgba(79, 55, 139, 0.3);
+        }
+        .m3-fab:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 8px rgba(79, 55, 139, 0.2);
+        }
+
+        /* M3 Segmented Button */
+        .m3-segment-container {
+            background: var(--m3-sys-light-surface-variant);
+            border-radius: 100px;
+            padding: 4px;
+            display: flex;
+            position: relative;
+        }
+        .m3-segment-btn {
+            flex: 1;
+            padding: 10px 0;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 13px;
+            text-align: center;
+            color: var(--m3-sys-light-outline);
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            z-index: 2;
+        }
+        .m3-segment-btn.active {
+            color: var(--m3-sys-light-on-primary-container);
+        }
+        .m3-segment-indicator {
+            position: absolute;
+            top: 4px;
+            bottom: 4px;
+            width: calc(50% - 4px);
+            background: var(--m3-sys-light-primary-container);
+            border-radius: 100px;
+            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            z-index: 1;
+        }
+
         #printArea {
             position: absolute;
             left: -9999px;
@@ -67,154 +176,202 @@
         }
     </style>
 </head>
-<body class="text-gray-800 min-h-screen flex flex-col items-center py-4 md:py-6 px-3 sm:px-4">
+<body class="text-gray-800">
 
-    <!-- Language Switcher -->
-    <div class="max-w-6xl w-full flex justify-end mb-3 px-1 relative z-20">
-        <button onclick="toggleLanguage()" id="langToggleBtn" class="bg-white/60 hover:bg-white backdrop-blur-md border border-indigo-200 text-indigo-700 font-bold py-1.5 px-4 rounded-full shadow-sm text-xs sm:text-sm transition-all flex items-center gap-2">
-            <i class="fas fa-language text-lg"></i> <span id="langToggleText">English</span>
-        </button>
-    </div>
+    <div class="mesh-bg"></div>
 
-    <!-- Custom Modal for Alerts -->
-    <div id="messageModal" class="fixed inset-0 bg-gray-900/60 hidden items-center justify-center z-50 backdrop-blur-sm transition-opacity">
-        <div class="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl transform transition-all scale-100 mx-4 border border-gray-100">
-            <h3 id="modalTitle" class="text-xl font-bold mb-2 text-gray-800"></h3>
-            <p id="modalMessage" class="text-gray-600 mb-6 font-medium leading-relaxed"></p>
-            <div class="flex justify-end gap-3" id="modalButtons">
-                <button onclick="closeModal()" id="modalOkBtn" class="bg-indigo-600 text-white px-5 py-2.5 rounded-xl hover:bg-indigo-700 transition font-semibold shadow-md w-full sm:w-auto">ঠিক আছে</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Main Layout Wrapper -->
-    <div class="max-w-6xl w-full flex flex-col gap-5 lg:grid lg:grid-cols-12 lg:gap-6 pb-10 lg:pb-0">
+    <div class="max-w-lg mx-auto min-h-screen relative pb-28 flex flex-col pt-4 sm:pt-8 px-4 sm:px-6">
         
-        <!-- LEFT COLUMN (Form & Summary) -->
-        <div class="lg:col-span-4 flex flex-col gap-5">
+        <!-- Top App Bar (M3 Center Aligned) -->
+        <div class="flex justify-between items-center mb-6 px-1 z-10">
+            <div id="statusBadge" class="flex items-center gap-2 bg-white/60 backdrop-blur-xl px-4 py-2 rounded-full border border-white shadow-sm transition-all">
+                <i id="statusIcon" class="fas fa-sync fa-spin text-xs text-indigo-500"></i>
+                <span id="statusText" class="text-xs font-bold text-gray-600">কানেক্ট হচ্ছে...</span>
+            </div>
+
+            <button onclick="toggleLanguage()" class="bg-white/60 hover:bg-white backdrop-blur-xl border border-white text-indigo-700 font-bold py-2 px-5 rounded-full shadow-sm text-xs sm:text-sm transition-all flex items-center gap-2">
+                <i class="fas fa-language"></i> <span id="langToggleText">EN</span>
+            </button>
+        </div>
+
+        <!-- ========================================= -->
+        <!-- M3 Expressive Hero Card -->
+        <!-- ========================================= -->
+        <div class="rounded-[2rem] p-7 sm:p-9 text-white shadow-2xl relative overflow-hidden mb-6 group shrink-0" 
+             style="background: linear-gradient(135deg, #4f378b 0%, #21005d 100%);">
             
-            <!-- App Header -->
-            <div class="glass-panel p-6 rounded-3xl text-center relative overflow-hidden group">
-                <div class="absolute inset-0 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <div class="w-16 h-16 bg-gradient-to-tr from-indigo-600 to-purple-600 text-white rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4 shadow-lg shadow-indigo-200 transform group-hover:rotate-6 transition-transform duration-300">
-                    <i class="fas fa-wallet"></i>
+            <!-- Abstract Shapes (Expressive) -->
+            <div class="absolute top-0 right-0 w-64 h-64 bg-pink-500/20 rounded-full mix-blend-screen filter blur-[40px] transform translate-x-1/2 -translate-y-1/4"></div>
+            <div class="absolute bottom-0 left-0 w-48 h-48 bg-blue-500/20 rounded-full mix-blend-screen filter blur-[40px] transform -translate-x-1/2 translate-y-1/4"></div>
+            <div class="absolute top-10 left-10 w-24 h-24 bg-white/5 rounded-full blur-xl"></div>
+            
+            <div class="relative z-10 flex flex-col h-full justify-between">
+                <div class="flex justify-between items-start mb-8">
+                    <div class="flex flex-col">
+                        <span class="text-[10px] sm:text-xs font-bold text-indigo-200/80 uppercase tracking-[0.2em] mb-1" id="appSubtitle">ব্যক্তিগত ফাইন্যান্স</span>
+                        <h1 id="appTitle" class="text-2xl sm:text-3xl font-black text-white tracking-tight flex items-center gap-2">
+                            MD EMON <i class="fas fa-sparkles text-pink-300 text-lg"></i>
+                        </h1>
+                    </div>
+                    <div class="w-12 h-12 bg-white/10 rounded-[18px] flex items-center justify-center backdrop-blur-md border border-white/20 shadow-inner">
+                        <i class="fas fa-wallet text-xl text-indigo-100"></i>
+                    </div>
                 </div>
-                <h1 id="appTitle" class="text-2xl sm:text-3xl font-extrabold text-gray-800 tracking-tight">পেমেন্ট <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">ট্র্যাকার</span></h1>
-                <p id="appSubtitle" class="text-xs sm:text-sm text-gray-500 mt-1.5 font-semibold">আপনার আয়ের আধুনিক হিসাব</p>
-                
-                <div id="statusBadge" class="mt-4 inline-flex items-center justify-center gap-1.5 text-[10px] sm:text-xs font-bold text-gray-500 bg-gray-100 py-1.5 px-4 rounded-full border border-gray-200 transition-colors duration-300 shadow-sm">
-                    <i class="fas fa-sync fa-spin text-[10px]" id="statusIcon"></i> <span id="statusText">কানেক্ট হচ্ছে...</span>
-                </div>
-            </div>
 
-            <!-- Summary Card -->
-            <div class="bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-800 rounded-3xl p-6 sm:p-8 text-white shadow-xl shadow-indigo-200 flex items-center justify-between relative overflow-hidden border border-indigo-400/30 transform transition-transform hover:-translate-y-1 duration-300">
-                <div class="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-white opacity-10 rounded-full blur-2xl"></div>
-                <div class="absolute bottom-0 left-0 -mb-10 -ml-10 w-32 h-32 bg-white opacity-10 rounded-full blur-xl"></div>
-                
-                <div class="relative z-10">
-                    <h2 id="totalPaymentLabel" class="text-indigo-100 text-xs sm:text-sm font-bold mb-1 opacity-95 tracking-wider uppercase">সর্বমোট পেমেন্ট</h2>
-                    <div class="text-4xl sm:text-5xl font-extrabold font-mono tracking-tight mt-1 text-white drop-shadow-md"><span class="currency-symbol">৳</span> <span id="totalAmount">০</span></div>
+                <div>
+                    <p id="totalPaymentLabel" class="text-indigo-200/80 text-xs sm:text-sm font-bold mb-1 tracking-wider">সর্বমোট ব্যালেন্স</p>
+                    <div class="flex items-baseline gap-1">
+                        <span class="text-2xl sm:text-3xl font-medium text-indigo-200">৳</span>
+                        <span id="totalAmount" class="text-5xl sm:text-6xl font-black font-mono tracking-tighter text-white drop-shadow-lg">০</span>
+                    </div>
                 </div>
-                <div class="w-14 h-14 sm:w-16 sm:h-16 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-md relative z-10 border border-white/30 rotate-3 shadow-inner">
-                    <i class="fas fa-coins text-2xl sm:text-3xl text-yellow-300 drop-shadow-lg"></i>
-                </div>
-            </div>
-
-            <!-- Input Form -->
-            <div class="glass-panel p-5 sm:p-6 rounded-3xl border-t-4 border-indigo-500">
-                <h2 id="formTitle" class="text-lg sm:text-xl font-extrabold mb-5 flex items-center text-gray-800">
-                    <i class="fas fa-plus-circle text-indigo-600 mr-2.5 text-xl form-title-icon"></i><span id="formTitleText">নতুন পেমেন্ট যোগ</span>
-                </h2>
-                <form id="paymentForm" class="space-y-4">
-                    <div>
-                        <label id="sourceLabel" class="block text-xs font-bold text-gray-700 mb-1.5 uppercase tracking-wide">উৎস / নাম <span class="text-red-500">*</span></label>
-                        <input type="text" id="source" required class="w-full px-4 py-3 text-sm rounded-xl border-2 border-gray-200 bg-gray-50 focus:bg-white focus:ring-0 focus:border-indigo-500 outline-none transition-all font-semibold text-gray-800 shadow-sm" placeholder="যেমন: রহিম, প্রজেক্ট">
-                    </div>
-                    <div>
-                        <label id="amountLabel" class="block text-xs font-bold text-gray-700 mb-1.5 uppercase tracking-wide">টাকার পরিমাণ (৳) <span class="text-red-500">*</span></label>
-                        <input type="number" id="amount" required min="1" class="w-full px-4 py-3 text-sm rounded-xl border-2 border-gray-200 bg-gray-50 focus:bg-white focus:ring-0 focus:border-indigo-500 outline-none transition-all font-bold text-indigo-700 shadow-sm text-lg" placeholder="0.00">
-                    </div>
-                    <div>
-                        <label id="dateLabel" class="block text-xs font-bold text-gray-700 mb-1.5 uppercase tracking-wide">তারিখ <span class="text-red-500">*</span></label>
-                        <input type="date" id="date" required class="w-full px-4 py-3 text-sm rounded-xl border-2 border-gray-200 bg-gray-50 focus:bg-white focus:ring-0 focus:border-indigo-500 outline-none transition-all font-semibold text-gray-800 shadow-sm">
-                    </div>
-                    <div>
-                        <label id="notesLabel" class="block text-xs font-bold text-gray-700 mb-1.5 uppercase tracking-wide">বিবরণ (ঐচ্ছিক)</label>
-                        <input type="text" id="notes" class="w-full px-4 py-3 text-sm rounded-xl border-2 border-gray-200 bg-gray-50 focus:bg-white focus:ring-0 focus:border-indigo-500 outline-none transition-all font-medium text-gray-700 shadow-sm" placeholder="কীসের টাকা...">
-                    </div>
-                    
-                    <div class="pt-2 flex gap-2">
-                        <button type="button" id="cancelEditBtn" onclick="cancelEdit()" class="hidden w-1/3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 rounded-xl transition-all items-center justify-center gap-2 text-sm">
-                            বাতিল
-                        </button>
-                        <button type="submit" id="submitBtn" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-indigo-200/50 hover:shadow-indigo-400/50 transition-all flex items-center justify-center gap-2 transform active:scale-[0.98] text-sm sm:text-base">
-                            <i class="fas fa-save"></i> <span id="submitBtnText">সেভ করুন</span>
-                        </button>
-                    </div>
-                </form>
             </div>
         </div>
 
-        <!-- RIGHT COLUMN (List & Tools) -->
-        <div class="lg:col-span-8 flex flex-col gap-5 h-[600px] lg:h-auto min-h-[500px]">
+        <!-- ========================================= -->
+        <!-- VIEW 1: ENTRY FORM (M3 Filled Style) -->
+        <!-- ========================================= -->
+        <div id="viewEntry" class="m3-card p-6 sm:p-8 animate-m3-spring relative overflow-hidden shrink-0">
             
-            <!-- Toolbar (Search & Export) -->
-            <div class="glass-panel rounded-3xl p-4 sm:p-5 flex flex-col sm:flex-row gap-4 justify-between items-center z-20 shadow-sm">
-                <!-- Search -->
-                <div class="w-full sm:w-1/2 relative">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <i class="fas fa-search text-gray-400"></i>
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-black text-gray-900 flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-[var(--m3-sys-light-primary-container)] flex items-center justify-center text-[var(--m3-sys-light-on-primary-container)]">
+                        <i class="fas fa-plus text-sm" id="formIcon"></i>
                     </div>
-                    <input type="date" id="searchDate" onchange="applySearch()" class="w-full pl-10 pr-10 py-2.5 text-sm rounded-xl border-2 border-gray-200 bg-white focus:border-indigo-500 outline-none transition-all font-semibold text-gray-700" title="Search by date">
-                    <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-red-500 transition-colors">
+                    <span id="formTitleText">নতুন পেমেন্ট যোগ</span>
+                </h2>
+                <button type="button" id="cancelEditBtn" onclick="cancelEdit()" class="hidden text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 px-4 py-2 rounded-full transition-colors">
+                    বাতিল
+                </button>
+            </div>
+
+            <form id="paymentForm" class="space-y-4">
+                
+                <div class="m3-input-container">
+                    <label id="sourceLabel">উৎস / নাম <span class="text-red-500">*</span></label>
+                    <input type="text" id="source" required placeholder="যেমন: রহিম, প্রজেক্ট">
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="m3-input-container">
+                        <label id="amountLabel">পরিমাণ (৳) <span class="text-red-500">*</span></label>
+                        <input type="number" id="amount" required min="1" placeholder="0.00" class="text-indigo-700 font-bold">
+                    </div>
+                    <div class="m3-input-container">
+                        <label id="dateLabel">তারিখ <span class="text-red-500">*</span></label>
+                        <input type="date" id="date" required>
+                    </div>
+                </div>
+
+                <div class="m3-input-container">
+                    <label id="notesLabel">বিবরণ (ঐচ্ছিক)</label>
+                    <input type="text" id="notes" placeholder="কীসের টাকা...">
+                </div>
+                
+                <div class="pt-4">
+                    <button type="submit" id="submitBtn" class="m3-fab w-full py-4 text-[15px] sm:text-base flex items-center justify-center gap-2">
+                        <i class="fas fa-check-circle text-lg"></i> <span id="submitBtnText">সেভ করুন</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- ========================================= -->
+        <!-- VIEW 2: HISTORY (M3 List Style) -->
+        <!-- ========================================= -->
+        <div id="viewHistory" class="hidden flex-col h-[550px] sm:h-[600px] animate-m3-spring">
+            
+            <!-- Modern Search & Export Bar -->
+            <div class="flex gap-3 items-center mb-4 z-20">
+                <div class="relative flex-1">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <i class="fas fa-search text-[var(--m3-sys-light-outline)]"></i>
+                    </div>
+                    <input type="date" id="searchDate" onchange="applySearch()" class="w-full pl-11 pr-10 py-3.5 bg-white border-none rounded-full text-sm font-bold text-gray-800 focus:ring-2 focus:ring-[var(--m3-sys-light-primary)] shadow-sm outline-none transition-all">
+                    <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-red-500 transition-colors">
                         <i class="fas fa-times-circle text-lg"></i>
                     </button>
                 </div>
                 
-                <!-- Export Buttons -->
-                <div class="w-full sm:w-auto flex gap-2 justify-end">
-                    <button onclick="exportData('pdf')" class="flex-1 sm:flex-none bg-red-50 text-red-600 hover:bg-red-600 hover:text-white border border-red-200 hover:border-red-600 px-4 py-2.5 rounded-xl transition-all font-bold text-sm flex items-center justify-center gap-2 group shadow-sm">
-                        <i class="fas fa-file-pdf group-hover:animate-bounce"></i> PDF
+                <div class="flex gap-2 shrink-0">
+                    <button onclick="exportData('pdf')" class="w-12 h-12 rounded-full bg-[var(--m3-sys-light-error-container)] text-[var(--m3-sys-light-error)] hover:bg-red-200 flex items-center justify-center shadow-sm transition-all">
+                        <i class="fas fa-file-pdf"></i>
                     </button>
-                    <button onclick="exportData('png')" class="flex-1 sm:flex-none bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white border border-blue-200 hover:border-blue-600 px-4 py-2.5 rounded-xl transition-all font-bold text-sm flex items-center justify-center gap-2 group shadow-sm">
-                        <i class="fas fa-image group-hover:animate-bounce"></i> PNG
+                    <button onclick="exportData('png')" class="w-12 h-12 rounded-full bg-[var(--m3-sys-light-secondary-container)] text-[var(--m3-sys-light-on-primary-container)] hover:bg-indigo-200 flex items-center justify-center shadow-sm transition-all">
+                        <i class="fas fa-image"></i>
                     </button>
                 </div>
             </div>
 
-            <!-- List Card -->
-            <div class="glass-panel rounded-3xl flex flex-col flex-1 overflow-hidden shadow-sm border border-gray-200 relative">
-                <div class="p-4 sm:p-5 border-b border-gray-200 bg-white/90 flex justify-between items-center backdrop-blur-md z-10 shadow-sm">
-                    <h2 id="listTitle" class="text-lg sm:text-xl font-extrabold text-gray-800 flex items-center">
-                        <i class="fas fa-list-ul text-indigo-600 mr-2.5"></i>পেমেন্টের তালিকা
+            <!-- List Area -->
+            <div class="m3-card flex-1 overflow-hidden flex flex-col">
+                <div class="px-5 py-4 border-b border-gray-100 flex justify-between items-center bg-white/50 backdrop-blur-sm z-10">
+                    <h2 id="listTitle" class="text-sm font-black text-gray-800 flex items-center gap-2">
+                        <i class="fas fa-layer-group text-[var(--m3-sys-light-primary)]"></i> ট্রানজেকশন সমূহ
                     </h2>
-                    <span id="recordCount" class="bg-indigo-50 text-indigo-800 border border-indigo-200 text-[10px] sm:text-xs font-extrabold px-3 py-1.5 rounded-full shadow-inner">০ টি রেকর্ড</span>
+                    <span id="recordCount" class="bg-[var(--m3-sys-light-primary-container)] text-[var(--m3-sys-light-on-primary-container)] text-[11px] font-black px-3 py-1 rounded-full">০ টি</span>
                 </div>
                 
-                <div class="p-3 sm:p-4 flex-1 overflow-y-auto bg-gray-50/50 relative scroll-smooth" id="paymentsList">
+                <div class="flex-1 overflow-y-auto p-3 sm:p-4 relative bg-gray-50/30" id="paymentsList">
                     
-                    <div id="loadingState" class="absolute inset-0 flex flex-col items-center justify-center bg-white/80 backdrop-blur-sm z-10 text-gray-600">
-                        <div class="animate-pulse-ring rounded-full mb-2">
-                            <i class="fas fa-wallet text-4xl sm:text-5xl text-indigo-600 drop-shadow-sm p-4"></i>
+                    <div id="loadingState" class="absolute inset-0 flex flex-col items-center justify-center z-10 bg-white/60 backdrop-blur-sm">
+                        <div class="animate-pulse-ring rounded-full mb-3">
+                            <div class="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-lg border border-gray-100">
+                                <i class="fas fa-sync fa-spin text-xl text-[var(--m3-sys-light-primary)]"></i>
+                            </div>
                         </div>
-                        <p id="loadingMsg" class="font-bold text-sm sm:text-base text-indigo-600 animate-pulse mt-2">ডেটা লোড হচ্ছে...</p>
+                        <p id="loadingMsg" class="font-bold text-sm text-[var(--m3-sys-light-primary)] tracking-wide">ডেটা লোড হচ্ছে...</p>
                     </div>
 
-                    <div id="emptyState" class="hidden absolute inset-0 flex flex-col items-center justify-center text-gray-400 p-6 sm:p-8 text-center">
-                        <div class="w-20 h-20 sm:w-24 sm:h-24 bg-white rounded-full flex items-center justify-center mb-4 sm:mb-5 shadow-md border border-gray-100 transform transition-transform hover:scale-110 duration-300">
-                            <i class="fas fa-box-open text-4xl sm:text-5xl text-gray-300"></i>
+                    <div id="emptyState" class="hidden absolute inset-0 flex flex-col items-center justify-center text-center px-6">
+                        <div class="w-20 h-20 bg-[var(--m3-sys-light-surface-variant)] rounded-full flex items-center justify-center mb-4">
+                            <i class="fas fa-receipt text-3xl text-[var(--m3-sys-light-outline)]"></i>
                         </div>
-                        <p id="emptyStateMsg" class="text-lg sm:text-xl font-extrabold text-gray-600 mb-1">কোনো পেমেন্ট নেই</p>
-                        <p id="emptyStateSubMsg" class="text-sm font-medium text-gray-500 mt-2">নতুন পেমেন্ট যোগ করতে ফর্মটি পূরণ করুন।</p>
+                        <p id="emptyStateMsg" class="text-lg font-black text-gray-800 mb-1">কোনো পেমেন্ট নেই</p>
+                        <p id="emptyStateSubMsg" class="text-sm font-medium text-gray-500">নতুন পেমেন্ট যোগ করতে 'নতুন এন্ট্রি' ট্যাবে যান।</p>
                     </div>
 
-                    <ul id="listContainer" class="space-y-3 hidden pb-4">
-                        <!-- Items will be injected here via JavaScript -->
+                    <ul id="listContainer" class="hidden pb-4">
+                        <!-- Items injected here -->
                     </ul>
                 </div>
             </div>
+        </div>
 
+    </div>
+
+    <!-- ========================================= -->
+    <!-- M3 BOTTOM NAVIGATION BAR                  -->
+    <!-- ========================================= -->
+    <div class="fixed bottom-0 left-0 right-0 z-40 bg-white/90 backdrop-blur-2xl border-t border-gray-100 pb-safe shadow-[0_-10px_40px_rgba(0,0,0,0.03)]">
+        <div class="max-w-lg mx-auto flex justify-around items-center h-16 sm:h-20 px-2">
+            <button onclick="switchTab('entry')" class="flex-1 flex flex-col items-center justify-center gap-1 h-full group outline-none">
+                <div id="navIconBgEntry" class="w-16 h-8 rounded-full bg-[var(--m3-sys-light-primary-container)] flex items-center justify-center transition-all duration-300">
+                    <i id="navIconEntry" class="fas fa-pen-nib text-[var(--m3-sys-light-on-primary-container)] text-base sm:text-lg"></i>
+                </div>
+                <span id="tabTextEntry" class="text-[11px] sm:text-xs font-bold text-[var(--m3-sys-light-on-primary-container)]">নতুন এন্ট্রি</span>
+            </button>
+
+            <button onclick="switchTab('history')" class="flex-1 flex flex-col items-center justify-center gap-1 h-full group outline-none">
+                <div id="navIconBgHistory" class="w-16 h-8 rounded-full bg-transparent flex items-center justify-center transition-all duration-300">
+                    <i id="navIconHistory" class="fas fa-history text-[var(--m3-sys-light-outline)] text-base sm:text-lg"></i>
+                </div>
+                <span id="tabTextHistory" class="text-[11px] sm:text-xs font-bold text-[var(--m3-sys-light-outline)]">হিস্টোরি</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- M3 Dialog (Modal) -->
+    <div id="messageModal" class="fixed inset-0 bg-gray-900/40 hidden items-center justify-center z-50 backdrop-blur-sm px-4">
+        <div class="bg-[var(--m3-sys-light-surface)] rounded-[28px] p-6 sm:p-8 max-w-sm w-full shadow-2xl transform transition-all scale-100 text-center">
+            <div class="w-12 h-12 rounded-full bg-[var(--m3-sys-light-primary-container)] text-[var(--m3-sys-light-on-primary-container)] flex items-center justify-center mx-auto mb-5 text-xl">
+                <i class="fas fa-bell"></i>
+            </div>
+            <h3 id="modalTitle" class="text-xl font-black mb-2 text-gray-900 tracking-tight"></h3>
+            <p id="modalMessage" class="text-gray-600 mb-8 font-medium text-sm leading-relaxed"></p>
+            <div class="flex justify-center gap-3 w-full" id="modalButtons">
+                <button onclick="closeModal()" class="m3-fab w-full py-3">ঠিক আছে</button>
+            </div>
         </div>
     </div>
 
@@ -232,14 +389,16 @@
         // ==========================================
         const translations = {
             bn: {
-                appTitle: "পেমেন্ট <span class='text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600'>ট্র্যাকার</span>",
-                appSubtitle: "আপনার আয়ের আধুনিক হিসাব",
-                totalPaymentLabel: "সর্বমোট পেমেন্ট",
+                appSubtitle: "ব্যক্তিগত ফাইন্যান্স",
+                appTitle: "মোঃ ইমন <i class='fas fa-sparkles text-pink-300 text-lg'></i>",
+                totalPaymentLabel: "সর্বমোট ব্যালেন্স",
+                tabNewEntry: "নতুন এন্ট্রি",
+                tabHistory: "হিস্টোরি",
                 formTitleAdd: "নতুন পেমেন্ট যোগ",
                 formTitleEdit: "পেমেন্ট আপডেট",
                 sourceLabel: "উৎস / নাম <span class='text-red-500'>*</span>",
                 sourcePlaceholder: "যেমন: রহিম, প্রজেক্ট",
-                amountLabel: "টাকার পরিমাণ (৳) <span class='text-red-500'>*</span>",
+                amountLabel: "পরিমাণ (৳) <span class='text-red-500'>*</span>",
                 dateLabel: "তারিখ <span class='text-red-500'>*</span>",
                 notesLabel: "বিবরণ (ঐচ্ছিক)",
                 notesPlaceholder: "কীসের টাকা...",
@@ -247,27 +406,24 @@
                 submitBtnSave: "সেভ করুন",
                 submitBtnUpdate: "আপডেট করুন",
                 submitBtnLoading: "সেভ হচ্ছে...",
-                listTitle: "<i class='fas fa-list-ul text-indigo-600 mr-2.5'></i>পেমেন্টের তালিকা",
-                records: "টি রেকর্ড",
+                listTitle: "<i class='fas fa-layer-group text-[var(--m3-sys-light-primary)]'></i> ট্রানজেকশন সমূহ",
+                records: "টি",
                 loadingMsg: "ডেটা লোড হচ্ছে...",
                 emptyStateMsg: "কোনো পেমেন্ট নেই",
-                emptyStateDateMsg: "এই তারিখে কোনো পেমেন্ট নেই",
-                emptyStateSubMsg: "নতুন পেমেন্ট যোগ করতে ফর্মটি পূরণ করুন।",
-                onlineText: "গুগল শিট কানেক্টেড",
-                offlineText: "অফলাইন মোড",
+                emptyStateDateMsg: "এই তারিখে পেমেন্ট নেই",
+                emptyStateSubMsg: "নতুন পেমেন্ট যোগ করতে 'নতুন এন্ট্রি' ট্যাবে যান।",
+                onlineText: "কানেক্টেড",
+                offlineText: "অফলাইন",
                 connectingText: "কানেক্ট হচ্ছে...",
-                currencySymbol: "৳",
-                editBtnTitle: "এডিট করুন",
-                deleteBtnTitle: "মুছে ফেলুন",
+                editBtnTitle: "এডিট",
+                deleteBtnTitle: "ডিলিট",
                 modalOk: "ঠিক আছে",
                 modalCancel: "বাতিল",
-                modalConfirmDel: "হ্যাঁ, মুছুন",
-                warnTitle: "সতর্কতা!",
-                warnDelMsg: "আপনি কি সত্যিই এই পেমেন্ট রেকর্ডটি মুছে ফেলতে চান? এটি আর ফেরত পাওয়া যাবে না।",
-                fetchErrorTitle: "কানেকশন সমস্যা",
-                fetchErrorMsg: "গুগল শিটের সাথে কানেক্ট করা যাচ্ছে না। দয়া করে নিশ্চিত করুন যে Apps Script ডেপ্লয় করার সময় 'Who has access: Anyone' সিলেক্ট করা আছে।",
-                exportNoData: "ডাউনলোড করার জন্য কোনো ডেটা নেই।",
-                exportErr: "ফাইল ডাউনলোড করতে সমস্যা হয়েছে।",
+                modalConfirmDel: "মুছুন",
+                warnTitle: "সতর্কতা",
+                warnDelMsg: "আপনি কি সত্যিই এই রেকর্ডটি মুছে ফেলতে চান?",
+                exportNoData: "কোনো ডেটা নেই।",
+                exportErr: "ডাউনলোড ব্যর্থ হয়েছে।",
                 reportTitle: "পেমেন্ট রিপোর্ট",
                 reportAll: "সকল পেমেন্ট",
                 reportDateLabel: "তারিখ: ",
@@ -277,45 +433,44 @@
                 thSource: "উৎস / নাম",
                 thNotes: "বিবরণ",
                 thAmount: "পরিমাণ",
-                reportGenTime: "রিপোর্ট তৈরির সময়: "
+                langText: "EN"
             },
             en: {
-                appTitle: "Payment <span class='text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600'>Tracker</span>",
-                appSubtitle: "Modern Income Tracking",
-                totalPaymentLabel: "TOTAL PAYMENT",
-                formTitleAdd: "Add New Payment",
+                appSubtitle: "Personal Finance",
+                appTitle: "MD Emon <i class='fas fa-sparkles text-pink-300 text-lg'></i>",
+                totalPaymentLabel: "TOTAL BALANCE",
+                tabNewEntry: "New Entry",
+                tabHistory: "History",
+                formTitleAdd: "Add Payment",
                 formTitleEdit: "Update Payment",
                 sourceLabel: "Source / Name <span class='text-red-500'>*</span>",
-                sourcePlaceholder: "e.g., John, Project X",
+                sourcePlaceholder: "e.g., John, Project",
                 amountLabel: "Amount (৳) <span class='text-red-500'>*</span>",
                 dateLabel: "Date <span class='text-red-500'>*</span>",
                 notesLabel: "Notes (Optional)",
-                notesPlaceholder: "Payment details...",
+                notesPlaceholder: "Details...",
                 cancelBtn: "Cancel",
                 submitBtnSave: "Save",
                 submitBtnUpdate: "Update",
                 submitBtnLoading: "Saving...",
-                listTitle: "<i class='fas fa-list-ul text-indigo-600 mr-2.5'></i>Payment List",
-                records: "Records",
+                listTitle: "<i class='fas fa-layer-group text-[var(--m3-sys-light-primary)]'></i> Transactions",
+                records: "Items",
                 loadingMsg: "Loading Data...",
                 emptyStateMsg: "No Payments Found",
-                emptyStateDateMsg: "No Payments on this Date",
-                emptyStateSubMsg: "Fill out the form to add a new payment.",
-                onlineText: "Google Sheet Connected",
-                offlineText: "Offline Mode",
+                emptyStateDateMsg: "No Data on this Date",
+                emptyStateSubMsg: "Go to 'New Entry' tab to add a payment.",
+                onlineText: "Connected",
+                offlineText: "Offline",
                 connectingText: "Connecting...",
-                currencySymbol: "৳",
                 editBtnTitle: "Edit",
                 deleteBtnTitle: "Delete",
                 modalOk: "OK",
                 modalCancel: "Cancel",
-                modalConfirmDel: "Yes, Delete",
-                warnTitle: "Warning!",
-                warnDelMsg: "Are you sure you want to delete this record? This action cannot be undone.",
-                fetchErrorTitle: "Connection Error",
-                fetchErrorMsg: "Cannot connect to Google Sheets. Please ensure 'Who has access: Anyone' is selected in Apps Script deployment.",
-                exportNoData: "No data available to download.",
-                exportErr: "Failed to download the file.",
+                modalConfirmDel: "Delete",
+                warnTitle: "Warning",
+                warnDelMsg: "Are you sure you want to delete this record?",
+                exportNoData: "No data to export.",
+                exportErr: "Export failed.",
                 reportTitle: "Payment Report",
                 reportAll: "All Payments",
                 reportDateLabel: "Date: ",
@@ -325,16 +480,18 @@
                 thSource: "Source / Name",
                 thNotes: "Notes",
                 thAmount: "Amount",
-                reportGenTime: "Report Generated At: "
+                langText: "বাংলা"
             }
         };
 
         let currentLang = localStorage.getItem('appLang') || 'bn';
 
         // DOM Elements
-        const t_appTitle = document.getElementById('appTitle');
         const t_appSubtitle = document.getElementById('appSubtitle');
+        const t_appTitle = document.getElementById('appTitle');
         const t_totalPaymentLabel = document.getElementById('totalPaymentLabel');
+        const t_tabTextEntry = document.getElementById('tabTextEntry');
+        const t_tabTextHistory = document.getElementById('tabTextHistory');
         const t_formTitleText = document.getElementById('formTitleText');
         const t_sourceLabel = document.getElementById('sourceLabel');
         const t_amountLabel = document.getElementById('amountLabel');
@@ -363,10 +520,21 @@
         const statusBadge = document.getElementById('statusBadge');
         const statusIcon = document.getElementById('statusIcon');
         const statusText = document.getElementById('statusText');
+        
         const modal = document.getElementById('messageModal');
         const modalTitle = document.getElementById('modalTitle');
         const modalMessage = document.getElementById('modalMessage');
         const modalButtons = document.getElementById('modalButtons');
+        
+        const viewEntry = document.getElementById('viewEntry');
+        const viewHistory = document.getElementById('viewHistory');
+        const formIcon = document.getElementById('formIcon');
+
+        // Bottom Nav Elements
+        const navIconBgEntry = document.getElementById('navIconBgEntry');
+        const navIconEntry = document.getElementById('navIconEntry');
+        const navIconBgHistory = document.getElementById('navIconBgHistory');
+        const navIconHistory = document.getElementById('navIconHistory');
 
         let payments = []; 
         let filteredPayments = []; 
@@ -375,7 +543,6 @@
 
         dateInput.valueAsDate = new Date();
 
-        // Utility Functions
         const saveToLocal = (data) => { try { localStorage.setItem('offline_payments_backup', JSON.stringify(data)); } catch(e) {} };
         const loadFromLocal = () => { try { const data = localStorage.getItem('offline_payments_backup'); return data ? JSON.parse(data) : []; } catch(e) { return []; } };
 
@@ -385,7 +552,7 @@
             if(buttonsHtml) {
                 modalButtons.innerHTML = buttonsHtml;
             } else {
-                modalButtons.innerHTML = `<button onclick="closeModal()" class="bg-indigo-600 text-white px-5 py-2.5 rounded-xl hover:bg-indigo-700 transition font-semibold shadow-md w-full sm:w-auto">${translations[currentLang].modalOk}</button>`;
+                modalButtons.innerHTML = `<button onclick="closeModal()" class="m3-fab w-full py-3">${translations[currentLang].modalOk}</button>`;
             }
             modal.style.display = 'flex';
         };
@@ -395,12 +562,10 @@
             isAppOnline = isOnline;
             const t = translations[currentLang];
             if(isOnline) {
-                statusBadge.className = "mt-4 inline-flex items-center justify-center gap-1.5 text-[10px] sm:text-xs font-bold text-emerald-800 bg-emerald-100 py-1.5 px-4 rounded-full border border-emerald-300 transition-colors duration-300 shadow-sm";
-                statusIcon.className = "fas fa-check-circle text-[10px]";
+                statusIcon.className = "fas fa-wifi text-[10px] text-emerald-500";
                 statusText.innerText = t.onlineText;
             } else {
-                statusBadge.className = "mt-4 inline-flex items-center justify-center gap-1.5 text-[10px] sm:text-xs font-bold text-amber-800 bg-amber-100 py-1.5 px-4 rounded-full border border-amber-300 transition-colors duration-300 shadow-sm";
-                statusIcon.className = "fas fa-exclamation-triangle text-[10px]";
+                statusIcon.className = "fas fa-plane-slash text-[10px] text-amber-500";
                 statusText.innerText = t.offlineText;
             }
         };
@@ -414,7 +579,7 @@
         };
 
         const formatLocaleDate = (dateString) => {
-            if(!dateString) return currentLang === 'bn' ? "অজানা তারিখ" : "Unknown Date";
+            if(!dateString) return currentLang === 'bn' ? "অজানা" : "Unknown";
             const dateObj = new Date(dateString);
             const locale = currentLang === 'bn' ? 'bn-BD' : 'en-US';
             const formatted = dateObj.toLocaleDateString(locale, { day: 'numeric', month: 'short', year: 'numeric' });
@@ -427,9 +592,11 @@
         const applyLanguage = () => {
             const t = translations[currentLang];
             
-            t_appTitle.innerHTML = t.appTitle;
             t_appSubtitle.innerText = t.appSubtitle;
+            t_appTitle.innerHTML = t.appTitle;
             t_totalPaymentLabel.innerText = t.totalPaymentLabel;
+            t_tabTextEntry.innerText = t.tabNewEntry;
+            t_tabTextHistory.innerText = t.tabHistory;
             t_formTitleText.innerText = editingId ? t.formTitleEdit : t.formTitleAdd;
             t_sourceLabel.innerHTML = t.sourceLabel;
             t_amountLabel.innerHTML = t.amountLabel;
@@ -438,15 +605,16 @@
             t_cancelEditBtn.innerText = t.cancelBtn;
             t_submitBtnText.innerText = editingId ? t.submitBtnUpdate : t.submitBtnSave;
             t_listTitle.innerHTML = t.listTitle;
+            t_loadingMsg.innerText = t.loadingMsg;
             t_emptyStateSubMsg.innerText = t.emptyStateSubMsg;
             t_sourceInput.placeholder = t.sourcePlaceholder;
             t_notesInput.placeholder = t.notesPlaceholder;
             
-            langToggleText.innerText = currentLang === 'bn' ? 'English' : 'বাংলা';
+            langToggleText.innerText = t.langText;
             document.documentElement.lang = currentLang;
 
             updateStatusUI(isAppOnline);
-            if(payments.length > 0) applySearch(); // Re-render silently if data exists
+            if(payments.length > 0) applySearch(); 
         };
 
         window.toggleLanguage = () => {
@@ -455,14 +623,57 @@
             applyLanguage();
         };
 
+        // ==========================================
+        // M3 Bottom Navigation Logic
+        // ==========================================
+        window.switchTab = (tab) => {
+            if (tab === 'entry') {
+                viewEntry.classList.remove('hidden');
+                viewHistory.classList.add('hidden');
+                viewHistory.classList.remove('flex');
+
+                navIconBgEntry.classList.add('bg-[var(--m3-sys-light-primary-container)]');
+                navIconBgEntry.classList.remove('bg-transparent');
+                navIconEntry.classList.add('text-[var(--m3-sys-light-on-primary-container)]');
+                navIconEntry.classList.remove('text-[var(--m3-sys-light-outline)]');
+                t_tabTextEntry.classList.add('text-[var(--m3-sys-light-on-primary-container)]');
+                t_tabTextEntry.classList.remove('text-[var(--m3-sys-light-outline)]');
+
+                navIconBgHistory.classList.remove('bg-[var(--m3-sys-light-primary-container)]');
+                navIconBgHistory.classList.add('bg-transparent');
+                navIconHistory.classList.remove('text-[var(--m3-sys-light-on-primary-container)]');
+                navIconHistory.classList.add('text-[var(--m3-sys-light-outline)]');
+                t_tabTextHistory.classList.remove('text-[var(--m3-sys-light-on-primary-container)]');
+                t_tabTextHistory.classList.add('text-[var(--m3-sys-light-outline)]');
+                
+            } else {
+                viewEntry.classList.add('hidden');
+                viewHistory.classList.remove('hidden');
+                viewHistory.classList.add('flex');
+
+                navIconBgHistory.classList.add('bg-[var(--m3-sys-light-primary-container)]');
+                navIconBgHistory.classList.remove('bg-transparent');
+                navIconHistory.classList.add('text-[var(--m3-sys-light-on-primary-container)]');
+                navIconHistory.classList.remove('text-[var(--m3-sys-light-outline)]');
+                t_tabTextHistory.classList.add('text-[var(--m3-sys-light-on-primary-container)]');
+                t_tabTextHistory.classList.remove('text-[var(--m3-sys-light-outline)]');
+
+                navIconBgEntry.classList.remove('bg-[var(--m3-sys-light-primary-container)]');
+                navIconBgEntry.classList.add('bg-transparent');
+                navIconEntry.classList.remove('text-[var(--m3-sys-light-on-primary-container)]');
+                navIconEntry.classList.add('text-[var(--m3-sys-light-outline)]');
+                t_tabTextEntry.classList.remove('text-[var(--m3-sys-light-on-primary-container)]');
+                t_tabTextEntry.classList.add('text-[var(--m3-sys-light-outline)]');
+            }
+        };
+
         window.cancelEdit = () => {
             editingId = null;
             form.reset();
             dateInput.valueAsDate = new Date();
             t_formTitleText.innerText = translations[currentLang].formTitleAdd;
-            document.querySelector('.form-title-icon').className = 'fas fa-plus-circle text-indigo-600 mr-2.5 text-xl form-title-icon';
+            formIcon.className = 'fas fa-plus text-sm';
             t_submitBtnText.innerText = translations[currentLang].submitBtnSave;
-            document.querySelector('#submitBtn i').className = 'fas fa-save';
             t_cancelEditBtn.classList.add('hidden');
         };
 
@@ -477,19 +688,19 @@
             
             editingId = id;
             t_formTitleText.innerText = translations[currentLang].formTitleEdit;
-            document.querySelector('.form-title-icon').className = 'fas fa-edit text-amber-500 mr-2.5 text-xl form-title-icon';
+            formIcon.className = 'fas fa-pen text-sm text-amber-500';
             t_submitBtnText.innerText = translations[currentLang].submitBtnUpdate;
-            document.querySelector('#submitBtn i').className = 'fas fa-check-circle';
             t_cancelEditBtn.classList.remove('hidden');
             
+            switchTab('entry');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
         window.confirmDelete = (id) => {
             const t = translations[currentLang];
             const buttonsHtml = `
-                <button onclick="closeModal()" class="bg-gray-200 text-gray-800 px-4 py-2 rounded-xl hover:bg-gray-300 transition font-bold text-sm">${t.modalCancel}</button>
-                <button onclick="executeDelete('${id}')" class="bg-red-600 text-white px-5 py-2 rounded-xl hover:bg-red-700 transition font-bold shadow-md text-sm">${t.modalConfirmDel}</button>
+                <button onclick="closeModal()" class="bg-[var(--m3-sys-light-surface-variant)] text-[var(--m3-sys-light-on-primary-container)] px-6 py-3 rounded-full font-bold flex-1 transition-colors">${t.modalCancel}</button>
+                <button onclick="executeDelete('${id}')" class="bg-[var(--m3-sys-light-error)] text-[var(--m3-sys-light-on-primary)] px-6 py-3 rounded-full font-bold flex-1 shadow-md transition-colors">${t.modalConfirmDel}</button>
             `;
             window.showMessage(t.warnTitle, t.warnDelMsg, buttonsHtml);
         };
@@ -505,9 +716,9 @@
                 if (result.status === "success") {
                     payments = payments.filter(p => p.id.toString() !== id.toString());
                     saveToLocal(payments);
-                } else throw new Error(result.message);
+                }
             } catch (error) {
-                console.error("Crash Log: Delete Error.", error);
+                // Silent catch, offline fallback
                 payments = payments.filter(p => p.id.toString() !== id.toString());
                 saveToLocal(payments);
                 updateStatusUI(false);
@@ -537,15 +748,21 @@
             applySearch();
         };
 
+        // ==========================================
+        // M3 List Render Logic
+        // ==========================================
         const renderPayments = (dataToRender = payments) => {
             const t = translations[currentLang];
-            loadingState.classList.add('hidden'); // Guarantee loader hides when rendering
+            loadingState.classList.add('hidden');
             
+            let total = 0;
+            payments.forEach(p => total += parseFloat(p.amount || 0));
+            totalAmountEl.innerText = formatLocaleDigit(total);
+            recordCount.innerText = `${formatLocaleDigit(filteredPayments.length)} ${t.records}`;
+
             if (dataToRender.length === 0) {
                 emptyState.classList.remove('hidden');
                 listContainer.classList.add('hidden');
-                totalAmountEl.innerText = formatLocaleDigit(0);
-                recordCount.innerText = currentLang === 'bn' ? `০ ${t.records}` : `0 ${t.records}`;
                 return;
             }
 
@@ -553,72 +770,54 @@
             listContainer.classList.remove('hidden');
             listContainer.innerHTML = '';
 
-            let total = 0;
-
             dataToRender.forEach((payment, index) => {
-                total += parseFloat(payment.amount || 0);
                 const li = document.createElement('li');
-                li.className = `bg-white hover:bg-indigo-50/40 rounded-2xl transition-all duration-300 flex flex-col border border-gray-100 shadow-sm hover:shadow-md animate-fade-in relative group overflow-hidden`;
-                li.style.animationDelay = `${index * 0.05}s`;
+                li.className = `m3-list-item group animate-slide-up relative`;
+                li.style.animationDelay = `${index * 0.04}s`;
+                
+                const firstLetter = payment.source ? payment.source.charAt(0).toUpperCase() : 'P';
+                
                 li.innerHTML = `
-                    <div class="p-4 sm:p-5 flex flex-col w-full gap-3">
-                        <div class="flex justify-between items-start gap-3 w-full">
-                            <div class="flex items-start gap-3 flex-1 overflow-hidden">
-                                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-indigo-100 to-purple-100 text-indigo-600 flex items-center justify-center shrink-0 shadow-inner border border-indigo-200">
-                                    <i class="fas fa-check-double text-base sm:text-lg"></i>
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                    <h3 class="font-black text-indigo-900 text-lg sm:text-2xl tracking-tight leading-tight truncate">৳ ${formatLocaleDigit(parseFloat(payment.amount || 0))}</h3>
-                                    <p class="text-sm sm:text-base text-gray-800 font-bold truncate mt-0.5">${payment.source}</p>
-                                </div>
+                    <div class="flex items-center gap-4 w-full">
+                        <div class="w-12 h-12 rounded-full bg-[var(--m3-sys-light-secondary-container)] text-[var(--m3-sys-light-on-primary-container)] flex items-center justify-center shrink-0 font-black text-xl">
+                            ${firstLetter}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex justify-between items-start mb-0.5">
+                                <h3 class="font-bold text-[var(--m3-sys-light-on-primary-container)] text-base sm:text-lg truncate pr-2">${payment.source}</h3>
+                                <span class="font-black text-[var(--m3-sys-light-primary)] text-base sm:text-lg shrink-0">৳ ${formatLocaleDigit(parseFloat(payment.amount || 0))}</span>
                             </div>
-                            
-                            <div class="flex gap-1.5 shrink-0 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button onclick="editPayment('${payment.id}')" class="w-8 h-8 sm:w-10 sm:h-10 bg-amber-50 text-amber-600 hover:bg-amber-500 hover:text-white rounded-lg sm:rounded-xl transition-colors border border-amber-200 flex items-center justify-center shadow-sm" title="${t.editBtnTitle}">
-                                    <i class="fas fa-edit text-sm"></i>
-                                </button>
-                                <button onclick="confirmDelete('${payment.id}')" class="w-8 h-8 sm:w-10 sm:h-10 bg-red-50 text-red-500 hover:bg-red-500 hover:text-white rounded-lg sm:rounded-xl transition-colors border border-red-200 flex items-center justify-center shadow-sm" title="${t.deleteBtnTitle}">
-                                    <i class="fas fa-trash-alt text-sm"></i>
-                                </button>
+                            <div class="flex items-center gap-1.5 text-[11px] sm:text-xs font-semibold text-[var(--m3-sys-light-outline)] truncate">
+                                <span>${formatLocaleDate(payment.date)}</span>
+                                ${payment.notes ? `<span class="text-[8px] text-gray-300">•</span><span class="truncate">${payment.notes}</span>` : ''}
                             </div>
                         </div>
-
-                        <div class="flex flex-col gap-1.5 ml-13 sm:ml-[60px] w-full pr-4">
-                            <div class="flex items-center text-xs sm:text-sm text-gray-500 font-semibold">
-                                <i class="far fa-calendar-alt w-4 text-indigo-400 mr-1"></i> ${formatLocaleDate(payment.date)}
-                            </div>
-                            ${payment.notes ? `
-                            <div class="flex items-start text-xs sm:text-sm text-gray-600 bg-gray-50 p-2.5 rounded-xl border border-gray-100 w-full mt-1 relative">
-                                <div class="absolute -top-1.5 left-4 w-3 h-3 bg-gray-50 border-t border-l border-gray-100 transform rotate-45"></div>
-                                <i class="far fa-comment-dots w-4 text-purple-400 mr-1.5 mt-0.5 shrink-0 relative z-10"></i>
-                                <span class="break-words leading-relaxed relative z-10">${payment.notes}</span>
-                            </div>
-                            ` : ''}
-                        </div>
+                    </div>
+                    
+                    <!-- Action Overlay (Reveals on hover/focus) -->
+                    <div class="absolute inset-y-0 right-0 bg-gradient-to-l from-white via-white to-transparent px-4 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity duration-300 rounded-r-3xl">
+                        <button onclick="editPayment('${payment.id}')" class="w-9 h-9 rounded-full bg-[var(--m3-sys-light-surface-variant)] text-[var(--m3-sys-light-primary)] hover:bg-[var(--m3-sys-light-primary-container)] flex items-center justify-center transition-colors" title="${t.editBtnTitle}">
+                            <i class="fas fa-pen text-xs"></i>
+                        </button>
+                        <button onclick="confirmDelete('${payment.id}')" class="w-9 h-9 rounded-full bg-[var(--m3-sys-light-error-container)] text-[var(--m3-sys-light-error)] hover:bg-red-200 flex items-center justify-center transition-colors" title="${t.deleteBtnTitle}">
+                            <i class="fas fa-trash text-xs"></i>
+                        </button>
                     </div>
                 `;
                 listContainer.appendChild(li);
             });
-
-            totalAmountEl.innerText = formatLocaleDigit(total);
-            recordCount.innerText = `${formatLocaleDigit(dataToRender.length)} ${t.records}`;
         };
 
-        // Main Fetch System with Auto-Timeout
         const loadData = async () => {
             const t = translations[currentLang];
-            
-            // Explicitly show loader and hide list until fetch completes
             loadingState.classList.remove('hidden');
             listContainer.classList.add('hidden');
             emptyState.classList.add('hidden');
             t_loadingMsg.innerText = t.connectingText;
             
             try {
-                // AbortController to prevent infinite hanging
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 12000); // 12 seconds max waiting time
-
+                const timeoutId = setTimeout(() => controller.abort(), 10000); 
                 const response = await fetch(scriptUrl, { signal: controller.signal });
                 clearTimeout(timeoutId);
 
@@ -629,23 +828,16 @@
                     payments = result.data || [];
                     saveToLocal(payments);
                     updateStatusUI(true);
-                } else throw new Error(result.message);
-                
+                }
             } catch (error) {
-                console.error("Crash Log: Fetch Error.", error);
+                console.error("Crash Log: Fetch Error", error);
                 payments = loadFromLocal() || [];
                 updateStatusUI(false);
-                
-                // Show modal if it looks like a CORS/Permission issue
-                if (error.name === 'TypeError' || error.message.includes('fetch')) {
-                    window.showMessage(t.fetchErrorTitle, t.fetchErrorMsg);
-                }
             } finally {
-                applySearch(); // Guaranteed to run and hide loader
+                applySearch(); 
             }
         };
 
-        // Post Data
         const addPayment = async (e) => {
             e.preventDefault();
             const t = translations[currentLang];
@@ -674,8 +866,7 @@
 
             try {
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 12000);
-
+                const timeoutId = setTimeout(() => controller.abort(), 10000);
                 const response = await fetch(scriptUrl, { method: 'POST', body: JSON.stringify(newPayment), signal: controller.signal });
                 clearTimeout(timeoutId);
 
@@ -691,9 +882,10 @@
                     }
                     saveToLocal(payments);
                     updateStatusUI(true);
-                } else throw new Error(result.message);
+                    switchTab('history'); 
+                } 
             } catch (error) {
-                console.error("Crash Log: Post Error.", error);
+                console.error("Crash Log: Post Error", error);
                 if(actionType === 'edit') {
                     const index = payments.findIndex(p => p.id.toString() === recordId.toString());
                     if(index !== -1) payments[index] = newPayment;
@@ -701,11 +893,13 @@
 
                 saveToLocal(payments);
                 updateStatusUI(false);
+                switchTab('history');
             } finally {
                 applySearch();
                 cancelEdit();
                 submitBtn.disabled = false;
                 submitBtn.classList.remove('opacity-80', 'cursor-not-allowed');
+                document.querySelector('#submitBtn i').className = 'fas fa-check-circle';
             }
         };
 
@@ -765,18 +959,12 @@
                         </thead>
                         <tbody>${rowsHtml}</tbody>
                     </table>
-                    
-                    <div style="text-align: center; margin-top: 30px; color: #94a3b8; font-size: 12px;">
-                        ${t.reportGenTime} ${formatLocaleDate(new Date().toISOString())}
-                    </div>
                 </div>
             `;
 
             try {
                 await new Promise(r => setTimeout(r, 100)); 
-                
                 const canvas = await html2canvas(printDiv, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
-                
                 if (format === 'png') {
                     const link = document.createElement('a');
                     link.download = `Payment_Report_${Date.now()}.png`;
@@ -788,7 +976,6 @@
                     const imgData = canvas.toDataURL('image/png');
                     const pdfWidth = pdf.internal.pageSize.getWidth();
                     const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-                    
                     pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
                     pdf.save(`Payment_Report_${Date.now()}.pdf`);
                 }
@@ -802,7 +989,6 @@
             }
         };
 
-        // Initialize Boot sequence properly
         document.addEventListener('DOMContentLoaded', () => {
             applyLanguage();
             loadData();
