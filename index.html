@@ -12,157 +12,92 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: {
+                            bg: '#0f172a', // slate-900
+                            card: '#1e293b', // slate-800
+                            border: '#334155', // slate-700
+                            hover: '#334155'
+                        },
+                        cyan: {
+                            primary: '#0ea5e9', // sky-500
+                            hover: '#38bdf8', // sky-400
+                            glow: 'rgba(14, 165, 233, 0.4)'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700;800&display=swap');
         
-        :root {
-            --m3-sys-light-primary: #4f378b;
-            --m3-sys-light-on-primary: #ffffff;
-            --m3-sys-light-primary-container: #eaddff;
-            --m3-sys-light-on-primary-container: #21005d;
-            --m3-sys-light-secondary: #625b71;
-            --m3-sys-light-secondary-container: #e8def8;
-            --m3-sys-light-tertiary: #7d5260;
-            --m3-sys-light-tertiary-container: #ffd8e4;
-            --m3-sys-light-surface: #fef7ff;
-            --m3-sys-light-surface-variant: #e7e0ec;
-            --m3-sys-light-outline: #79747e;
-            --m3-sys-light-error: #b3261e;
-            --m3-sys-light-error-container: #f9dedc;
-        }
-
         body {
             font-family: 'Outfit', 'Hind Siliguri', sans-serif;
-            background-color: var(--m3-sys-light-surface);
+            background-color: #0f172a;
+            color: #f8fafc;
             -webkit-tap-highlight-color: transparent;
             overflow-x: hidden;
         }
-        
-        /* Organic M3 Background Mesh */
-        .mesh-bg {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            z-index: -1;
-            background: 
-                radial-gradient(at 0% 0%, hsla(253,16%,7%,0.03) 0, transparent 50%), 
-                radial-gradient(at 50% 0%, hsla(225,39%,30%,0.04) 0, transparent 50%), 
-                radial-gradient(at 100% 0%, hsla(339,49%,30%,0.04) 0, transparent 50%);
-            background-attachment: fixed;
-        }
 
         /* Hidden scrollbar */
-        ::-webkit-scrollbar { width: 0px; background: transparent; }
-
-        /* M3 Spring Animation */
-        @keyframes m3-spring-up {
-            0% { opacity: 0; transform: translateY(20px) scale(0.98); }
-            100% { opacity: 1; transform: translateY(0) scale(1); }
+        ::-webkit-scrollbar { width: 4px; background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        
+        /* Hardware Accelerated Smooth Animations (Zero Lag) */
+        .click-effect {
+            transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s ease, box-shadow 0.2s ease;
+            will-change: transform;
         }
-        .animate-m3-spring {
-            animation: m3-spring-up 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-        }
-
-        /* M3 Card Elevation */
-        .m3-card {
-            background: #ffffff;
-            border-radius: 28px;
-            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.03), 0 0 3px rgba(0,0,0,0.02);
-            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
-
-        .m3-list-item {
-            background: #ffffff;
-            border-radius: 24px;
-            padding: 16px 20px;
-            margin-bottom: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-            border: 1px solid rgba(0,0,0,0.02);
-            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-        }
-        .m3-list-item:active {
-            transform: scale(0.98);
-            background: var(--m3-sys-light-surface-variant);
-        }
-
-        /* M3 Filled Input Style */
-        .m3-input-container {
-            background-color: var(--m3-sys-light-surface-variant);
-            border-radius: 16px;
-            padding: 8px 16px;
-            position: relative;
-            transition: background-color 0.3s, box-shadow 0.3s;
-            border-bottom: 2px solid transparent;
-        }
-        .m3-input-container:focus-within {
-            background-color: #ffffff;
-            border-bottom-color: var(--m3-sys-light-primary);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            border-radius: 16px 16px 4px 4px;
-        }
-        .m3-input-container label {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--m3-sys-light-primary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            display: block;
-            margin-bottom: 2px;
-        }
-        .m3-input-container input {
-            width: 100%;
-            background: transparent;
-            border: none;
-            outline: none;
-            font-size: 16px;
-            font-weight: 600;
-            color: #1c1b1f;
-        }
-
-        /* M3 FAB / Primary Button */
-        .m3-fab {
-            background-color: var(--m3-sys-light-primary);
-            color: var(--m3-sys-light-on-primary);
-            border-radius: 100px;
-            font-weight: 700;
-            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-            box-shadow: 0 4px 14px rgba(79, 55, 139, 0.3);
-        }
-        .m3-fab:active {
+        .click-effect:active {
             transform: scale(0.95);
-            box-shadow: 0 2px 8px rgba(79, 55, 139, 0.2);
         }
 
-        /* M3 Segmented Button */
-        .m3-segment-container {
-            background: var(--m3-sys-light-surface-variant);
-            border-radius: 100px;
-            padding: 4px;
-            display: flex;
-            position: relative;
+        .dark-card {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
         }
-        .m3-segment-btn {
-            flex: 1;
-            padding: 10px 0;
-            border-radius: 100px;
-            font-weight: 700;
-            font-size: 13px;
-            text-align: center;
-            color: var(--m3-sys-light-outline);
-            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-            z-index: 2;
+
+        /* List Item Animation */
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
         }
-        .m3-segment-btn.active {
-            color: var(--m3-sys-light-on-primary-container);
+        .animate-item {
+            animation: slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            will-change: transform, opacity;
         }
-        .m3-segment-indicator {
-            position: absolute;
-            top: 4px;
-            bottom: 4px;
-            width: calc(50% - 4px);
-            background: var(--m3-sys-light-primary-container);
-            border-radius: 100px;
-            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-            z-index: 1;
+
+        /* Form Inputs */
+        .dark-input {
+            background-color: #0f172a;
+            border: 1px solid #334155;
+            color: #f8fafc;
+            border-radius: 1rem;
+            transition: all 0.2s ease;
+        }
+        .dark-input:focus {
+            border-color: #0ea5e9;
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
+            outline: none;
+        }
+        /* Custom calendar icon color */
+        ::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            opacity: 0.6;
+            cursor: pointer;
+        }
+
+        /* Glowing Text */
+        .text-glow {
+            text-shadow: 0 0 15px rgba(14, 165, 233, 0.5);
         }
 
         #printArea {
@@ -176,162 +111,154 @@
         }
     </style>
 </head>
-<body class="text-gray-800">
+<body class="antialiased">
 
-    <div class="mesh-bg"></div>
-
-    <div class="max-w-lg mx-auto min-h-screen relative pb-28 flex flex-col pt-4 sm:pt-8 px-4 sm:px-6">
+    <!-- Wrapper -->
+    <div class="max-w-lg mx-auto min-h-screen relative pb-24 flex flex-col pt-4 sm:pt-6 px-4 sm:px-5">
         
-        <!-- Top App Bar (M3 Center Aligned) -->
-        <div class="flex justify-between items-center mb-6 px-1 z-10">
-            <div id="statusBadge" class="flex items-center gap-2 bg-white/60 backdrop-blur-xl px-4 py-2 rounded-full border border-white shadow-sm transition-all">
-                <i id="statusIcon" class="fas fa-sync fa-spin text-xs text-indigo-500"></i>
-                <span id="statusText" class="text-xs font-bold text-gray-600">কানেক্ট হচ্ছে...</span>
+        <!-- Top App Bar -->
+        <div class="flex justify-between items-center mb-6 px-1">
+            <div id="statusBadge" class="flex items-center gap-2 bg-dark-card px-4 py-2 rounded-full border border-dark-border shadow-sm">
+                <i id="statusIcon" class="fas fa-sync fa-spin text-[10px] text-cyan-primary"></i>
+                <span id="statusText" class="text-xs font-bold text-slate-300 tracking-wide">কানেক্ট হচ্ছে...</span>
             </div>
 
-            <button onclick="toggleLanguage()" class="bg-white/60 hover:bg-white backdrop-blur-xl border border-white text-indigo-700 font-bold py-2 px-5 rounded-full shadow-sm text-xs sm:text-sm transition-all flex items-center gap-2">
+            <button onclick="toggleLanguage()" class="click-effect bg-dark-card hover:bg-dark-hover border border-dark-border text-cyan-primary font-bold py-2 px-5 rounded-full text-xs transition-colors flex items-center gap-2">
                 <i class="fas fa-language"></i> <span id="langToggleText">EN</span>
             </button>
         </div>
 
         <!-- ========================================= -->
-        <!-- M3 Expressive Hero Card -->
+        <!-- PREMIUM DASHBOARD HERO CARD -->
         <!-- ========================================= -->
-        <div class="rounded-[2rem] p-7 sm:p-9 text-white shadow-2xl relative overflow-hidden mb-6 group shrink-0" 
-             style="background: linear-gradient(135deg, #4f378b 0%, #21005d 100%);">
-            
-            <!-- Abstract Shapes (Expressive) -->
-            <div class="absolute top-0 right-0 w-64 h-64 bg-pink-500/20 rounded-full mix-blend-screen filter blur-[40px] transform translate-x-1/2 -translate-y-1/4"></div>
-            <div class="absolute bottom-0 left-0 w-48 h-48 bg-blue-500/20 rounded-full mix-blend-screen filter blur-[40px] transform -translate-x-1/2 translate-y-1/4"></div>
-            <div class="absolute top-10 left-10 w-24 h-24 bg-white/5 rounded-full blur-xl"></div>
+        <div class="dark-card p-6 sm:p-8 relative overflow-hidden mb-6 group shrink-0">
+            <!-- Techy Accents -->
+            <div class="absolute top-0 right-0 w-32 h-32 bg-cyan-primary/10 rounded-full blur-2xl transform translate-x-10 -translate-y-10"></div>
+            <div class="absolute bottom-0 left-0 w-24 h-24 bg-cyan-primary/5 rounded-full blur-xl transform -translate-x-5 translate-y-5"></div>
+            <div class="absolute top-0 left-0 w-1 h-full bg-cyan-primary shadow-[0_0_10px_rgba(14,165,233,0.8)]"></div>
             
             <div class="relative z-10 flex flex-col h-full justify-between">
-                <div class="flex justify-between items-start mb-8">
+                <div class="flex justify-between items-start mb-6">
                     <div class="flex flex-col">
-                        <span class="text-[10px] sm:text-xs font-bold text-indigo-200/80 uppercase tracking-[0.2em] mb-1" id="appSubtitle">ব্যক্তিগত ফাইন্যান্স</span>
-                        <h1 id="appTitle" class="text-2xl sm:text-3xl font-black text-white tracking-tight flex items-center gap-2">
-                            MD EMON <i class="fas fa-sparkles text-pink-300 text-lg"></i>
+                        <span class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest mb-1" id="appSubtitle">Personal Finance</span>
+                        <h1 id="appTitle" class="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
+                            MD EMON <i class="fas fa-check-circle text-cyan-primary text-sm"></i>
                         </h1>
                     </div>
-                    <div class="w-12 h-12 bg-white/10 rounded-[18px] flex items-center justify-center backdrop-blur-md border border-white/20 shadow-inner">
-                        <i class="fas fa-wallet text-xl text-indigo-100"></i>
+                    <div class="w-10 h-10 bg-dark-bg rounded-xl flex items-center justify-center border border-dark-border">
+                        <i class="fas fa-wallet text-lg text-cyan-primary"></i>
                     </div>
                 </div>
 
                 <div>
-                    <p id="totalPaymentLabel" class="text-indigo-200/80 text-xs sm:text-sm font-bold mb-1 tracking-wider">সর্বমোট ব্যালেন্স</p>
-                    <div class="flex items-baseline gap-1">
-                        <span class="text-2xl sm:text-3xl font-medium text-indigo-200">৳</span>
-                        <span id="totalAmount" class="text-5xl sm:text-6xl font-black font-mono tracking-tighter text-white drop-shadow-lg">০</span>
+                    <p id="totalPaymentLabel" class="text-slate-400 text-xs font-bold mb-1 tracking-widest uppercase">সর্বমোট ব্যালেন্স</p>
+                    <div class="flex items-baseline gap-1.5">
+                        <span class="text-xl font-medium text-cyan-primary">৳</span>
+                        <span id="totalAmount" class="text-4xl sm:text-5xl font-black font-mono tracking-tight text-white text-glow">০</span>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- ========================================= -->
-        <!-- VIEW 1: ENTRY FORM (M3 Filled Style) -->
+        <!-- VIEW 1: ENTRY FORM -->
         <!-- ========================================= -->
-        <div id="viewEntry" class="m3-card p-6 sm:p-8 animate-m3-spring relative overflow-hidden shrink-0">
+        <div id="viewEntry" class="dark-card p-5 sm:p-7 relative shrink-0 transition-opacity duration-300">
             
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-black text-gray-900 flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-[var(--m3-sys-light-primary-container)] flex items-center justify-center text-[var(--m3-sys-light-on-primary-container)]">
-                        <i class="fas fa-plus text-sm" id="formIcon"></i>
+                <h2 class="text-lg font-bold text-white flex items-center gap-2.5">
+                    <div class="w-7 h-7 rounded-lg bg-cyan-primary/20 flex items-center justify-center text-cyan-primary">
+                        <i class="fas fa-plus text-xs" id="formIcon"></i>
                     </div>
                     <span id="formTitleText">নতুন পেমেন্ট যোগ</span>
                 </h2>
-                <button type="button" id="cancelEditBtn" onclick="cancelEdit()" class="hidden text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 px-4 py-2 rounded-full transition-colors">
+                <button type="button" id="cancelEditBtn" onclick="cancelEdit()" class="hidden text-xs font-bold text-red-400 bg-red-400/10 border border-red-400/20 hover:bg-red-400/20 px-3 py-1.5 rounded-full transition-colors click-effect">
                     বাতিল
                 </button>
             </div>
 
             <form id="paymentForm" class="space-y-4">
                 
-                <div class="m3-input-container">
-                    <label id="sourceLabel">উৎস / নাম <span class="text-red-500">*</span></label>
-                    <input type="text" id="source" required placeholder="যেমন: রহিম, প্রজেক্ট">
+                <div>
+                    <label id="sourceLabel" class="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">উৎস / নাম <span class="text-red-500">*</span></label>
+                    <input type="text" id="source" required class="dark-input w-full px-4 py-3.5 text-sm" placeholder="যেমন: রহিম, প্রজেক্ট">
                 </div>
                 
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="m3-input-container">
-                        <label id="amountLabel">পরিমাণ (৳) <span class="text-red-500">*</span></label>
-                        <input type="number" id="amount" required min="1" placeholder="0.00" class="text-indigo-700 font-bold">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label id="amountLabel" class="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">পরিমাণ (৳) <span class="text-red-500">*</span></label>
+                        <input type="number" id="amount" required min="1" class="dark-input w-full px-4 py-3.5 text-base font-bold text-cyan-primary" placeholder="0.00">
                     </div>
-                    <div class="m3-input-container">
-                        <label id="dateLabel">তারিখ <span class="text-red-500">*</span></label>
-                        <input type="date" id="date" required>
+                    <div>
+                        <label id="dateLabel" class="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">তারিখ <span class="text-red-500">*</span></label>
+                        <input type="date" id="date" required class="dark-input w-full px-4 py-3.5 text-sm">
                     </div>
                 </div>
 
-                <div class="m3-input-container">
-                    <label id="notesLabel">বিবরণ (ঐচ্ছিক)</label>
-                    <input type="text" id="notes" placeholder="কীসের টাকা...">
+                <div>
+                    <label id="notesLabel" class="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">বিবরণ (ঐচ্ছিক)</label>
+                    <input type="text" id="notes" class="dark-input w-full px-4 py-3.5 text-sm" placeholder="কীসের টাকা...">
                 </div>
                 
-                <div class="pt-4">
-                    <button type="submit" id="submitBtn" class="m3-fab w-full py-4 text-[15px] sm:text-base flex items-center justify-center gap-2">
-                        <i class="fas fa-check-circle text-lg"></i> <span id="submitBtnText">সেভ করুন</span>
+                <div class="pt-3">
+                    <button type="submit" id="submitBtn" class="click-effect w-full bg-cyan-primary hover:bg-cyan-hover text-dark-bg font-black py-3.5 rounded-xl shadow-[0_0_15px_rgba(14,165,233,0.3)] transition-colors flex items-center justify-center gap-2 text-sm uppercase tracking-wide">
+                        <i class="fas fa-check-circle"></i> <span id="submitBtnText">সেভ করুন</span>
                     </button>
                 </div>
             </form>
         </div>
 
         <!-- ========================================= -->
-        <!-- VIEW 2: HISTORY (M3 List Style) -->
+        <!-- VIEW 2: HISTORY LIST -->
         <!-- ========================================= -->
-        <div id="viewHistory" class="hidden flex-col h-[550px] sm:h-[600px] animate-m3-spring">
+        <div id="viewHistory" class="hidden flex-col h-[500px] sm:h-[550px] transition-opacity duration-300">
             
             <!-- Modern Search & Export Bar -->
-            <div class="flex gap-3 items-center mb-4 z-20">
+            <div class="flex gap-2 items-center mb-4 z-20">
                 <div class="relative flex-1">
-                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <i class="fas fa-search text-[var(--m3-sys-light-outline)]"></i>
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                        <i class="fas fa-search text-slate-500 text-sm"></i>
                     </div>
-                    <input type="date" id="searchDate" onchange="applySearch()" class="w-full pl-11 pr-10 py-3.5 bg-white border-none rounded-full text-sm font-bold text-gray-800 focus:ring-2 focus:ring-[var(--m3-sys-light-primary)] shadow-sm outline-none transition-all">
-                    <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-red-500 transition-colors">
-                        <i class="fas fa-times-circle text-lg"></i>
+                    <input type="date" id="searchDate" onchange="applySearch()" class="dark-input w-full pl-10 pr-9 py-3 text-sm font-semibold">
+                    <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute inset-y-0 right-0 pr-3 flex items-center text-slate-500 hover:text-red-400 transition-colors">
+                        <i class="fas fa-times-circle"></i>
                     </button>
                 </div>
                 
                 <div class="flex gap-2 shrink-0">
-                    <button onclick="exportData('pdf')" class="w-12 h-12 rounded-full bg-[var(--m3-sys-light-error-container)] text-[var(--m3-sys-light-error)] hover:bg-red-200 flex items-center justify-center shadow-sm transition-all">
+                    <button onclick="exportData('pdf')" class="click-effect w-11 h-11 rounded-xl bg-dark-card border border-dark-border text-red-400 hover:bg-red-500/10 hover:border-red-500/30 flex items-center justify-center transition-colors shadow-sm">
                         <i class="fas fa-file-pdf"></i>
                     </button>
-                    <button onclick="exportData('png')" class="w-12 h-12 rounded-full bg-[var(--m3-sys-light-secondary-container)] text-[var(--m3-sys-light-on-primary-container)] hover:bg-indigo-200 flex items-center justify-center shadow-sm transition-all">
+                    <button onclick="exportData('png')" class="click-effect w-11 h-11 rounded-xl bg-dark-card border border-dark-border text-cyan-primary hover:bg-cyan-primary/10 hover:border-cyan-primary/30 flex items-center justify-center transition-colors shadow-sm">
                         <i class="fas fa-image"></i>
                     </button>
                 </div>
             </div>
 
             <!-- List Area -->
-            <div class="m3-card flex-1 overflow-hidden flex flex-col">
-                <div class="px-5 py-4 border-b border-gray-100 flex justify-between items-center bg-white/50 backdrop-blur-sm z-10">
-                    <h2 id="listTitle" class="text-sm font-black text-gray-800 flex items-center gap-2">
-                        <i class="fas fa-layer-group text-[var(--m3-sys-light-primary)]"></i> ট্রানজেকশন সমূহ
+            <div class="dark-card flex-1 overflow-hidden flex flex-col border border-dark-border">
+                <div class="px-5 py-3.5 border-b border-dark-border flex justify-between items-center bg-dark-card z-10">
+                    <h2 id="listTitle" class="text-xs font-bold text-slate-300 uppercase tracking-widest flex items-center gap-2">
+                        <i class="fas fa-list-ul text-cyan-primary"></i> ট্রানজেকশন সমূহ
                     </h2>
-                    <span id="recordCount" class="bg-[var(--m3-sys-light-primary-container)] text-[var(--m3-sys-light-on-primary-container)] text-[11px] font-black px-3 py-1 rounded-full">০ টি</span>
+                    <span id="recordCount" class="bg-dark-bg text-cyan-primary border border-dark-border text-[10px] font-black px-2.5 py-1 rounded-md">০</span>
                 </div>
                 
-                <div class="flex-1 overflow-y-auto p-3 sm:p-4 relative bg-gray-50/30" id="paymentsList">
+                <div class="flex-1 overflow-y-auto p-3 relative bg-dark-bg/50" id="paymentsList">
                     
-                    <div id="loadingState" class="absolute inset-0 flex flex-col items-center justify-center z-10 bg-white/60 backdrop-blur-sm">
-                        <div class="animate-pulse-ring rounded-full mb-3">
-                            <div class="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-lg border border-gray-100">
-                                <i class="fas fa-sync fa-spin text-xl text-[var(--m3-sys-light-primary)]"></i>
-                            </div>
-                        </div>
-                        <p id="loadingMsg" class="font-bold text-sm text-[var(--m3-sys-light-primary)] tracking-wide">ডেটা লোড হচ্ছে...</p>
+                    <div id="loadingState" class="absolute inset-0 flex flex-col items-center justify-center z-10">
+                        <i class="fas fa-circle-notch fa-spin text-2xl text-cyan-primary mb-3"></i>
+                        <p id="loadingMsg" class="font-semibold text-xs text-slate-400 tracking-wide uppercase">লোড হচ্ছে...</p>
                     </div>
 
                     <div id="emptyState" class="hidden absolute inset-0 flex flex-col items-center justify-center text-center px-6">
-                        <div class="w-20 h-20 bg-[var(--m3-sys-light-surface-variant)] rounded-full flex items-center justify-center mb-4">
-                            <i class="fas fa-receipt text-3xl text-[var(--m3-sys-light-outline)]"></i>
+                        <div class="w-16 h-16 bg-dark-card rounded-full flex items-center justify-center mb-3 border border-dark-border">
+                            <i class="fas fa-file-invoice text-2xl text-slate-600"></i>
                         </div>
-                        <p id="emptyStateMsg" class="text-lg font-black text-gray-800 mb-1">কোনো পেমেন্ট নেই</p>
-                        <p id="emptyStateSubMsg" class="text-sm font-medium text-gray-500">নতুন পেমেন্ট যোগ করতে 'নতুন এন্ট্রি' ট্যাবে যান।</p>
+                        <p id="emptyStateMsg" class="text-base font-bold text-slate-300 mb-1">কোনো ডেটা নেই</p>
                     </div>
 
-                    <ul id="listContainer" class="hidden pb-4">
+                    <ul id="listContainer" class="hidden pb-2">
                         <!-- Items injected here -->
                     </ul>
                 </div>
@@ -341,42 +268,38 @@
     </div>
 
     <!-- ========================================= -->
-    <!-- M3 BOTTOM NAVIGATION BAR                  -->
+    <!-- SLICK BOTTOM NAVIGATION                   -->
     <!-- ========================================= -->
-    <div class="fixed bottom-0 left-0 right-0 z-40 bg-white/90 backdrop-blur-2xl border-t border-gray-100 pb-safe shadow-[0_-10px_40px_rgba(0,0,0,0.03)]">
-        <div class="max-w-lg mx-auto flex justify-around items-center h-16 sm:h-20 px-2">
-            <button onclick="switchTab('entry')" class="flex-1 flex flex-col items-center justify-center gap-1 h-full group outline-none">
-                <div id="navIconBgEntry" class="w-16 h-8 rounded-full bg-[var(--m3-sys-light-primary-container)] flex items-center justify-center transition-all duration-300">
-                    <i id="navIconEntry" class="fas fa-pen-nib text-[var(--m3-sys-light-on-primary-container)] text-base sm:text-lg"></i>
-                </div>
-                <span id="tabTextEntry" class="text-[11px] sm:text-xs font-bold text-[var(--m3-sys-light-on-primary-container)]">নতুন এন্ট্রি</span>
+    <div class="fixed bottom-0 left-0 right-0 z-40 bg-dark-card/90 backdrop-blur-lg border-t border-dark-border pb-safe">
+        <div class="max-w-lg mx-auto flex justify-around items-center h-16 px-2">
+            <button onclick="switchTab('entry')" class="click-effect flex-1 flex flex-col items-center justify-center gap-1 h-full outline-none group">
+                <i id="navIconEntry" class="fas fa-plus-square text-cyan-primary text-lg transition-colors"></i>
+                <span id="tabTextEntry" class="text-[10px] font-bold text-cyan-primary uppercase tracking-widest transition-colors">এন্ট্রি</span>
             </button>
 
-            <button onclick="switchTab('history')" class="flex-1 flex flex-col items-center justify-center gap-1 h-full group outline-none">
-                <div id="navIconBgHistory" class="w-16 h-8 rounded-full bg-transparent flex items-center justify-center transition-all duration-300">
-                    <i id="navIconHistory" class="fas fa-history text-[var(--m3-sys-light-outline)] text-base sm:text-lg"></i>
-                </div>
-                <span id="tabTextHistory" class="text-[11px] sm:text-xs font-bold text-[var(--m3-sys-light-outline)]">হিস্টোরি</span>
+            <button onclick="switchTab('history')" class="click-effect flex-1 flex flex-col items-center justify-center gap-1 h-full outline-none group">
+                <i id="navIconHistory" class="fas fa-clock text-slate-500 text-lg transition-colors"></i>
+                <span id="tabTextHistory" class="text-[10px] font-bold text-slate-500 uppercase tracking-widest transition-colors">হিস্টোরি</span>
             </button>
         </div>
     </div>
 
-    <!-- M3 Dialog (Modal) -->
-    <div id="messageModal" class="fixed inset-0 bg-gray-900/40 hidden items-center justify-center z-50 backdrop-blur-sm px-4">
-        <div class="bg-[var(--m3-sys-light-surface)] rounded-[28px] p-6 sm:p-8 max-w-sm w-full shadow-2xl transform transition-all scale-100 text-center">
-            <div class="w-12 h-12 rounded-full bg-[var(--m3-sys-light-primary-container)] text-[var(--m3-sys-light-on-primary-container)] flex items-center justify-center mx-auto mb-5 text-xl">
+    <!-- Modal (Dark Theme) -->
+    <div id="messageModal" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm px-4">
+        <div class="bg-dark-card border border-dark-border rounded-2xl p-6 sm:p-8 max-w-sm w-full shadow-2xl transform transition-all text-center">
+            <div class="w-12 h-12 rounded-full bg-dark-bg border border-dark-border flex items-center justify-center mx-auto mb-4 text-cyan-primary text-xl">
                 <i class="fas fa-bell"></i>
             </div>
-            <h3 id="modalTitle" class="text-xl font-black mb-2 text-gray-900 tracking-tight"></h3>
-            <p id="modalMessage" class="text-gray-600 mb-8 font-medium text-sm leading-relaxed"></p>
+            <h3 id="modalTitle" class="text-lg font-black mb-2 text-white tracking-tight"></h3>
+            <p id="modalMessage" class="text-slate-400 mb-6 font-medium text-sm"></p>
             <div class="flex justify-center gap-3 w-full" id="modalButtons">
-                <button onclick="closeModal()" class="m3-fab w-full py-3">ঠিক আছে</button>
+                <button onclick="closeModal()" class="click-effect w-full bg-cyan-primary text-dark-bg font-bold py-3 rounded-xl uppercase text-sm tracking-wide">ঠিক আছে</button>
             </div>
         </div>
     </div>
 
-    <!-- Hidden Printable Area for Exporting -->
-    <div id="printArea"></div>
+    <!-- Hidden Printable Area for Exporting (Kept Light Theme for PDF/PNG readability) -->
+    <div id="printArea" style="background: white; color: black;"></div>
 
     <script>
         // ==========================================
@@ -389,15 +312,15 @@
         // ==========================================
         const translations = {
             bn: {
-                appSubtitle: "ব্যক্তিগত ফাইন্যান্স",
-                appTitle: "মোঃ ইমন <i class='fas fa-sparkles text-pink-300 text-lg'></i>",
+                appSubtitle: "MD EMON",
+                appTitle: "পেমেন্ট ট্র্যাকার <i class='fas fa-check-circle text-cyan-primary text-sm'></i>",
                 totalPaymentLabel: "সর্বমোট ব্যালেন্স",
-                tabNewEntry: "নতুন এন্ট্রি",
+                tabNewEntry: "এন্ট্রি",
                 tabHistory: "হিস্টোরি",
                 formTitleAdd: "নতুন পেমেন্ট যোগ",
                 formTitleEdit: "পেমেন্ট আপডেট",
                 sourceLabel: "উৎস / নাম <span class='text-red-500'>*</span>",
-                sourcePlaceholder: "যেমন: রহিম, প্রজেক্ট",
+                sourcePlaceholder: "যেমন: ইমন, প্রজেক্ট",
                 amountLabel: "পরিমাণ (৳) <span class='text-red-500'>*</span>",
                 dateLabel: "তারিখ <span class='text-red-500'>*</span>",
                 notesLabel: "বিবরণ (ঐচ্ছিক)",
@@ -406,12 +329,11 @@
                 submitBtnSave: "সেভ করুন",
                 submitBtnUpdate: "আপডেট করুন",
                 submitBtnLoading: "সেভ হচ্ছে...",
-                listTitle: "<i class='fas fa-layer-group text-[var(--m3-sys-light-primary)]'></i> ট্রানজেকশন সমূহ",
+                listTitle: "ট্রানজেকশন সমূহ",
                 records: "টি",
-                loadingMsg: "ডেটা লোড হচ্ছে...",
+                loadingMsg: "লোড হচ্ছে...",
                 emptyStateMsg: "কোনো পেমেন্ট নেই",
                 emptyStateDateMsg: "এই তারিখে পেমেন্ট নেই",
-                emptyStateSubMsg: "নতুন পেমেন্ট যোগ করতে 'নতুন এন্ট্রি' ট্যাবে যান।",
                 onlineText: "কানেক্টেড",
                 offlineText: "অফলাইন",
                 connectingText: "কানেক্ট হচ্ছে...",
@@ -436,15 +358,15 @@
                 langText: "EN"
             },
             en: {
-                appSubtitle: "Personal Finance",
-                appTitle: "MD Emon <i class='fas fa-sparkles text-pink-300 text-lg'></i>",
+                appSubtitle: "MD EMON",
+                appTitle: "Payment Tracker <i class='fas fa-check-circle text-cyan-primary text-sm'></i>",
                 totalPaymentLabel: "TOTAL BALANCE",
-                tabNewEntry: "New Entry",
-                tabHistory: "History",
+                tabNewEntry: "ENTRY",
+                tabHistory: "HISTORY",
                 formTitleAdd: "Add Payment",
                 formTitleEdit: "Update Payment",
                 sourceLabel: "Source / Name <span class='text-red-500'>*</span>",
-                sourcePlaceholder: "e.g., John, Project",
+                sourcePlaceholder: "e.g., Emon, Project",
                 amountLabel: "Amount (৳) <span class='text-red-500'>*</span>",
                 dateLabel: "Date <span class='text-red-500'>*</span>",
                 notesLabel: "Notes (Optional)",
@@ -453,12 +375,11 @@
                 submitBtnSave: "Save",
                 submitBtnUpdate: "Update",
                 submitBtnLoading: "Saving...",
-                listTitle: "<i class='fas fa-layer-group text-[var(--m3-sys-light-primary)]'></i> Transactions",
+                listTitle: "Transactions",
                 records: "Items",
-                loadingMsg: "Loading Data...",
-                emptyStateMsg: "No Payments Found",
-                emptyStateDateMsg: "No Data on this Date",
-                emptyStateSubMsg: "Go to 'New Entry' tab to add a payment.",
+                loadingMsg: "Loading...",
+                emptyStateMsg: "No Data Found",
+                emptyStateDateMsg: "No Data on Date",
                 onlineText: "Connected",
                 offlineText: "Offline",
                 connectingText: "Connecting...",
@@ -502,7 +423,6 @@
         const t_listTitle = document.getElementById('listTitle');
         const t_loadingMsg = document.getElementById('loadingMsg');
         const t_emptyStateMsg = document.getElementById('emptyStateMsg');
-        const t_emptyStateSubMsg = document.getElementById('emptyStateSubMsg');
         const t_sourceInput = document.getElementById('source');
         const t_notesInput = document.getElementById('notes');
         const langToggleText = document.getElementById('langToggleText');
@@ -531,9 +451,7 @@
         const formIcon = document.getElementById('formIcon');
 
         // Bottom Nav Elements
-        const navIconBgEntry = document.getElementById('navIconBgEntry');
         const navIconEntry = document.getElementById('navIconEntry');
-        const navIconBgHistory = document.getElementById('navIconBgHistory');
         const navIconHistory = document.getElementById('navIconHistory');
 
         let payments = []; 
@@ -552,20 +470,24 @@
             if(buttonsHtml) {
                 modalButtons.innerHTML = buttonsHtml;
             } else {
-                modalButtons.innerHTML = `<button onclick="closeModal()" class="m3-fab w-full py-3">${translations[currentLang].modalOk}</button>`;
+                modalButtons.innerHTML = `<button onclick="closeModal()" class="click-effect w-full bg-cyan-primary text-dark-bg font-bold py-3 rounded-xl uppercase text-sm">${translations[currentLang].modalOk}</button>`;
             }
-            modal.style.display = 'flex';
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
         };
-        window.closeModal = () => { modal.style.display = 'none'; };
+        window.closeModal = () => { 
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        };
 
         const updateStatusUI = (isOnline) => {
             isAppOnline = isOnline;
             const t = translations[currentLang];
             if(isOnline) {
-                statusIcon.className = "fas fa-wifi text-[10px] text-emerald-500";
+                statusIcon.className = "fas fa-wifi text-[10px] text-emerald-400";
                 statusText.innerText = t.onlineText;
             } else {
-                statusIcon.className = "fas fa-plane-slash text-[10px] text-amber-500";
+                statusIcon.className = "fas fa-plane-slash text-[10px] text-amber-400";
                 statusText.innerText = t.offlineText;
             }
         };
@@ -604,9 +526,8 @@
             t_notesLabel.innerHTML = t.notesLabel;
             t_cancelEditBtn.innerText = t.cancelBtn;
             t_submitBtnText.innerText = editingId ? t.submitBtnUpdate : t.submitBtnSave;
-            t_listTitle.innerHTML = t.listTitle;
+            t_listTitle.innerHTML = `<i class="fas fa-list-ul text-cyan-primary"></i> ${t.listTitle}`;
             t_loadingMsg.innerText = t.loadingMsg;
-            t_emptyStateSubMsg.innerText = t.emptyStateSubMsg;
             t_sourceInput.placeholder = t.sourcePlaceholder;
             t_notesInput.placeholder = t.notesPlaceholder;
             
@@ -624,7 +545,7 @@
         };
 
         // ==========================================
-        // M3 Bottom Navigation Logic
+        // View Navigation
         // ==========================================
         window.switchTab = (tab) => {
             if (tab === 'entry') {
@@ -632,38 +553,30 @@
                 viewHistory.classList.add('hidden');
                 viewHistory.classList.remove('flex');
 
-                navIconBgEntry.classList.add('bg-[var(--m3-sys-light-primary-container)]');
-                navIconBgEntry.classList.remove('bg-transparent');
-                navIconEntry.classList.add('text-[var(--m3-sys-light-on-primary-container)]');
-                navIconEntry.classList.remove('text-[var(--m3-sys-light-outline)]');
-                t_tabTextEntry.classList.add('text-[var(--m3-sys-light-on-primary-container)]');
-                t_tabTextEntry.classList.remove('text-[var(--m3-sys-light-outline)]');
+                navIconEntry.classList.add('text-cyan-primary');
+                navIconEntry.classList.remove('text-slate-500');
+                t_tabTextEntry.classList.add('text-cyan-primary');
+                t_tabTextEntry.classList.remove('text-slate-500');
 
-                navIconBgHistory.classList.remove('bg-[var(--m3-sys-light-primary-container)]');
-                navIconBgHistory.classList.add('bg-transparent');
-                navIconHistory.classList.remove('text-[var(--m3-sys-light-on-primary-container)]');
-                navIconHistory.classList.add('text-[var(--m3-sys-light-outline)]');
-                t_tabTextHistory.classList.remove('text-[var(--m3-sys-light-on-primary-container)]');
-                t_tabTextHistory.classList.add('text-[var(--m3-sys-light-outline)]');
+                navIconHistory.classList.remove('text-cyan-primary');
+                navIconHistory.classList.add('text-slate-500');
+                t_tabTextHistory.classList.remove('text-cyan-primary');
+                t_tabTextHistory.classList.add('text-slate-500');
                 
             } else {
                 viewEntry.classList.add('hidden');
                 viewHistory.classList.remove('hidden');
                 viewHistory.classList.add('flex');
 
-                navIconBgHistory.classList.add('bg-[var(--m3-sys-light-primary-container)]');
-                navIconBgHistory.classList.remove('bg-transparent');
-                navIconHistory.classList.add('text-[var(--m3-sys-light-on-primary-container)]');
-                navIconHistory.classList.remove('text-[var(--m3-sys-light-outline)]');
-                t_tabTextHistory.classList.add('text-[var(--m3-sys-light-on-primary-container)]');
-                t_tabTextHistory.classList.remove('text-[var(--m3-sys-light-outline)]');
+                navIconHistory.classList.add('text-cyan-primary');
+                navIconHistory.classList.remove('text-slate-500');
+                t_tabTextHistory.classList.add('text-cyan-primary');
+                t_tabTextHistory.classList.remove('text-slate-500');
 
-                navIconBgEntry.classList.remove('bg-[var(--m3-sys-light-primary-container)]');
-                navIconBgEntry.classList.add('bg-transparent');
-                navIconEntry.classList.remove('text-[var(--m3-sys-light-on-primary-container)]');
-                navIconEntry.classList.add('text-[var(--m3-sys-light-outline)]');
-                t_tabTextEntry.classList.remove('text-[var(--m3-sys-light-on-primary-container)]');
-                t_tabTextEntry.classList.add('text-[var(--m3-sys-light-outline)]');
+                navIconEntry.classList.remove('text-cyan-primary');
+                navIconEntry.classList.add('text-slate-500');
+                t_tabTextEntry.classList.remove('text-cyan-primary');
+                t_tabTextEntry.classList.add('text-slate-500');
             }
         };
 
@@ -672,7 +585,7 @@
             form.reset();
             dateInput.valueAsDate = new Date();
             t_formTitleText.innerText = translations[currentLang].formTitleAdd;
-            formIcon.className = 'fas fa-plus text-sm';
+            formIcon.className = 'fas fa-plus text-xs';
             t_submitBtnText.innerText = translations[currentLang].submitBtnSave;
             t_cancelEditBtn.classList.add('hidden');
         };
@@ -688,7 +601,7 @@
             
             editingId = id;
             t_formTitleText.innerText = translations[currentLang].formTitleEdit;
-            formIcon.className = 'fas fa-pen text-sm text-amber-500';
+            formIcon.className = 'fas fa-pen text-xs';
             t_submitBtnText.innerText = translations[currentLang].submitBtnUpdate;
             t_cancelEditBtn.classList.remove('hidden');
             
@@ -699,8 +612,8 @@
         window.confirmDelete = (id) => {
             const t = translations[currentLang];
             const buttonsHtml = `
-                <button onclick="closeModal()" class="bg-[var(--m3-sys-light-surface-variant)] text-[var(--m3-sys-light-on-primary-container)] px-6 py-3 rounded-full font-bold flex-1 transition-colors">${t.modalCancel}</button>
-                <button onclick="executeDelete('${id}')" class="bg-[var(--m3-sys-light-error)] text-[var(--m3-sys-light-on-primary)] px-6 py-3 rounded-full font-bold flex-1 shadow-md transition-colors">${t.modalConfirmDel}</button>
+                <button onclick="closeModal()" class="click-effect bg-dark-bg border border-dark-border text-slate-300 px-6 py-2.5 rounded-xl font-bold flex-1 text-sm">${t.modalCancel}</button>
+                <button onclick="executeDelete('${id}')" class="click-effect bg-red-500/20 border border-red-500/50 text-red-400 px-6 py-2.5 rounded-xl font-bold flex-1 text-sm">${t.modalConfirmDel}</button>
             `;
             window.showMessage(t.warnTitle, t.warnDelMsg, buttonsHtml);
         };
@@ -749,7 +662,7 @@
         };
 
         // ==========================================
-        // M3 List Render Logic
+        // Dark Theme Professional List Render
         // ==========================================
         const renderPayments = (dataToRender = payments) => {
             const t = translations[currentLang];
@@ -758,7 +671,7 @@
             let total = 0;
             payments.forEach(p => total += parseFloat(p.amount || 0));
             totalAmountEl.innerText = formatLocaleDigit(total);
-            recordCount.innerText = `${formatLocaleDigit(filteredPayments.length)} ${t.records}`;
+            recordCount.innerText = formatLocaleDigit(filteredPayments.length);
 
             if (dataToRender.length === 0) {
                 emptyState.classList.remove('hidden');
@@ -772,34 +685,34 @@
 
             dataToRender.forEach((payment, index) => {
                 const li = document.createElement('li');
-                li.className = `m3-list-item group animate-slide-up relative`;
-                li.style.animationDelay = `${index * 0.04}s`;
+                li.className = `bg-dark-card border border-dark-border p-3.5 sm:p-4 rounded-2xl flex items-center w-full group animate-item mb-3`;
+                li.style.animationDelay = `${index * 0.05}s`;
                 
                 const firstLetter = payment.source ? payment.source.charAt(0).toUpperCase() : 'P';
                 
                 li.innerHTML = `
-                    <div class="flex items-center gap-4 w-full">
-                        <div class="w-12 h-12 rounded-full bg-[var(--m3-sys-light-secondary-container)] text-[var(--m3-sys-light-on-primary-container)] flex items-center justify-center shrink-0 font-black text-xl">
+                    <div class="flex items-center gap-3 min-w-0 shrink max-w-[45%] sm:max-w-[50%]">
+                        <div class="w-10 h-10 rounded-xl bg-dark-bg border border-dark-border text-cyan-primary flex items-center justify-center shrink-0 font-black text-lg shadow-sm">
                             ${firstLetter}
                         </div>
                         <div class="flex-1 min-w-0">
-                            <div class="flex justify-between items-start mb-0.5">
-                                <h3 class="font-bold text-[var(--m3-sys-light-on-primary-container)] text-base sm:text-lg truncate pr-2">${payment.source}</h3>
-                                <span class="font-black text-[var(--m3-sys-light-primary)] text-base sm:text-lg shrink-0">৳ ${formatLocaleDigit(parseFloat(payment.amount || 0))}</span>
-                            </div>
-                            <div class="flex items-center gap-1.5 text-[11px] sm:text-xs font-semibold text-[var(--m3-sys-light-outline)] truncate">
-                                <span>${formatLocaleDate(payment.date)}</span>
-                                ${payment.notes ? `<span class="text-[8px] text-gray-300">•</span><span class="truncate">${payment.notes}</span>` : ''}
+                            <h3 class="font-bold text-white text-[15px] truncate leading-tight">${payment.source}</h3>
+                            <div class="flex items-center gap-1.5 text-xs font-medium text-slate-400 truncate mt-0.5">
+                                <span class="shrink-0">${formatLocaleDate(payment.date)}</span>
+                                ${payment.notes ? `<span class="text-[8px] text-slate-600 shrink-0">•</span><span class="truncate italic">${payment.notes}</span>` : ''}
                             </div>
                         </div>
                     </div>
                     
-                    <!-- Action Overlay (Reveals on hover/focus) -->
-                    <div class="absolute inset-y-0 right-0 bg-gradient-to-l from-white via-white to-transparent px-4 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity duration-300 rounded-r-3xl">
-                        <button onclick="editPayment('${payment.id}')" class="w-9 h-9 rounded-full bg-[var(--m3-sys-light-surface-variant)] text-[var(--m3-sys-light-primary)] hover:bg-[var(--m3-sys-light-primary-container)] flex items-center justify-center transition-colors" title="${t.editBtnTitle}">
+                    <div class="mx-auto px-1 shrink-0">
+                        <span class="font-black text-cyan-primary text-base sm:text-lg">৳ ${formatLocaleDigit(parseFloat(payment.amount || 0))}</span>
+                    </div>
+                    
+                    <div class="flex items-center gap-1.5 shrink-0">
+                        <button onclick="editPayment('${payment.id}')" class="click-effect w-8 h-8 rounded-lg bg-dark-bg border border-dark-border text-slate-400 hover:text-amber-400 flex items-center justify-center transition-colors shadow-sm" title="${t.editBtnTitle}">
                             <i class="fas fa-pen text-xs"></i>
                         </button>
-                        <button onclick="confirmDelete('${payment.id}')" class="w-9 h-9 rounded-full bg-[var(--m3-sys-light-error-container)] text-[var(--m3-sys-light-error)] hover:bg-red-200 flex items-center justify-center transition-colors" title="${t.deleteBtnTitle}">
+                        <button onclick="confirmDelete('${payment.id}')" class="click-effect w-8 h-8 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/30 flex items-center justify-center transition-colors shadow-sm" title="${t.deleteBtnTitle}">
                             <i class="fas fa-trash text-xs"></i>
                         </button>
                     </div>
@@ -916,6 +829,7 @@
             loadingState.classList.remove('hidden');
             t_loadingMsg.innerText = "Exporting...";
             
+            // Export is done in light theme for readability of printed docs
             const printDiv = document.getElementById('printArea');
             let totalAmount = 0;
             let rowsHtml = '';
@@ -925,7 +839,7 @@
                 rowsHtml += `
                     <tr style="border-bottom: 1px solid #e2e8f0; background-color: ${idx % 2 === 0 ? '#f8fafc' : '#ffffff'};">
                         <td style="padding: 12px 16px; font-weight: 600;">${formatLocaleDate(p.date)}</td>
-                        <td style="padding: 12px 16px; font-weight: bold; color: #1e40af;">${p.source}</td>
+                        <td style="padding: 12px 16px; font-weight: bold; color: #0ea5e9;">${p.source}</td>
                         <td style="padding: 12px 16px; color: #475569;">${p.notes || '-'}</td>
                         <td style="padding: 12px 16px; text-align: right; font-weight: 800; color: #0f172a;">৳ ${formatLocaleDigit(parseFloat(p.amount || 0))}</td>
                     </tr>
@@ -938,19 +852,19 @@
 
             printDiv.innerHTML = `
                 <div style="font-family: 'Hind Siliguri', sans-serif; padding: 20px;">
-                    <div style="text-align: center; margin-bottom: 30px; border-bottom: 3px solid #4f46e5; padding-bottom: 20px;">
-                        <h1 style="font-size: 32px; color: #1e3a8a; margin: 0 0 10px 0;">${t.reportTitle}</h1>
+                    <div style="text-align: center; margin-bottom: 30px; border-bottom: 3px solid #0ea5e9; padding-bottom: 20px;">
+                        <h1 style="font-size: 32px; color: #0f172a; margin: 0 0 10px 0;">${t.reportTitle}</h1>
                         <p style="font-size: 16px; color: #64748b; margin: 0;">${searchFilterText}</p>
                     </div>
                     
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 20px; background: #e0e7ff; padding: 15px; border-radius: 10px;">
-                        <div style="font-size: 18px; font-weight: bold; color: #3730a3;">${t.reportTotalRec} ${countStr}</div>
-                        <div style="font-size: 18px; font-weight: bold; color: #3730a3;">${t.reportTotalAmt} ৳ ${totalStr}</div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 20px; background: #f8fafc; padding: 15px; border-radius: 10px; border: 1px solid #e2e8f0;">
+                        <div style="font-size: 18px; font-weight: bold; color: #0f172a;">${t.reportTotalRec} ${countStr}</div>
+                        <div style="font-size: 18px; font-weight: bold; color: #0f172a;">${t.reportTotalAmt} ৳ ${totalStr}</div>
                     </div>
 
                     <table style="width: 100%; border-collapse: collapse; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                         <thead>
-                            <tr style="background-color: #4f46e5; color: white; text-align: left;">
+                            <tr style="background-color: #0ea5e9; color: white; text-align: left;">
                                 <th style="padding: 15px 16px; font-weight: bold;">${t.thDate}</th>
                                 <th style="padding: 15px 16px; font-weight: bold;">${t.thSource}</th>
                                 <th style="padding: 15px 16px; font-weight: bold;">${t.thNotes}</th>
