@@ -35,7 +35,7 @@
     </script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Outfit:wght@400;500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700;800&display=swap');
         
         body {
             font-family: 'Outfit', 'Hind Siliguri', sans-serif;
@@ -49,15 +49,62 @@
         ::-webkit-scrollbar { width: 4px; background: transparent; }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
         
-        /* Hardware Accelerated Smooth Animations (Zero Lag) */
+        /* ==================================================== */
+        /* M3 EXPRESSIVE BOUNCY & MAGNETIC EFFECTS (Android 16) */
+        /* ==================================================== */
+        
+        /* General Click Effect (Buttons, Icons) */
         .click-effect {
-            transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s ease, box-shadow 0.2s ease;
+            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
             will-change: transform;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
         .click-effect:active {
-            transform: scale(0.95);
+            transform: scale(0.85); /* Deep press for magnetic feel */
+            transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        /* Main Submit Button Bouncy Effect */
+        #submitBtn {
+            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, background-color 0.3s ease;
+            will-change: transform;
+        }
+        #submitBtn:active {
+            transform: scale(0.92) translateY(4px);
+            box-shadow: 0 0 5px rgba(14,165,233,0.5);
+            transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Bottom Nav Magnetic Bouncy Effect */
+        .bottom-nav-btn {
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+            will-change: transform;
+        }
+        .bottom-nav-btn:active {
+            transform: scale(0.82) translateY(6px);
+            opacity: 0.8;
+            transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Form Inputs Expressive Pop-out */
+        .dark-input {
+            background-color: #0f172a;
+            border: 1px solid #334155;
+            color: #f8fafc;
+            border-radius: 1rem;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            will-change: transform, box-shadow, border-color;
+        }
+        .dark-input:focus {
+            border-color: #0ea5e9;
+            box-shadow: 0 10px 25px -5px rgba(14, 165, 233, 0.25);
+            outline: none;
+            transform: scale(1.03) translateY(-2px); /* M3 Pop-out effect */
+            background-color: #1e293b;
+        }
+        
         .dark-card {
             background-color: #1e293b;
             border: 1px solid #334155;
@@ -65,39 +112,108 @@
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
         }
 
-        /* List Item Animation */
-        @keyframes slideInRight {
-            from { opacity: 0; transform: translateX(20px); }
-            to { opacity: 1; transform: translateX(0); }
+        /* List Item Bouncy Entry Animation */
+        @keyframes slideInRightSpring {
+            0% { opacity: 0; transform: translateX(40px) scale(0.9); }
+            100% { opacity: 1; transform: translateX(0) scale(1); }
         }
         .animate-item {
-            animation: slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            animation: slideInRightSpring 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
             will-change: transform, opacity;
         }
 
-        /* Form Inputs */
-        .dark-input {
-            background-color: #0f172a;
-            border: 1px solid #334155;
-            color: #f8fafc;
-            border-radius: 1rem;
-            transition: all 0.2s ease;
-        }
-        .dark-input:focus {
-            border-color: #0ea5e9;
-            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
-            outline: none;
-        }
-        /* Custom calendar icon color */
         ::-webkit-calendar-picker-indicator {
             filter: invert(1);
             opacity: 0.6;
             cursor: pointer;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        ::-webkit-calendar-picker-indicator:active {
+            transform: scale(0.7);
         }
 
-        /* Glowing Text */
-        .text-glow {
-            text-shadow: 0 0 15px rgba(14, 165, 233, 0.5);
+        /* Modal Bouncy Entry Animation */
+        .modal-bounce-in {
+            animation: modalSpring 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        @keyframes modalSpring {
+            0% { opacity: 0; transform: scale(0.7) translateY(30px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* ==================================================== */
+        /* PREMIUM LIVE AMOUNT ANIMATION (iOS/Android 16 Style) */
+        /* ==================================================== */
+        
+        .premium-number {
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
+            letter-spacing: -0.02em;
+        }
+
+        @keyframes siri-gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .live-amount-text {
+            background: linear-gradient(
+                -45deg,
+                #ffffff 0%,
+                #e0f2fe 25%,
+                #38bdf8 50%,
+                #0284c7 75%,
+                #ffffff 100%
+            );
+            background-size: 250% 250%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+            animation: siri-gradient 4s ease infinite;
+        }
+
+        @keyframes live-breathe {
+            0%, 100% { filter: drop-shadow(0 0 12px rgba(14, 165, 233, 0.3)); transform: scale(1); }
+            50% { filter: drop-shadow(0 0 25px rgba(56, 189, 248, 0.7)); transform: scale(1.02); }
+        }
+        
+        .live-amount-wrapper {
+            display: inline-flex;
+            align-items: baseline;
+            gap: 0.375rem;
+            padding: 0.25rem 0.5rem;
+            margin-left: -0.5rem;
+            animation: live-breathe 4s ease-in-out infinite;
+            will-change: transform, filter;
+        }
+
+        /* SUPER SMOOTH Dynamic Island Toast Notifications Animation */
+        @keyframes islandEnter {
+            0% { opacity: 0; transform: translateY(-40px) scale(0.85); filter: blur(4px); }
+            100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0px); }
+        }
+        @keyframes islandLeave {
+            0% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0px); }
+            100% { opacity: 0; transform: translateY(-30px) scale(0.9); filter: blur(4px); }
+        }
+        .toast-enter {
+            animation: islandEnter 0.65s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            will-change: transform, opacity, filter;
+        }
+        .toast-leave {
+            animation: islandLeave 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            will-change: transform, opacity, filter;
+        }
+
+        /* Entry Box Smooth Animation */
+        @keyframes entryBoxSpring {
+            0% { opacity: 0; transform: scale(0.92) translateY(20px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .animate-entry-box {
+            animation: entryBoxSpring 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            will-change: transform, opacity;
         }
 
         #printArea {
@@ -109,9 +225,17 @@
             padding: 40px;
             color: black;
         }
+        
+        /* Swipe utilities */
+        .swipe-item {
+            touch-action: pan-y;
+        }
     </style>
 </head>
 <body class="antialiased">
+
+    <!-- Toast Notification Container (Dynamic Island Style) -->
+    <div id="toastContainer" class="fixed top-6 left-0 right-0 z-[70] flex flex-col items-center gap-2 px-4 pointer-events-none"></div>
 
     <!-- Wrapper -->
     <div class="max-w-lg mx-auto min-h-screen relative pb-24 flex flex-col pt-4 sm:pt-6 px-4 sm:px-5">
@@ -123,7 +247,7 @@
                 <span id="statusText" class="text-xs font-bold text-slate-300 tracking-wide">কানেক্ট হচ্ছে...</span>
             </div>
 
-            <button onclick="toggleLanguage()" class="click-effect bg-dark-card hover:bg-dark-hover border border-dark-border text-cyan-primary font-bold py-2 px-5 rounded-full text-xs transition-colors flex items-center gap-2">
+            <button onclick="toggleLanguage()" class="click-effect bg-dark-card hover:bg-dark-hover border border-dark-border text-cyan-primary font-bold py-2 px-5 rounded-full text-xs flex gap-2">
                 <i class="fas fa-language"></i> <span id="langToggleText">EN</span>
             </button>
         </div>
@@ -132,7 +256,6 @@
         <!-- PREMIUM DASHBOARD HERO CARD -->
         <!-- ========================================= -->
         <div class="dark-card p-6 sm:p-8 relative overflow-hidden mb-6 group shrink-0">
-            <!-- Techy Accents -->
             <div class="absolute top-0 right-0 w-32 h-32 bg-cyan-primary/10 rounded-full blur-2xl transform translate-x-10 -translate-y-10"></div>
             <div class="absolute bottom-0 left-0 w-24 h-24 bg-cyan-primary/5 rounded-full blur-xl transform -translate-x-5 translate-y-5"></div>
             <div class="absolute top-0 left-0 w-1 h-full bg-cyan-primary shadow-[0_0_10px_rgba(14,165,233,0.8)]"></div>
@@ -140,9 +263,9 @@
             <div class="relative z-10 flex flex-col h-full justify-between">
                 <div class="flex justify-between items-start mb-6">
                     <div class="flex flex-col">
-                        <span class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest mb-1" id="appSubtitle">Personal Finance</span>
+                        <span class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest mb-1" id="appSubtitle">MD EMON</span>
                         <h1 id="appTitle" class="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
-                            MD EMON <i class="fas fa-check-circle text-cyan-primary text-sm"></i>
+                            পেমেন্ট ট্র্যাকার <i class="fas fa-check-circle text-cyan-primary text-sm"></i>
                         </h1>
                     </div>
                     <div class="w-10 h-10 bg-dark-bg rounded-xl flex items-center justify-center border border-dark-border">
@@ -152,9 +275,11 @@
 
                 <div>
                     <p id="totalPaymentLabel" class="text-slate-400 text-xs font-bold mb-1 tracking-widest uppercase">সর্বমোট ব্যালেন্স</p>
-                    <div class="flex items-baseline gap-1.5">
-                        <span class="text-xl font-medium text-cyan-primary">৳</span>
-                        <span id="totalAmount" class="text-4xl sm:text-5xl font-black font-mono tracking-tight text-white text-glow">০</span>
+                    
+                    <!-- LIVE AMOUNT WRAPPER -->
+                    <div class="live-amount-wrapper">
+                        <span class="text-xl font-bold text-cyan-primary">৳</span>
+                        <span id="totalAmount" class="text-4xl sm:text-5xl font-extrabold premium-number live-amount-text">০</span>
                     </div>
                 </div>
             </div>
@@ -163,7 +288,7 @@
         <!-- ========================================= -->
         <!-- VIEW 1: ENTRY FORM -->
         <!-- ========================================= -->
-        <div id="viewEntry" class="dark-card p-5 sm:p-7 relative shrink-0 transition-opacity duration-300">
+        <div id="viewEntry" class="dark-card p-5 sm:p-7 relative shrink-0 animate-entry-box">
             
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-lg font-bold text-white flex items-center gap-2.5">
@@ -172,7 +297,7 @@
                     </div>
                     <span id="formTitleText">নতুন পেমেন্ট যোগ</span>
                 </h2>
-                <button type="button" id="cancelEditBtn" onclick="cancelEdit()" class="hidden text-xs font-bold text-red-400 bg-red-400/10 border border-red-400/20 hover:bg-red-400/20 px-3 py-1.5 rounded-full transition-colors click-effect">
+                <button type="button" id="cancelEditBtn" onclick="cancelEdit()" class="hidden text-xs font-bold text-red-400 bg-red-400/10 border border-red-400/20 hover:bg-red-400/20 px-3 py-1.5 rounded-full click-effect">
                     বাতিল
                 </button>
             </div>
@@ -181,13 +306,13 @@
                 
                 <div>
                     <label id="sourceLabel" class="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">উৎস / নাম <span class="text-red-500">*</span></label>
-                    <input type="text" id="source" required class="dark-input w-full px-4 py-3.5 text-sm" placeholder="যেমন: রহিম, প্রজেক্ট">
+                    <input type="text" id="source" required class="dark-input w-full px-4 py-3.5 text-sm" placeholder="যেমন: ইমন, প্রজেক্ট">
                 </div>
                 
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label id="amountLabel" class="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">পরিমাণ (৳) <span class="text-red-500">*</span></label>
-                        <input type="number" id="amount" required min="1" class="dark-input w-full px-4 py-3.5 text-base font-bold text-cyan-primary" placeholder="0.00">
+                        <input type="number" id="amount" required min="1" class="dark-input w-full px-4 py-3.5 text-base font-bold text-cyan-primary premium-number" placeholder="0.00">
                     </div>
                     <div>
                         <label id="dateLabel" class="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">তারিখ <span class="text-red-500">*</span></label>
@@ -201,7 +326,7 @@
                 </div>
                 
                 <div class="pt-3">
-                    <button type="submit" id="submitBtn" class="click-effect w-full bg-cyan-primary hover:bg-cyan-hover text-dark-bg font-black py-3.5 rounded-xl shadow-[0_0_15px_rgba(14,165,233,0.3)] transition-colors flex items-center justify-center gap-2 text-sm uppercase tracking-wide">
+                    <button type="submit" id="submitBtn" class="w-full bg-cyan-primary text-dark-bg font-black py-3.5 rounded-xl flex items-center justify-center gap-2 text-sm uppercase tracking-wide click-effect">
                         <i class="fas fa-check-circle"></i> <span id="submitBtnText">সেভ করুন</span>
                     </button>
                 </div>
@@ -214,22 +339,27 @@
         <div id="viewHistory" class="hidden flex-col h-[500px] sm:h-[550px] transition-opacity duration-300">
             
             <!-- Modern Search & Export Bar -->
-            <div class="flex gap-2 items-center mb-4 z-20">
-                <div class="relative flex-1">
-                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                        <i class="fas fa-search text-slate-500 text-sm"></i>
-                    </div>
-                    <input type="date" id="searchDate" onchange="applySearch()" class="dark-input w-full pl-10 pr-9 py-3 text-sm font-semibold">
-                    <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute inset-y-0 right-0 pr-3 flex items-center text-slate-500 hover:text-red-400 transition-colors">
-                        <i class="fas fa-times-circle"></i>
+            <div class="flex gap-2 items-center mb-4 z-20 justify-between">
+                
+                <!-- Animated Expandable Search -->
+                <div id="searchContainer" class="flex items-center bg-dark-card rounded-full border border-dark-border transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] overflow-hidden" style="max-width: 44px; min-width: 44px; height: 44px;">
+                    <button id="searchBtnWrapper" onclick="toggleSearch()" class="w-11 h-11 shrink-0 flex items-center justify-center text-cyan-primary click-effect rounded-full z-10 outline-none transition-colors duration-300">
+                        <i id="searchToggleIcon" class="fas fa-search text-sm transition-transform duration-300"></i>
                     </button>
+                    
+                    <div id="searchContent" class="flex items-center gap-1.5 pr-4 opacity-0 -translate-x-3 pointer-events-none transition-all duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)] whitespace-nowrap">
+                        <input type="date" id="searchDate" onchange="applySearch(false, true)" class="bg-transparent border-none outline-none text-white text-[13px] font-bold cursor-pointer p-0 w-[105px]" style="color-scheme: dark;">
+                        <button id="clearSearchBtn" onclick="clearSearch()" class="hidden text-slate-500 hover:text-red-400 click-effect ml-1 flex items-center justify-center">
+                            <i class="fas fa-times-circle"></i>
+                        </button>
+                    </div>
                 </div>
                 
                 <div class="flex gap-2 shrink-0">
-                    <button onclick="exportData('pdf')" class="click-effect w-11 h-11 rounded-xl bg-dark-card border border-dark-border text-red-400 hover:bg-red-500/10 hover:border-red-500/30 flex items-center justify-center transition-colors shadow-sm">
+                    <button onclick="exportData('pdf')" class="click-effect w-11 h-11 rounded-full bg-dark-card border border-dark-border text-red-400 hover:bg-red-500/10 hover:border-red-500/30 flex items-center justify-center shadow-sm">
                         <i class="fas fa-file-pdf"></i>
                     </button>
-                    <button onclick="exportData('png')" class="click-effect w-11 h-11 rounded-xl bg-dark-card border border-dark-border text-cyan-primary hover:bg-cyan-primary/10 hover:border-cyan-primary/30 flex items-center justify-center transition-colors shadow-sm">
+                    <button onclick="exportData('png')" class="click-effect w-11 h-11 rounded-full bg-dark-card border border-dark-border text-cyan-primary hover:bg-cyan-primary/10 hover:border-cyan-primary/30 flex items-center justify-center shadow-sm">
                         <i class="fas fa-image"></i>
                     </button>
                 </div>
@@ -241,7 +371,7 @@
                     <h2 id="listTitle" class="text-xs font-bold text-slate-300 uppercase tracking-widest flex items-center gap-2">
                         <i class="fas fa-list-ul text-cyan-primary"></i> ট্রানজেকশন সমূহ
                     </h2>
-                    <span id="recordCount" class="bg-dark-bg text-cyan-primary border border-dark-border text-[10px] font-black px-2.5 py-1 rounded-md">০</span>
+                    <span id="recordCount" class="bg-dark-bg text-cyan-primary border border-dark-border text-[10px] font-black px-2.5 py-1 rounded-md premium-number">০</span>
                 </div>
                 
                 <div class="flex-1 overflow-y-auto p-3 relative bg-dark-bg/50" id="paymentsList">
@@ -258,7 +388,7 @@
                         <p id="emptyStateMsg" class="text-base font-bold text-slate-300 mb-1">কোনো ডেটা নেই</p>
                     </div>
 
-                    <ul id="listContainer" class="hidden pb-2">
+                    <ul id="listContainer" class="hidden pb-2 overflow-x-hidden">
                         <!-- Items injected here -->
                     </ul>
                 </div>
@@ -272,33 +402,33 @@
     <!-- ========================================= -->
     <div class="fixed bottom-0 left-0 right-0 z-40 bg-dark-card/90 backdrop-blur-lg border-t border-dark-border pb-safe">
         <div class="max-w-lg mx-auto flex justify-around items-center h-16 px-2">
-            <button onclick="switchTab('entry')" class="click-effect flex-1 flex flex-col items-center justify-center gap-1 h-full outline-none group">
+            <button onclick="switchTab('entry')" class="bottom-nav-btn flex-1 flex flex-col items-center justify-center gap-1 h-full outline-none group">
                 <i id="navIconEntry" class="fas fa-plus-square text-cyan-primary text-lg transition-colors"></i>
                 <span id="tabTextEntry" class="text-[10px] font-bold text-cyan-primary uppercase tracking-widest transition-colors">এন্ট্রি</span>
             </button>
 
-            <button onclick="switchTab('history')" class="click-effect flex-1 flex flex-col items-center justify-center gap-1 h-full outline-none group">
+            <button onclick="switchTab('history')" class="bottom-nav-btn flex-1 flex flex-col items-center justify-center gap-1 h-full outline-none group">
                 <i id="navIconHistory" class="fas fa-clock text-slate-500 text-lg transition-colors"></i>
                 <span id="tabTextHistory" class="text-[10px] font-bold text-slate-500 uppercase tracking-widest transition-colors">হিস্টোরি</span>
             </button>
         </div>
     </div>
 
-    <!-- Modal (Dark Theme) -->
-    <div id="messageModal" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm px-4">
-        <div class="bg-dark-card border border-dark-border rounded-2xl p-6 sm:p-8 max-w-sm w-full shadow-2xl transform transition-all text-center">
-            <div class="w-12 h-12 rounded-full bg-dark-bg border border-dark-border flex items-center justify-center mx-auto mb-4 text-cyan-primary text-xl">
-                <i class="fas fa-bell"></i>
+    <!-- Animated Modal for Warnings/Alerts -->
+    <div id="messageModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 backdrop-blur-sm px-4 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div id="modalBox" class="bg-dark-card border border-dark-border rounded-3xl p-6 sm:p-8 max-w-sm w-full shadow-2xl text-center opacity-0">
+            <div id="modalIconContainer" class="w-14 h-14 rounded-full bg-dark-bg border border-dark-border flex items-center justify-center mx-auto mb-4 text-cyan-primary text-2xl">
+                <i id="modalIcon" class="fas fa-exclamation-triangle text-amber-400"></i>
             </div>
-            <h3 id="modalTitle" class="text-lg font-black mb-2 text-white tracking-tight"></h3>
+            <h3 id="modalTitle" class="text-xl font-black mb-2 text-white tracking-tight"></h3>
             <p id="modalMessage" class="text-slate-400 mb-6 font-medium text-sm"></p>
             <div class="flex justify-center gap-3 w-full" id="modalButtons">
-                <button onclick="closeModal()" class="click-effect w-full bg-cyan-primary text-dark-bg font-bold py-3 rounded-xl uppercase text-sm tracking-wide">ঠিক আছে</button>
+                <!-- Buttons injected dynamically -->
             </div>
         </div>
     </div>
 
-    <!-- Hidden Printable Area for Exporting (Kept Light Theme for PDF/PNG readability) -->
+    <!-- Hidden Printable Area for Exporting -->
     <div id="printArea" style="background: white; color: black;"></div>
 
     <script>
@@ -344,8 +474,16 @@
                 modalConfirmDel: "মুছুন",
                 warnTitle: "সতর্কতা",
                 warnDelMsg: "আপনি কি সত্যিই এই রেকর্ডটি মুছে ফেলতে চান?",
+                successSaveMsg: "ডেটা সফলভাবে সেভ হয়েছে!",
+                successUpdateMsg: "ডেটা সফলভাবে আপডেট হয়েছে!",
+                successDeleteMsg: "রেকর্ডটি মুছে ফেলা হয়েছে!",
+                successExportPngMsg: "ইমেজ সফলভাবে ডাউনলোড হয়েছে!",
+                successExportPdfMsg: "পিডিএফ সফলভাবে ডাউনলোড হয়েছে!",
+                langChangeMsg: "ভাষা পরিবর্তন করা হয়েছে!",
                 exportNoData: "কোনো ডেটা নেই।",
                 exportErr: "ডাউনলোড ব্যর্থ হয়েছে।",
+                searchFoundMsg: "টি পেমেন্ট পাওয়া গেছে!",
+                searchNotFoundMsg: "এই তারিখে কোনো পেমেন্ট পাওয়া যায়নি!",
                 reportTitle: "পেমেন্ট রিপোর্ট",
                 reportAll: "সকল পেমেন্ট",
                 reportDateLabel: "তারিখ: ",
@@ -390,8 +528,16 @@
                 modalConfirmDel: "Delete",
                 warnTitle: "Warning",
                 warnDelMsg: "Are you sure you want to delete this record?",
+                successSaveMsg: "Data saved successfully!",
+                successUpdateMsg: "Data updated successfully!",
+                successDeleteMsg: "Record deleted successfully!",
+                successExportPngMsg: "Image downloaded successfully!",
+                successExportPdfMsg: "PDF downloaded successfully!",
+                langChangeMsg: "Language changed successfully!",
                 exportNoData: "No data to export.",
                 exportErr: "Export failed.",
+                searchFoundMsg: "payments found!",
+                searchNotFoundMsg: "No payments found on this date!",
                 reportTitle: "Payment Report",
                 reportAll: "All Payments",
                 reportDateLabel: "Date: ",
@@ -407,82 +553,99 @@
 
         let currentLang = localStorage.getItem('appLang') || 'bn';
 
-        // DOM Elements
-        const t_appSubtitle = document.getElementById('appSubtitle');
-        const t_appTitle = document.getElementById('appTitle');
-        const t_totalPaymentLabel = document.getElementById('totalPaymentLabel');
-        const t_tabTextEntry = document.getElementById('tabTextEntry');
-        const t_tabTextHistory = document.getElementById('tabTextHistory');
-        const t_formTitleText = document.getElementById('formTitleText');
-        const t_sourceLabel = document.getElementById('sourceLabel');
-        const t_amountLabel = document.getElementById('amountLabel');
-        const t_dateLabel = document.getElementById('dateLabel');
-        const t_notesLabel = document.getElementById('notesLabel');
-        const t_cancelEditBtn = document.getElementById('cancelEditBtn');
-        const t_submitBtnText = document.getElementById('submitBtnText');
-        const t_listTitle = document.getElementById('listTitle');
-        const t_loadingMsg = document.getElementById('loadingMsg');
-        const t_emptyStateMsg = document.getElementById('emptyStateMsg');
-        const t_sourceInput = document.getElementById('source');
-        const t_notesInput = document.getElementById('notes');
-        const langToggleText = document.getElementById('langToggleText');
-        
-        const form = document.getElementById('paymentForm');
-        const submitBtn = document.getElementById('submitBtn');
-        const dateInput = document.getElementById('date');
-        const searchDateInput = document.getElementById('searchDate');
-        const clearSearchBtn = document.getElementById('clearSearchBtn');
-        const totalAmountEl = document.getElementById('totalAmount');
-        const listContainer = document.getElementById('listContainer');
-        const emptyState = document.getElementById('emptyState');
-        const loadingState = document.getElementById('loadingState');
-        const recordCount = document.getElementById('recordCount');
-        const statusBadge = document.getElementById('statusBadge');
-        const statusIcon = document.getElementById('statusIcon');
-        const statusText = document.getElementById('statusText');
-        
-        const modal = document.getElementById('messageModal');
-        const modalTitle = document.getElementById('modalTitle');
-        const modalMessage = document.getElementById('modalMessage');
-        const modalButtons = document.getElementById('modalButtons');
-        
-        const viewEntry = document.getElementById('viewEntry');
-        const viewHistory = document.getElementById('viewHistory');
-        const formIcon = document.getElementById('formIcon');
-
-        // Bottom Nav Elements
-        const navIconEntry = document.getElementById('navIconEntry');
-        const navIconHistory = document.getElementById('navIconHistory');
-
+        // Global State
         let payments = []; 
         let filteredPayments = []; 
         let editingId = null;
         let isAppOnline = false;
-
-        dateInput.valueAsDate = new Date();
+        let currentDisplayedTotal = 0;
+        let animationFrameId = null; 
 
         const saveToLocal = (data) => { try { localStorage.setItem('offline_payments_backup', JSON.stringify(data)); } catch(e) {} };
         const loadFromLocal = () => { try { const data = localStorage.getItem('offline_payments_backup'); return data ? JSON.parse(data) : []; } catch(e) { return []; } };
 
-        window.showMessage = (title, message, buttonsHtml = null) => {
-            modalTitle.innerText = title;
-            modalMessage.innerHTML = message;
-            if(buttonsHtml) {
-                modalButtons.innerHTML = buttonsHtml;
-            } else {
-                modalButtons.innerHTML = `<button onclick="closeModal()" class="click-effect w-full bg-cyan-primary text-dark-bg font-bold py-3 rounded-xl uppercase text-sm">${translations[currentLang].modalOk}</button>`;
+        // ==========================================
+        // SUPER SMOOTH TOAST NOTIFICATIONS
+        // ==========================================
+        window.showToast = (message, type = 'success') => {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            
+            let iconClass, colorStyle;
+            if (type === 'delete') {
+                iconClass = 'fa-trash-alt';
+                colorStyle = 'bg-red-500/10 border-red-500/20 text-red-400';
+            } else if (type === 'update' || type === 'info') {
+                iconClass = 'fa-info-circle';
+                colorStyle = 'bg-cyan-primary/10 border-cyan-primary/20 text-cyan-primary';
+            } else if (type === 'pdf') {
+                iconClass = 'fa-file-pdf';
+                colorStyle = 'bg-red-500/10 border-red-500/20 text-red-400';
+            } else if (type === 'png') {
+                iconClass = 'fa-image';
+                colorStyle = 'bg-cyan-primary/10 border-cyan-primary/20 text-cyan-primary';
+            } else if (type === 'lang') {
+                iconClass = 'fa-globe';
+                colorStyle = 'bg-indigo-500/10 border-indigo-500/20 text-indigo-400';
+            } else if (type === 'warning') {
+                iconClass = 'fa-exclamation-circle';
+                colorStyle = 'bg-amber-500/10 border-amber-500/20 text-amber-400';
+            } else { // success / add
+                iconClass = 'fa-check-circle';
+                colorStyle = 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400';
             }
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
+            
+            toast.className = `inline-flex items-center gap-2.5 px-5 py-3 rounded-full backdrop-blur-2xl border shadow-xl toast-enter ${colorStyle}`;
+            toast.innerHTML = `
+                <i class="fas ${iconClass} text-sm"></i>
+                <span class="font-bold text-[13px] tracking-wide text-white drop-shadow-sm">${message}</span>
+            `;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.replace('toast-enter', 'toast-leave');
+                setTimeout(() => toast.remove(), 450); 
+            }, 3500); 
         };
+
+        // Modal for Warnings (Animated M3 Spring)
+        window.showMessage = (title, message, buttonsHtml = null, icon = 'fa-exclamation-triangle', iconColor = 'text-amber-400') => {
+            const modal = document.getElementById('messageModal');
+            const modalBox = document.getElementById('modalBox');
+            
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalMessage').innerHTML = message;
+            document.getElementById('modalIcon').className = `fas ${icon} ${iconColor}`;
+            
+            if(buttonsHtml) {
+                document.getElementById('modalButtons').innerHTML = buttonsHtml;
+            } else {
+                document.getElementById('modalButtons').innerHTML = `<button onclick="closeModal()" class="click-effect w-full bg-cyan-primary text-dark-bg font-bold py-3 rounded-xl uppercase text-sm">${translations[currentLang].modalOk}</button>`;
+            }
+            
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            modalBox.classList.remove('opacity-0');
+            modalBox.classList.add('modal-bounce-in');
+        };
+
         window.closeModal = () => { 
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
+            const modal = document.getElementById('messageModal');
+            const modalBox = document.getElementById('modalBox');
+            
+            modalBox.classList.remove('modal-bounce-in');
+            modalBox.classList.add('opacity-0');
+            
+            setTimeout(() => {
+                modal.classList.add('opacity-0', 'pointer-events-none');
+            }, 300);
         };
 
         const updateStatusUI = (isOnline) => {
             isAppOnline = isOnline;
             const t = translations[currentLang];
+            const statusIcon = document.getElementById('statusIcon');
+            const statusText = document.getElementById('statusText');
             if(isOnline) {
                 statusIcon.className = "fas fa-wifi text-[10px] text-emerald-400";
                 statusText.innerText = t.onlineText;
@@ -493,8 +656,9 @@
         };
 
         const formatLocaleDigit = (num) => {
-            if (isNaN(num)) return currentLang === 'en' ? '0' : '০';
-            const numStr = num.toLocaleString('en-IN');
+            const parsed = Number(num);
+            if (isNaN(parsed)) return currentLang === 'en' ? '0' : '০';
+            const numStr = parsed.toLocaleString('en-IN', { maximumFractionDigits: 2 });
             if(currentLang === 'en') return numStr;
             const engToBng = {'0':'০','1':'১','2':'২','3':'৩','4':'৪','5':'৫','6':'৬','7':'৭','8':'৮','9':'৯'};
             return numStr.replace(/[0-9]/g, match => engToBng[match]);
@@ -511,57 +675,115 @@
             return formatted.replace(/[0-9]/g, match => engToBng[match]);
         };
 
-        const applyLanguage = () => {
+        // Date Normalizer to fix Timezone mismatch bugs from Google Apps Script
+        const normalizeDate = (dStr) => {
+            if (!dStr) return '';
+            // If already in YYYY-MM-DD format
+            if (/^\d{4}-\d{2}-\d{2}$/.test(dStr)) return dStr;
+            const d = new Date(dStr);
+            if (isNaN(d)) return dStr;
+            
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        };
+
+        // ==========================================
+        // Live Number Counter Animation (Super Smooth)
+        // ==========================================
+        const animateValue = (obj, start, end, duration) => {
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+            
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const ease = 1 - Math.pow(1 - progress, 3);
+                const current = start + (end - start) * ease;
+                
+                const isInteger = end % 1 === 0;
+                const val = isInteger ? Math.round(current) : current.toFixed(2);
+                
+                obj.innerText = formatLocaleDigit(val);
+                
+                if (progress < 1) {
+                    animationFrameId = window.requestAnimationFrame(step);
+                } else {
+                    obj.innerText = formatLocaleDigit(isInteger ? end : end.toFixed(2));
+                }
+            };
+            animationFrameId = window.requestAnimationFrame(step);
+        };
+
+        const applyLanguage = (forceAnimate = false) => {
             const t = translations[currentLang];
             
-            t_appSubtitle.innerText = t.appSubtitle;
-            t_appTitle.innerHTML = t.appTitle;
-            t_totalPaymentLabel.innerText = t.totalPaymentLabel;
-            t_tabTextEntry.innerText = t.tabNewEntry;
-            t_tabTextHistory.innerText = t.tabHistory;
-            t_formTitleText.innerText = editingId ? t.formTitleEdit : t.formTitleAdd;
-            t_sourceLabel.innerHTML = t.sourceLabel;
-            t_amountLabel.innerHTML = t.amountLabel;
-            t_dateLabel.innerHTML = t.dateLabel;
-            t_notesLabel.innerHTML = t.notesLabel;
-            t_cancelEditBtn.innerText = t.cancelBtn;
-            t_submitBtnText.innerText = editingId ? t.submitBtnUpdate : t.submitBtnSave;
-            t_listTitle.innerHTML = `<i class="fas fa-list-ul text-cyan-primary"></i> ${t.listTitle}`;
-            t_loadingMsg.innerText = t.loadingMsg;
-            t_sourceInput.placeholder = t.sourcePlaceholder;
-            t_notesInput.placeholder = t.notesPlaceholder;
+            document.getElementById('appSubtitle').innerText = t.appSubtitle;
+            document.getElementById('appTitle').innerHTML = t.appTitle;
+            document.getElementById('totalPaymentLabel').innerText = t.totalPaymentLabel;
+            document.getElementById('tabTextEntry').innerText = t.tabNewEntry;
+            document.getElementById('tabTextHistory').innerText = t.tabHistory;
+            document.getElementById('formTitleText').innerText = editingId ? t.formTitleEdit : t.formTitleAdd;
+            document.getElementById('sourceLabel').innerHTML = t.sourceLabel;
+            document.getElementById('amountLabel').innerHTML = t.amountLabel;
+            document.getElementById('dateLabel').innerHTML = t.dateLabel;
+            document.getElementById('notesLabel').innerHTML = t.notesLabel;
+            document.getElementById('cancelEditBtn').innerText = t.cancelBtn;
+            document.getElementById('submitBtnText').innerText = editingId ? t.submitBtnUpdate : t.submitBtnSave;
+            document.getElementById('listTitle').innerHTML = `<i class="fas fa-list-ul text-cyan-primary"></i> ${t.listTitle}`;
+            document.getElementById('loadingMsg').innerText = t.loadingMsg;
+            document.getElementById('source').placeholder = t.sourcePlaceholder;
+            document.getElementById('notes').placeholder = t.notesPlaceholder;
             
-            langToggleText.innerText = t.langText;
+            document.getElementById('langToggleText').innerText = t.langText;
             document.documentElement.lang = currentLang;
 
             updateStatusUI(isAppOnline);
-            if(payments.length > 0) applySearch(); 
+            applySearch(forceAnimate, false); 
         };
 
         window.toggleLanguage = () => {
             currentLang = currentLang === 'bn' ? 'en' : 'bn';
             localStorage.setItem('appLang', currentLang);
-            applyLanguage();
+            
+            currentDisplayedTotal = 0; // Force trigger animation from 0 when language changes
+            applyLanguage(true);
+            
+            const t = translations[currentLang];
+            showToast(t.langChangeMsg, 'lang');
         };
 
         // ==========================================
-        // View Navigation
+        // View Navigation with Live Refresh Animation
         // ==========================================
         window.switchTab = (tab) => {
+            const viewEntry = document.getElementById('viewEntry');
+            const viewHistory = document.getElementById('viewHistory');
+            const navIconEntry = document.getElementById('navIconEntry');
+            const navIconHistory = document.getElementById('navIconHistory');
+            const tabTextEntry = document.getElementById('tabTextEntry');
+            const tabTextHistory = document.getElementById('tabTextHistory');
+
             if (tab === 'entry') {
                 viewEntry.classList.remove('hidden');
                 viewHistory.classList.add('hidden');
                 viewHistory.classList.remove('flex');
 
+                // Re-trigger the soft bouncy animation for the Entry Box
+                viewEntry.classList.remove('animate-entry-box');
+                void viewEntry.offsetWidth; // Force Reflow to restart animation
+                viewEntry.classList.add('animate-entry-box');
+
                 navIconEntry.classList.add('text-cyan-primary');
                 navIconEntry.classList.remove('text-slate-500');
-                t_tabTextEntry.classList.add('text-cyan-primary');
-                t_tabTextEntry.classList.remove('text-slate-500');
+                tabTextEntry.classList.add('text-cyan-primary');
+                tabTextEntry.classList.remove('text-slate-500');
 
                 navIconHistory.classList.remove('text-cyan-primary');
                 navIconHistory.classList.add('text-slate-500');
-                t_tabTextHistory.classList.remove('text-cyan-primary');
-                t_tabTextHistory.classList.add('text-slate-500');
+                tabTextHistory.classList.remove('text-cyan-primary');
+                tabTextHistory.classList.add('text-slate-500');
                 
             } else {
                 viewEntry.classList.add('hidden');
@@ -570,24 +792,30 @@
 
                 navIconHistory.classList.add('text-cyan-primary');
                 navIconHistory.classList.remove('text-slate-500');
-                t_tabTextHistory.classList.add('text-cyan-primary');
-                t_tabTextHistory.classList.remove('text-slate-500');
+                tabTextHistory.classList.add('text-cyan-primary');
+                tabTextHistory.classList.remove('text-slate-500');
 
                 navIconEntry.classList.remove('text-cyan-primary');
                 navIconEntry.classList.add('text-slate-500');
-                t_tabTextEntry.classList.remove('text-cyan-primary');
-                t_tabTextEntry.classList.add('text-slate-500');
+                tabTextEntry.classList.remove('text-cyan-primary');
+                tabTextEntry.classList.add('text-slate-500');
             }
+            
+            // ALWAYS trigger live amount animation from 0 on tab change 
+            let total = 0;
+            payments.forEach(p => total += parseFloat(p.amount || 0));
+            animateValue(document.getElementById('totalAmount'), 0, total, 900); // 900ms smooth roll
+            currentDisplayedTotal = total;
         };
 
         window.cancelEdit = () => {
             editingId = null;
-            form.reset();
-            dateInput.valueAsDate = new Date();
-            t_formTitleText.innerText = translations[currentLang].formTitleAdd;
-            formIcon.className = 'fas fa-plus text-xs';
-            t_submitBtnText.innerText = translations[currentLang].submitBtnSave;
-            t_cancelEditBtn.classList.add('hidden');
+            document.getElementById('paymentForm').reset();
+            document.getElementById('date').valueAsDate = new Date();
+            document.getElementById('formTitleText').innerText = translations[currentLang].formTitleAdd;
+            document.getElementById('formIcon').className = 'fas fa-plus text-xs';
+            document.getElementById('submitBtnText').innerText = translations[currentLang].submitBtnSave;
+            document.getElementById('cancelEditBtn').classList.add('hidden');
         };
 
         window.editPayment = (id) => {
@@ -600,10 +828,10 @@
             document.getElementById('notes').value = payment.notes || '';
             
             editingId = id;
-            t_formTitleText.innerText = translations[currentLang].formTitleEdit;
-            formIcon.className = 'fas fa-pen text-xs';
-            t_submitBtnText.innerText = translations[currentLang].submitBtnUpdate;
-            t_cancelEditBtn.classList.remove('hidden');
+            document.getElementById('formTitleText').innerText = translations[currentLang].formTitleEdit;
+            document.getElementById('formIcon').className = 'fas fa-pen text-xs';
+            document.getElementById('submitBtnText').innerText = translations[currentLang].submitBtnUpdate;
+            document.getElementById('cancelEditBtn').classList.remove('hidden');
             
             switchTab('entry');
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -612,16 +840,17 @@
         window.confirmDelete = (id) => {
             const t = translations[currentLang];
             const buttonsHtml = `
-                <button onclick="closeModal()" class="click-effect bg-dark-bg border border-dark-border text-slate-300 px-6 py-2.5 rounded-xl font-bold flex-1 text-sm">${t.modalCancel}</button>
-                <button onclick="executeDelete('${id}')" class="click-effect bg-red-500/20 border border-red-500/50 text-red-400 px-6 py-2.5 rounded-xl font-bold flex-1 text-sm">${t.modalConfirmDel}</button>
+                <button onclick="closeModal()" class="click-effect bg-dark-bg border border-dark-border text-slate-300 px-5 py-3 rounded-xl font-bold flex-1 text-sm">${t.modalCancel}</button>
+                <button onclick="executeDelete('${id}')" class="click-effect bg-red-500/20 border border-red-500/50 text-red-400 px-5 py-3 rounded-xl font-bold flex-1 text-sm">${t.modalConfirmDel}</button>
             `;
-            window.showMessage(t.warnTitle, t.warnDelMsg, buttonsHtml);
+            window.showMessage(t.warnTitle, t.warnDelMsg, buttonsHtml, 'fa-exclamation-triangle', 'text-amber-400');
         };
 
         window.executeDelete = async (id) => {
             closeModal();
-            loadingState.classList.remove('hidden');
-            listContainer.classList.add('hidden');
+            const t = translations[currentLang];
+            document.getElementById('loadingState').classList.remove('hidden');
+            document.getElementById('listContainer').classList.add('hidden');
 
             try {
                 const response = await fetch(scriptUrl, { method: 'POST', body: JSON.stringify({ action: 'delete', id: id }) });
@@ -629,48 +858,251 @@
                 if (result.status === "success") {
                     payments = payments.filter(p => p.id.toString() !== id.toString());
                     saveToLocal(payments);
+                    showToast(t.successDeleteMsg, 'delete');
                 }
             } catch (error) {
                 // Silent catch, offline fallback
                 payments = payments.filter(p => p.id.toString() !== id.toString());
                 saveToLocal(payments);
                 updateStatusUI(false);
+                showToast(t.successDeleteMsg, 'delete');
             } finally {
-                applySearch();
+                applySearch(true, false); 
             }
         };
 
-        window.applySearch = () => {
-            const searchVal = searchDateInput.value;
+        window.applySearch = (forceAnimate = false, showToastMsg = false) => {
+            const searchVal = document.getElementById('searchDate').value;
             const t = translations[currentLang];
+            const clearSearchBtn = document.getElementById('clearSearchBtn');
+            const emptyStateMsg = document.getElementById('emptyStateMsg');
             
             if (searchVal) {
-                filteredPayments = payments.filter(p => p.date === searchVal);
+                // Normalize dates to ensure YYYY-MM-DD matches seamlessly
+                filteredPayments = payments.filter(p => normalizeDate(p.date) === searchVal);
                 clearSearchBtn.classList.remove('hidden');
-                t_emptyStateMsg.innerText = t.emptyStateDateMsg;
+                emptyStateMsg.innerText = t.emptyStateDateMsg;
+                
+                // Show dynamic search result toast
+                if (showToastMsg) {
+                    if (filteredPayments.length > 0) {
+                        const countStr = formatLocaleDigit(filteredPayments.length);
+                        showToast(`${countStr} ${t.searchFoundMsg}`, 'info');
+                    } else {
+                        showToast(t.searchNotFoundMsg, 'warning');
+                    }
+                }
             } else {
                 filteredPayments = [...payments];
                 clearSearchBtn.classList.add('hidden');
-                t_emptyStateMsg.innerText = t.emptyStateMsg;
+                emptyStateMsg.innerText = t.emptyStateMsg;
             }
-            renderPayments(filteredPayments);
+            renderPayments(filteredPayments, forceAnimate);
         };
 
         window.clearSearch = () => {
-            searchDateInput.value = '';
-            applySearch();
+            document.getElementById('searchDate').value = '';
+            applySearch(false, false);
         };
+
+        // ==========================================
+        // Animated Expandable Search Logic
+        // ==========================================
+        let isSearchOpen = false;
+        window.toggleSearch = () => {
+            const container = document.getElementById('searchContainer');
+            const content = document.getElementById('searchContent');
+            const icon = document.getElementById('searchToggleIcon');
+            const btnWrapper = document.getElementById('searchBtnWrapper');
+            
+            isSearchOpen = !isSearchOpen;
+            
+            if (isSearchOpen) {
+                // Open State
+                container.style.maxWidth = '220px';
+                content.classList.remove('opacity-0', '-translate-x-3', 'pointer-events-none');
+                content.classList.add('opacity-100', 'translate-x-0', 'pointer-events-auto');
+                
+                // Change Icon to Red Cross
+                icon.classList.remove('fa-search');
+                icon.classList.add('fa-times');
+                btnWrapper.classList.remove('text-cyan-primary');
+                btnWrapper.classList.add('text-red-500');
+                
+                setTimeout(() => document.getElementById('searchDate').focus(), 300);
+            } else {
+                // Close State
+                container.style.maxWidth = '44px';
+                content.classList.add('opacity-0', '-translate-x-3', 'pointer-events-none');
+                content.classList.remove('opacity-100', 'translate-x-0', 'pointer-events-auto');
+                
+                // Change Icon back to Search
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-search');
+                btnWrapper.classList.remove('text-red-500');
+                btnWrapper.classList.add('text-cyan-primary');
+                
+                // Reset search results if closed
+                if(document.getElementById('searchDate').value !== '') {
+                    window.clearSearch();
+                }
+            }
+        };
+
+        // ==========================================
+        // ANDROID 16 STYLE SWIPE TO DELETE LOGIC
+        // ==========================================
+        const setupSwipeToDelete = () => {
+            const listContainer = document.getElementById('listContainer');
+            if(listContainer.dataset.swipeInitialized) return; 
+            listContainer.dataset.swipeInitialized = 'true';
+
+            let startX = 0;
+            let startY = 0;
+            let currentX = 0;
+            let draggingItem = null;
+            let isDragging = false;
+            let isSwiping = null; 
+            let adjacentItems = { prev: null, next: null };
+
+            const getClientX = (e) => e.touches ? e.touches[0].clientX : e.clientX;
+            const getClientY = (e) => e.touches ? e.touches[0].clientY : e.clientY;
+
+            const onDragStart = (e) => {
+                const item = e.target.closest('.swipe-item');
+                if (!item || e.target.closest('button') || e.target.closest('input')) return; 
+                
+                draggingItem = item;
+                startX = getClientX(e);
+                startY = getClientY(e);
+                currentX = 0;
+                isDragging = true;
+                isSwiping = null;
+                
+                draggingItem.style.transition = 'none'; 
+                
+                const li = draggingItem.closest('li');
+                adjacentItems.prev = li.previousElementSibling ? li.previousElementSibling.querySelector('.swipe-item') : null;
+                adjacentItems.next = li.nextElementSibling ? li.nextElementSibling.querySelector('.swipe-item') : null;
+                
+                if (adjacentItems.prev) adjacentItems.prev.style.transition = 'none';
+                if (adjacentItems.next) adjacentItems.next.style.transition = 'none';
+            };
+
+            const onDragMove = (e) => {
+                if (!isDragging || !draggingItem) return;
+                
+                const x = getClientX(e);
+                const y = getClientY(e);
+                const deltaX = x - startX;
+                const deltaY = y - startY;
+
+                if (isSwiping === null) {
+                    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 5) {
+                        isSwiping = true; 
+                    } else if (Math.abs(deltaY) > 5) {
+                        isSwiping = false; 
+                    }
+                }
+
+                if (isSwiping === true && deltaX < 0) {
+                    if(e.cancelable) e.preventDefault(); 
+                    
+                    currentX = deltaX * 0.7; 
+                    draggingItem.style.transform = `translateX(${currentX}px)`;
+                    
+                    const pull = Math.max(currentX * 0.15, -12);
+                    const scale = Math.max(1 + (currentX * 0.0004), 0.97);
+                    
+                    if (adjacentItems.prev) {
+                        adjacentItems.prev.style.transform = `translateX(${pull * 0.5}px) scale(${scale})`;
+                    }
+                    if (adjacentItems.next) {
+                        adjacentItems.next.style.transform = `translateX(${pull * 0.5}px) scale(${scale})`;
+                    }
+                    
+                    const bgIcon = draggingItem.parentElement.querySelector('.bg-delete-icon');
+                    if (bgIcon) {
+                        if (currentX < -80) { 
+                            bgIcon.style.transform = 'scale(1.2)';
+                            bgIcon.classList.add('text-red-500');
+                            bgIcon.classList.remove('text-red-400');
+                        } else {
+                            bgIcon.style.transform = 'scale(1)';
+                            bgIcon.classList.add('text-red-400');
+                            bgIcon.classList.remove('text-red-500');
+                        }
+                    }
+                }
+            };
+
+            const onDragEnd = () => {
+                if (!isDragging || !draggingItem) return;
+                isDragging = false;
+                
+                const springTransition = 'transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                
+                draggingItem.style.transition = springTransition;
+                if (adjacentItems.prev) {
+                    adjacentItems.prev.style.transition = springTransition;
+                    adjacentItems.prev.style.transform = 'translateX(0) scale(1)';
+                }
+                if (adjacentItems.next) {
+                    adjacentItems.next.style.transition = springTransition;
+                    adjacentItems.next.style.transform = 'translateX(0) scale(1)';
+                }
+                
+                const bgIcon = draggingItem.parentElement.querySelector('.bg-delete-icon');
+                if (bgIcon) {
+                    bgIcon.style.transform = 'scale(1)';
+                    bgIcon.classList.add('text-red-400');
+                    bgIcon.classList.remove('text-red-500');
+                }
+
+                if (currentX < -80) {
+                    const id = draggingItem.dataset.id;
+                    draggingItem.style.transform = 'translateX(0)'; 
+                    confirmDelete(id);
+                } else {
+                    draggingItem.style.transform = 'translateX(0)'; 
+                }
+                
+                draggingItem = null;
+                adjacentItems = { prev: null, next: null };
+            };
+
+            listContainer.addEventListener('touchstart', onDragStart, { passive: true });
+            listContainer.addEventListener('touchmove', onDragMove, { passive: false });
+            listContainer.addEventListener('touchend', onDragEnd);
+            
+            listContainer.addEventListener('mousedown', onDragStart);
+            document.addEventListener('mousemove', onDragMove, { passive: false });
+            document.addEventListener('mouseup', onDragEnd);
+        };
+
 
         // ==========================================
         // Dark Theme Professional List Render
         // ==========================================
-        const renderPayments = (dataToRender = payments) => {
+        const renderPayments = (dataToRender = payments, forceAnimate = false) => {
             const t = translations[currentLang];
-            loadingState.classList.add('hidden');
+            document.getElementById('loadingState').classList.add('hidden');
+            const totalAmountEl = document.getElementById('totalAmount');
+            const recordCount = document.getElementById('recordCount');
+            const emptyState = document.getElementById('emptyState');
+            const listContainer = document.getElementById('listContainer');
             
             let total = 0;
             payments.forEach(p => total += parseFloat(p.amount || 0));
-            totalAmountEl.innerText = formatLocaleDigit(total);
+            
+            // Trigger Live Counter Animation when changed or explicitly forced
+            if (currentDisplayedTotal !== total || forceAnimate) {
+                animateValue(totalAmountEl, 0, total, 1000); 
+                currentDisplayedTotal = total;
+            } else {
+                totalAmountEl.innerText = formatLocaleDigit(total);
+            }
+            
             recordCount.innerText = formatLocaleDigit(filteredPayments.length);
 
             if (dataToRender.length === 0) {
@@ -685,48 +1117,65 @@
 
             dataToRender.forEach((payment, index) => {
                 const li = document.createElement('li');
-                li.className = `bg-dark-card border border-dark-border p-3.5 sm:p-4 rounded-2xl flex items-center w-full group animate-item mb-3`;
+                // Added relative wrapper for the swipe logic
+                li.className = `relative w-full group animate-item mb-3`;
                 li.style.animationDelay = `${index * 0.05}s`;
                 
                 const firstLetter = payment.source ? payment.source.charAt(0).toUpperCase() : 'P';
                 
                 li.innerHTML = `
-                    <div class="flex items-center gap-3 min-w-0 shrink max-w-[45%] sm:max-w-[50%]">
-                        <div class="w-10 h-10 rounded-xl bg-dark-bg border border-dark-border text-cyan-primary flex items-center justify-center shrink-0 font-black text-lg shadow-sm">
-                            ${firstLetter}
+                    <!-- Swipe Delete Background (Revealed on swipe) -->
+                    <div class="absolute inset-0 bg-gradient-to-r from-dark-bg via-red-500/10 to-red-500/20 border border-red-500/30 rounded-2xl flex items-center justify-end px-6 z-0 overflow-hidden">
+                        <div class="bg-delete-icon transition-transform duration-300 flex flex-col items-center justify-center text-red-400">
+                            <i class="fas fa-trash-alt text-xl"></i>
+                            <span class="text-[9px] font-bold mt-1 uppercase tracking-widest">${t.deleteBtnTitle}</span>
                         </div>
-                        <div class="flex-1 min-w-0">
-                            <h3 class="font-bold text-white text-[15px] truncate leading-tight">${payment.source}</h3>
-                            <div class="flex items-center gap-1.5 text-xs font-medium text-slate-400 truncate mt-0.5">
-                                <span class="shrink-0">${formatLocaleDate(payment.date)}</span>
-                                ${payment.notes ? `<span class="text-[8px] text-slate-600 shrink-0">•</span><span class="truncate italic">${payment.notes}</span>` : ''}
+                    </div>
+                    
+                    <!-- Foreground Swipeable Card -->
+                    <div class="swipe-item relative z-10 bg-dark-card border border-dark-border p-3.5 sm:p-4 rounded-2xl flex items-center w-full gap-2 transition-transform cursor-grab active:cursor-grabbing" data-id="${payment.id}">
+                        
+                        <div class="flex items-center gap-3 min-w-0 shrink max-w-[45%] sm:max-w-[50%] pointer-events-none">
+                            <div class="w-10 h-10 rounded-xl bg-dark-bg border border-dark-border text-cyan-primary flex items-center justify-center shrink-0 font-black text-lg shadow-sm">
+                                ${firstLetter}
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h3 class="font-bold text-white text-[15px] truncate leading-tight">${payment.source}</h3>
+                                <div class="flex items-center gap-1.5 text-xs font-medium text-slate-400 truncate mt-0.5">
+                                    <span class="shrink-0">${formatLocaleDate(payment.date)}</span>
+                                    ${payment.notes ? `<span class="text-[8px] text-slate-600 shrink-0">•</span><span class="truncate italic">${payment.notes}</span>` : ''}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    
-                    <div class="mx-auto px-1 shrink-0">
-                        <span class="font-black text-cyan-primary text-base sm:text-lg">৳ ${formatLocaleDigit(parseFloat(payment.amount || 0))}</span>
-                    </div>
-                    
-                    <div class="flex items-center gap-1.5 shrink-0">
-                        <button onclick="editPayment('${payment.id}')" class="click-effect w-8 h-8 rounded-lg bg-dark-bg border border-dark-border text-slate-400 hover:text-amber-400 flex items-center justify-center transition-colors shadow-sm" title="${t.editBtnTitle}">
-                            <i class="fas fa-pen text-xs"></i>
-                        </button>
-                        <button onclick="confirmDelete('${payment.id}')" class="click-effect w-8 h-8 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/30 flex items-center justify-center transition-colors shadow-sm" title="${t.deleteBtnTitle}">
-                            <i class="fas fa-trash text-xs"></i>
-                        </button>
+                        
+                        <div class="mx-auto px-1 shrink-0 pointer-events-none">
+                            <span class="font-black text-cyan-primary text-base sm:text-lg premium-number tracking-tight">৳ ${formatLocaleDigit(parseFloat(payment.amount || 0))}</span>
+                        </div>
+                        
+                        <div class="flex items-center gap-1.5 shrink-0 pl-1 z-20">
+                            <button onclick="editPayment('${payment.id}')" class="click-effect w-8 h-8 rounded-lg bg-dark-bg border border-dark-border text-slate-400 hover:text-amber-400 flex items-center justify-center transition-colors shadow-sm" title="${t.editBtnTitle}">
+                                <i class="fas fa-pen text-xs"></i>
+                            </button>
+                            <!-- Kept regular delete button for desktop users, though swipe also works -->
+                            <button onclick="confirmDelete('${payment.id}')" class="click-effect w-8 h-8 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/30 flex items-center justify-center transition-colors shadow-sm" title="${t.deleteBtnTitle}">
+                                <i class="fas fa-trash text-xs"></i>
+                            </button>
+                        </div>
                     </div>
                 `;
                 listContainer.appendChild(li);
             });
+
+            // Initialize swipe logic after rendering list
+            setupSwipeToDelete();
         };
 
         const loadData = async () => {
             const t = translations[currentLang];
-            loadingState.classList.remove('hidden');
-            listContainer.classList.add('hidden');
-            emptyState.classList.add('hidden');
-            t_loadingMsg.innerText = t.connectingText;
+            document.getElementById('loadingState').classList.remove('hidden');
+            document.getElementById('listContainer').classList.add('hidden');
+            document.getElementById('emptyState').classList.add('hidden');
+            document.getElementById('loadingMsg').innerText = t.connectingText;
             
             try {
                 const controller = new AbortController();
@@ -747,7 +1196,7 @@
                 payments = loadFromLocal() || [];
                 updateStatusUI(false);
             } finally {
-                applySearch(); 
+                applySearch(true, false); 
             }
         };
 
@@ -772,8 +1221,9 @@
 
             const newPayment = { action: actionType, id: recordId, source, amount: parseFloat(amount), date, notes };
 
+            const submitBtn = document.getElementById('submitBtn');
             submitBtn.disabled = true;
-            t_submitBtnText.innerText = t.submitBtnLoading;
+            document.getElementById('submitBtnText').innerText = t.submitBtnLoading;
             document.querySelector('#submitBtn i').className = 'fas fa-spinner fa-spin';
             submitBtn.classList.add('opacity-80', 'cursor-not-allowed');
 
@@ -795,6 +1245,8 @@
                     }
                     saveToLocal(payments);
                     updateStatusUI(true);
+                    
+                    showToast(actionType === 'edit' ? t.successUpdateMsg : t.successSaveMsg, actionType === 'edit' ? 'update' : 'success');
                     switchTab('history'); 
                 } 
             } catch (error) {
@@ -806,9 +1258,11 @@
 
                 saveToLocal(payments);
                 updateStatusUI(false);
+                
+                showToast(actionType === 'edit' ? t.successUpdateMsg : t.successSaveMsg, actionType === 'edit' ? 'update' : 'success');
                 switchTab('history');
             } finally {
-                applySearch();
+                applySearch(false, false);
                 cancelEdit();
                 submitBtn.disabled = false;
                 submitBtn.classList.remove('opacity-80', 'cursor-not-allowed');
@@ -816,8 +1270,6 @@
             }
         };
 
-        form.addEventListener('submit', addPayment);
-        
         window.exportData = async (format) => {
             const t = translations[currentLang];
             
@@ -826,10 +1278,8 @@
                 return;
             }
             
-            loadingState.classList.remove('hidden');
-            t_loadingMsg.innerText = "Exporting...";
+            document.getElementById('loadingState').classList.remove('hidden');
             
-            // Export is done in light theme for readability of printed docs
             const printDiv = document.getElementById('printArea');
             let totalAmount = 0;
             let rowsHtml = '';
@@ -846,7 +1296,7 @@
                 `;
             });
 
-            const searchFilterText = searchDateInput.value ? `${t.reportDateLabel} ${formatLocaleDate(searchDateInput.value)}` : t.reportAll;
+            const searchFilterText = document.getElementById('searchDate').value ? `${t.reportDateLabel} ${formatLocaleDate(document.getElementById('searchDate').value)}` : t.reportAll;
             const totalStr = formatLocaleDigit(totalAmount);
             const countStr = formatLocaleDigit(filteredPayments.length);
 
@@ -893,17 +1343,21 @@
                     pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
                     pdf.save(`Payment_Report_${Date.now()}.pdf`);
                 }
+                showToast(format === 'png' ? t.successExportPngMsg : t.successExportPdfMsg, format);
             } catch(e) {
                 console.error("Crash Log: Export Failed", e);
                 window.showMessage(t.warnTitle, t.exportErr);
             } finally {
                 printDiv.innerHTML = ''; 
-                loadingState.classList.add('hidden');
-                t_loadingMsg.innerText = t.loadingMsg; 
+                document.getElementById('loadingState').classList.add('hidden');
+                document.getElementById('loadingMsg').innerText = t.loadingMsg; 
             }
         };
 
+        // Initialize App
         document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('date').valueAsDate = new Date();
+            document.getElementById('paymentForm').addEventListener('submit', addPayment);
             applyLanguage();
             loadData();
         });
