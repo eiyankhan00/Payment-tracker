@@ -1,1366 +1,1762 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Payment Tracker</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <!-- html2canvas and jsPDF for Exporting -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Payment Tracker</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- html2canvas for Image Download -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <!-- html2pdf for PDF Download -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
     
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        dark: {
-                            bg: '#0f172a', // slate-900
-                            card: '#1e293b', // slate-800
-                            border: '#334155', // slate-700
-                            hover: '#334155'
-                        },
-                        cyan: {
-                            primary: '#0ea5e9', // sky-500
-                            hover: '#38bdf8', // sky-400
-                            glow: 'rgba(14, 165, 233, 0.4)'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    :root {
+      --primary: #0ea5e9;
+      --bg-color: #0f172a;
+      --surface: #1e293b;
+      --surface-border: #334155;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
 
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Outfit:wght@400;500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700;800&display=swap');
-        
-        body {
-            font-family: 'Outfit', 'Hind Siliguri', sans-serif;
-            background-color: #0f172a;
-            color: #f8fafc;
-            -webkit-tap-highlight-color: transparent;
-            overflow-x: hidden;
-        }
+    html, body {
+      height: 100%;
+      height: 100dvh; 
+      color-scheme: dark;
+    }
 
-        /* Hidden scrollbar */
-        ::-webkit-scrollbar { width: 4px; background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
-        
-        /* ==================================================== */
-        /* M3 EXPRESSIVE BOUNCY & MAGNETIC EFFECTS (Android 16) */
-        /* ==================================================== */
-        
-        /* General Click Effect (Buttons, Icons) */
-        .click-effect {
-            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
-            will-change: transform;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .click-effect:active {
-            transform: scale(0.85); /* Deep press for magnetic feel */
-            transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      -webkit-tap-highlight-color: transparent;
+      overscroll-behavior-x: hidden;
+      overflow-x: hidden;
+    }
 
-        /* Main Submit Button Bouncy Effect */
-        #submitBtn {
-            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, background-color 0.3s ease;
-            will-change: transform;
-        }
-        #submitBtn:active {
-            transform: scale(0.92) translateY(4px);
-            box-shadow: 0 0 5px rgba(14,165,233,0.5);
-            transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+    ::-webkit-scrollbar { display: none; }
+    
+    .tab-content { display: none; animation: fadeIn 0.3s ease-in-out; }
+    .tab-content.active { display: block; }
 
-        /* Bottom Nav Magnetic Bouncy Effect */
-        .bottom-nav-btn {
-            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
-            will-change: transform;
-        }
-        .bottom-nav-btn:active {
-            transform: scale(0.82) translateY(6px);
-            opacity: 0.8;
-            transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-        /* Form Inputs Expressive Pop-out */
-        .dark-input {
-            background-color: #0f172a;
-            border: 1px solid #334155;
-            color: #f8fafc;
-            border-radius: 1rem;
-            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            will-change: transform, box-shadow, border-color;
-        }
-        .dark-input:focus {
-            border-color: #0ea5e9;
-            box-shadow: 0 10px 25px -5px rgba(14, 165, 233, 0.25);
-            outline: none;
-            transform: scale(1.03) translateY(-2px); /* M3 Pop-out effect */
-            background-color: #1e293b;
-        }
-        
-        .dark-card {
-            background-color: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 1.5rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
-        }
+    .input-field {
+      width: 100%;
+      padding: 12px 16px;
+      background-color: #0b1120;
+      border: 1.5px solid var(--surface-border);
+      border-radius: 12px;
+      font-size: 15px;
+      color: var(--text-main);
+      outline: none;
+      transition: all 0.2s;
+    }
+    .input-field::placeholder { color: #64748b; }
+    .input-field:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
+    }
+    
+    .calc-input { text-align: center; font-weight: 600; }
 
-        /* List Item Bouncy Entry Animation */
-        @keyframes slideInRightSpring {
-            0% { opacity: 0; transform: translateX(40px) scale(0.9); }
-            100% { opacity: 1; transform: translateX(0) scale(1); }
-        }
-        .animate-item {
-            animation: slideInRightSpring 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-            will-change: transform, opacity;
-        }
+    .nav-item { color: var(--text-muted); transition: all 0.2s cubic-bezier(0.34, 1.15, 0.64, 1); }
+    .nav-item.active { color: var(--primary); transform: translateY(-4px) scale(1.05); }
+    .nav-item.active .nav-icon-bg { background-color: rgba(14, 165, 233, 0.15); border-radius: 12px; padding: 4px 16px; }
+    
+    .loader {
+      border: 3px solid #334155; border-radius: 50%; border-top: 3px solid var(--primary);
+      width: 20px; height: 20px; animation: spin 1s linear infinite;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        ::-webkit-calendar-picker-indicator {
-            filter: invert(1);
-            opacity: 0.6;
-            cursor: pointer;
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        ::-webkit-calendar-picker-indicator:active {
-            transform: scale(0.7);
-        }
+    /* CSS transition for details animation */
+    .details-panel {
+      transition: max-height 0.4s cubic-bezier(0.34, 1.15, 0.64, 1), opacity 0.3s ease-in-out, margin-top 0.3s ease-in-out;
+    }
 
-        /* Modal Bouncy Entry Animation */
-        .modal-bounce-in {
-            animation: modalSpring 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-        }
-        @keyframes modalSpring {
-            0% { opacity: 0; transform: scale(0.7) translateY(30px); }
-            100% { opacity: 1; transform: scale(1) translateY(0); }
-        }
+    /* Spring Animation for newly loaded cards */
+    @keyframes springFadeIn {
+      0% { opacity: 0; transform: translateY(40px) scale(0.9); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .new-record-anim {
+      animation: springFadeIn 0.5s cubic-bezier(0.34, 1.15, 0.64, 1) both;
+    }
 
-        /* ==================================================== */
-        /* PREMIUM LIVE AMOUNT ANIMATION (iOS/Android 16 Style) */
-        /* ==================================================== */
-        
-        .premium-number {
-            font-family: 'Plus Jakarta Sans', sans-serif !important;
-            letter-spacing: -0.02em;
-        }
+    .record-wrapper {
+      transform-origin: top center;
+    }
 
-        @keyframes siri-gradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        
-        .live-amount-text {
-            background: linear-gradient(
-                -45deg,
-                #ffffff 0%,
-                #e0f2fe 25%,
-                #38bdf8 50%,
-                #0284c7 75%,
-                #ffffff 100%
-            );
-            background-size: 250% 250%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            color: transparent;
-            animation: siri-gradient 4s ease infinite;
-        }
+    /* FIX: Allows horizontal swipe without browser intercepting it */
+    .record-card-inner {
+      touch-action: pan-y;
+      will-change: transform;
+    }
 
-        @keyframes live-breathe {
-            0%, 100% { filter: drop-shadow(0 0 12px rgba(14, 165, 233, 0.3)); transform: scale(1); }
-            50% { filter: drop-shadow(0 0 25px rgba(56, 189, 248, 0.7)); transform: scale(1.02); }
-        }
-        
-        .live-amount-wrapper {
-            display: inline-flex;
-            align-items: baseline;
-            gap: 0.375rem;
-            padding: 0.25rem 0.5rem;
-            margin-left: -0.5rem;
-            animation: live-breathe 4s ease-in-out infinite;
-            will-change: transform, filter;
-        }
+    /* Recent Apps style smooth collapse & delete */
+    .record-wrapper.removing {
+      transition: all 0.4s cubic-bezier(0.34, 1.15, 0.64, 1);
+      transform: scale(0.5) translateX(-100vw) !important;
+      opacity: 0;
+      max-height: 0 !important;
+      margin-bottom: 0 !important;
+      border-width: 0 !important;
+      overflow: hidden !important;
+    }
 
-        /* SUPER SMOOTH Dynamic Island Toast Notifications Animation */
-        @keyframes islandEnter {
-            0% { opacity: 0; transform: translateY(-40px) scale(0.85); filter: blur(4px); }
-            100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0px); }
-        }
-        @keyframes islandLeave {
-            0% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0px); }
-            100% { opacity: 0; transform: translateY(-30px) scale(0.9); filter: blur(4px); }
-        }
-        .toast-enter {
-            animation: islandEnter 0.65s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-            will-change: transform, opacity, filter;
-        }
-        .toast-leave {
-            animation: islandLeave 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-            will-change: transform, opacity, filter;
-        }
+    /* Dynamic Island Toast */
+    .toast-wrapper {
+      transition: all 0.5s cubic-bezier(0.34, 1.15, 0.64, 1);
+      max-height: 0;
+      opacity: 0;
+      transform: translateY(-40px) scale(0.5);
+      margin-top: 0;
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      pointer-events: none;
+    }
+    .toast-wrapper.toast-show {
+      max-height: 100px; 
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      margin-top: 14px;
+      pointer-events: auto;
+    }
 
-        /* Entry Box Smooth Animation */
-        @keyframes entryBoxSpring {
-            0% { opacity: 0; transform: scale(0.92) translateY(20px); }
-            100% { opacity: 1; transform: scale(1) translateY(0); }
-        }
-        .animate-entry-box {
-            animation: entryBoxSpring 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-            will-change: transform, opacity;
-        }
+    /* Bouncy Touch Feedback */
+    .ios-bounce {
+      transition: transform 0.3s cubic-bezier(0.34, 1.15, 0.64, 1), opacity 0.3s cubic-bezier(0.34, 1.15, 0.64, 1), background-color 0.2s;
+    }
+    .ios-bounce:active {
+      transform: scale(0.96); 
+      opacity: 0.8;
+      transition: transform 0.05s ease-out, opacity 0.05s ease-out;
+    }
 
-        #printArea {
-            position: absolute;
-            left: -9999px;
-            top: 0;
-            width: 800px;
-            background: white;
-            padding: 40px;
-            color: black;
-        }
-        
-        /* Swipe utilities */
-        .swipe-item {
-            touch-action: pan-y;
-        }
-    </style>
+    /* FAST BOUNCE FOR SAVE BUTTON */
+    .save-bounce {
+      transition: transform 0.4s cubic-bezier(0.34, 1.15, 0.64, 1), background-color 0.2s;
+    }
+    .save-bounce:active {
+      transform: scale(0.94);
+      transition: transform 0.02s ease-out; 
+    }
+
+    /* Premium Search Panel */
+    .search-panel {
+      transition: max-height 0.4s cubic-bezier(0.34, 1.15, 0.64, 1), 
+                  opacity 0.3s ease-in-out, 
+                  margin-bottom 0.4s cubic-bezier(0.34, 1.15, 0.64, 1),
+                  transform 0.4s cubic-bezier(0.34, 1.15, 0.64, 1);
+      transform-origin: top center;
+    }
+    
+    /* Remove arrows from number input */
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+
+    /* Inline Edit Pop Animation */
+    @keyframes inlinePop {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .inline-pop {
+      animation: inlinePop 0.25s cubic-bezier(0.34, 1.15, 0.64, 1) forwards;
+    }
+  </style>
 </head>
-<body class="antialiased">
+<body class="antialiased flex flex-col h-[100dvh] overflow-hidden">
 
-    <!-- Toast Notification Container (Dynamic Island Style) -->
-    <div id="toastContainer" class="fixed top-6 left-0 right-0 z-[70] flex flex-col items-center gap-2 px-4 pointer-events-none"></div>
+  <!-- Top App Bar -->
+  <header class="bg-[#1e293b] border-b border-[#334155] pt-10 pb-4 px-5 shadow-md flex justify-between items-center z-10 shrink-0 relative">
+    <div>
+      <div class="flex items-center gap-2 mb-0.5">
+        <h1 class="text-xl font-bold tracking-wide text-white">Payment Tracker</h1>
+        <span id="connIndicator" class="flex h-2.5 w-2.5 relative" title="Checking connection...">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-slate-500 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-slate-400"></span>
+        </span>
+      </div>
+      <p class="text-sky-400 text-xs font-medium" id="syncStatus"><i class="fa-solid fa-arrows-rotate fa-spin"></i> Initializing...</p>
+    </div>
+    
+    <!-- Total Paid Amount Header Widget (Simple) -->
+    <div class="bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-xl flex flex-col items-end justify-center shadow-sm">
+      <span class="text-[9px] font-bold text-emerald-500/70 uppercase tracking-wider leading-none mb-1">Total Paid</span>
+      <span id="headerTotalPaid" class="text-base font-black text-emerald-400 leading-none">৳0</span>
+    </div>
+  </header>
 
-    <!-- Wrapper -->
-    <div class="max-w-lg mx-auto min-h-screen relative pb-24 flex flex-col pt-4 sm:pt-6 px-4 sm:px-5">
+  <!-- Dynamic Island Toast Container (Fixed at top) -->
+  <div id="toast-container" class="fixed top-16 left-0 right-0 z-50 flex flex-col items-center pointer-events-none px-4"></div>
+
+  <!-- Main Scrollable Content -->
+  <main class="flex-1 min-h-0 overflow-y-auto pb-32 overflow-x-hidden relative" id="main-scroll">
+    
+    <!-- ==================== TAB 1: NEW ENTRY ==================== -->
+    <div id="tab-new" class="tab-content active space-y-5 max-w-md mx-auto px-4 pt-5">
+      <form id="paymentForm" class="space-y-5">
         
-        <!-- Top App Bar -->
-        <div class="flex justify-between items-center mb-6 px-1">
-            <div id="statusBadge" class="flex items-center gap-2 bg-dark-card px-4 py-2 rounded-full border border-dark-border shadow-sm">
-                <i id="statusIcon" class="fas fa-sync fa-spin text-[10px] text-cyan-primary"></i>
-                <span id="statusText" class="text-xs font-bold text-slate-300 tracking-wide">কানেক্ট হচ্ছে...</span>
-            </div>
-
-            <button onclick="toggleLanguage()" class="click-effect bg-dark-card hover:bg-dark-hover border border-dark-border text-cyan-primary font-bold py-2 px-5 rounded-full text-xs flex gap-2">
-                <i class="fas fa-language"></i> <span id="langToggleText">EN</span>
+        <div class="bg-[#1e293b] p-5 rounded-2xl shadow-sm border border-[#334155] space-y-4">
+          <h2 class="text-sm font-bold text-white border-b border-[#334155] pb-2 mb-3 flex justify-between items-center">
+            <span><i class="fa-solid fa-file-invoice text-sky-400 mr-1"></i> <span id="formTitleText">Basic Details</span></span>
+            <button type="button" id="topCancelBtn" onclick="window.showCancelModal()" class="hidden text-[10px] font-bold bg-red-500/10 text-red-400 border border-red-500/30 px-2.5 py-1 rounded-md active:bg-red-500/20 ios-bounce">
+              Cancel
             </button>
+          </h2>
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 mb-1.5 ml-1">Date</label>
+            <input type="date" id="dateInput" required class="input-field">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 mb-1.5 ml-1">Customer Name</label>
+            <input type="text" id="userName" placeholder="Enter full name" required class="input-field">
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-slate-400 mb-1.5 ml-1">Method</label>
+              <select id="method" class="input-field appearance-none">
+                <option value="bKash">bKash</option>
+                <option value="Nagad">Nagad</option>
+                <option value="Rocket">Rocket</option>
+                <option value="Binance">Binance</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-400 mb-1.5 ml-1">Account A/C</label>
+              <input type="tel" id="number" placeholder="017XXXXXXX" required class="input-field font-mono text-sm">
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 mb-1.5 ml-1">Main Transaction ID <span class="font-normal opacity-70">(Optional)</span></label>
+            <input type="text" id="trxId" placeholder="Paste TrxID" class="input-field font-mono text-sm uppercase">
+          </div>
         </div>
 
-        <!-- ========================================= -->
-        <!-- PREMIUM DASHBOARD HERO CARD -->
-        <!-- ========================================= -->
-        <div class="dark-card p-6 sm:p-8 relative overflow-hidden mb-6 group shrink-0">
-            <div class="absolute top-0 right-0 w-32 h-32 bg-cyan-primary/10 rounded-full blur-2xl transform translate-x-10 -translate-y-10"></div>
-            <div class="absolute bottom-0 left-0 w-24 h-24 bg-cyan-primary/5 rounded-full blur-xl transform -translate-x-5 translate-y-5"></div>
-            <div class="absolute top-0 left-0 w-1 h-full bg-cyan-primary shadow-[0_0_10px_rgba(14,165,233,0.8)]"></div>
-            
-            <div class="relative z-10 flex flex-col h-full justify-between">
-                <div class="flex justify-between items-start mb-6">
-                    <div class="flex flex-col">
-                        <span class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest mb-1" id="appSubtitle">MD EMON</span>
-                        <h1 id="appTitle" class="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
-                            পেমেন্ট ট্র্যাকার <i class="fas fa-check-circle text-cyan-primary text-sm"></i>
-                        </h1>
-                    </div>
-                    <div class="w-10 h-10 bg-dark-bg rounded-xl flex items-center justify-center border border-dark-border">
-                        <i class="fas fa-wallet text-lg text-cyan-primary"></i>
-                    </div>
-                </div>
-
-                <div>
-                    <p id="totalPaymentLabel" class="text-slate-400 text-xs font-bold mb-1 tracking-widest uppercase">সর্বমোট ব্যালেন্স</p>
-                    
-                    <!-- LIVE AMOUNT WRAPPER -->
-                    <div class="live-amount-wrapper">
-                        <span class="text-xl font-bold text-cyan-primary">৳</span>
-                        <span id="totalAmount" class="text-4xl sm:text-5xl font-extrabold premium-number live-amount-text">০</span>
-                    </div>
-                </div>
+        <!-- 1000x Box -->
+        <div class="bg-[#1e293b] p-5 rounded-2xl border border-[#334155]">
+          <div class="flex justify-between items-center mb-3">
+            <h3 class="font-bold text-sky-400 text-sm"><i class="fa-solid fa-gamepad mr-1"></i> 1000x ID</h3>
+            <span class="text-xs font-bold bg-sky-500/20 text-sky-400 border border-sky-500/30 px-2 py-1 rounded-md" id="sub1000x">৳ 0</span>
+          </div>
+          <div class="grid grid-cols-2 gap-3 mb-3">
+            <div>
+              <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 text-center">Quantity</label>
+              <input type="number" id="qty1000x" placeholder="0" min="0" class="input-field calc-input">
             </div>
+            <div>
+              <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 text-center">Rate (৳)</label>
+              <input type="number" id="rate1000x" placeholder="0.00" min="0" step="0.01" class="input-field calc-input">
+            </div>
+          </div>
+          <div class="mb-3">
+            <input type="text" id="playerId1000x" placeholder="Player ID / Due ID (Optional)" class="input-field text-sm py-2.5 border-dashed border-[#475569] focus:border-solid focus:border-sky-500 text-sky-100 placeholder-slate-500">
+          </div>
+          <!-- Status Changer (Hidden by default, shown only on Edit) -->
+          <div id="statusContainer1000x" class="hidden">
+            <select id="status1000xInput" class="input-field text-sm py-2 bg-[#0b1120] border border-[#334155] font-semibold appearance-none text-sky-100">
+              <option value="Pending">⏱ Pending (Due)</option>
+              <option value="Paid">✓ Paid</option>
+              <option value="Rejected">✕ Rejected</option>
+            </select>
+          </div>
         </div>
 
-        <!-- ========================================= -->
-        <!-- VIEW 1: ENTRY FORM -->
-        <!-- ========================================= -->
-        <div id="viewEntry" class="dark-card p-5 sm:p-7 relative shrink-0 animate-entry-box">
-            
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-lg font-bold text-white flex items-center gap-2.5">
-                    <div class="w-7 h-7 rounded-lg bg-cyan-primary/20 flex items-center justify-center text-cyan-primary">
-                        <i class="fas fa-plus text-xs" id="formIcon"></i>
-                    </div>
-                    <span id="formTitleText">নতুন পেমেন্ট যোগ</span>
-                </h2>
-                <button type="button" id="cancelEditBtn" onclick="cancelEdit()" class="hidden text-xs font-bold text-red-400 bg-red-400/10 border border-red-400/20 hover:bg-red-400/20 px-3 py-1.5 rounded-full click-effect">
-                    বাতিল
-                </button>
+        <!-- 615x Box -->
+        <div class="bg-[#1e293b] p-5 rounded-2xl border border-[#334155]">
+          <div class="flex justify-between items-center mb-3">
+            <h3 class="font-bold text-sky-400 text-sm"><i class="fa-solid fa-gamepad mr-1"></i> 615x ID</h3>
+            <span class="text-xs font-bold bg-sky-500/20 text-sky-400 border border-sky-500/30 px-2 py-1 rounded-md" id="sub615x">৳ 0</span>
+          </div>
+          <div class="grid grid-cols-2 gap-3 mb-3">
+            <div>
+              <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 text-center">Quantity</label>
+              <input type="number" id="qty615x" placeholder="0" min="0" class="input-field calc-input">
             </div>
-
-            <form id="paymentForm" class="space-y-4">
-                
-                <div>
-                    <label id="sourceLabel" class="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">উৎস / নাম <span class="text-red-500">*</span></label>
-                    <input type="text" id="source" required class="dark-input w-full px-4 py-3.5 text-sm" placeholder="যেমন: ইমন, প্রজেক্ট">
-                </div>
-                
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label id="amountLabel" class="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">পরিমাণ (৳) <span class="text-red-500">*</span></label>
-                        <input type="number" id="amount" required min="1" class="dark-input w-full px-4 py-3.5 text-base font-bold text-cyan-primary premium-number" placeholder="0.00">
-                    </div>
-                    <div>
-                        <label id="dateLabel" class="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">তারিখ <span class="text-red-500">*</span></label>
-                        <input type="date" id="date" required class="dark-input w-full px-4 py-3.5 text-sm">
-                    </div>
-                </div>
-
-                <div>
-                    <label id="notesLabel" class="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">বিবরণ (ঐচ্ছিক)</label>
-                    <input type="text" id="notes" class="dark-input w-full px-4 py-3.5 text-sm" placeholder="কীসের টাকা...">
-                </div>
-                
-                <div class="pt-3">
-                    <button type="submit" id="submitBtn" class="w-full bg-cyan-primary text-dark-bg font-black py-3.5 rounded-xl flex items-center justify-center gap-2 text-sm uppercase tracking-wide click-effect">
-                        <i class="fas fa-check-circle"></i> <span id="submitBtnText">সেভ করুন</span>
-                    </button>
-                </div>
-            </form>
+            <div>
+              <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 text-center">Rate (৳)</label>
+              <input type="number" id="rate615x" placeholder="0.00" min="0" step="0.01" class="input-field calc-input">
+            </div>
+          </div>
+          <div class="mb-3">
+            <input type="text" id="playerId615x" placeholder="Player ID / Due ID (Optional)" class="input-field text-sm py-2.5 border-dashed border-[#475569] focus:border-solid focus:border-sky-500 text-sky-100 placeholder-slate-500">
+          </div>
+          <!-- Status Changer (Hidden by default, shown only on Edit) -->
+          <div id="statusContainer615x" class="hidden">
+            <select id="status615xInput" class="input-field text-sm py-2 bg-[#0b1120] border border-[#334155] font-semibold appearance-none text-sky-100">
+              <option value="Pending">⏱ Pending (Due)</option>
+              <option value="Paid">✓ Paid</option>
+              <option value="Rejected">✕ Rejected</option>
+            </select>
+          </div>
         </div>
 
-        <!-- ========================================= -->
-        <!-- VIEW 2: HISTORY LIST -->
-        <!-- ========================================= -->
-        <div id="viewHistory" class="hidden flex-col h-[500px] sm:h-[550px] transition-opacity duration-300">
-            
-            <!-- Modern Search & Export Bar -->
-            <div class="flex gap-2 items-center mb-4 z-20 justify-between">
-                
-                <!-- Animated Expandable Search -->
-                <div id="searchContainer" class="flex items-center bg-dark-card rounded-full border border-dark-border transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] overflow-hidden" style="max-width: 44px; min-width: 44px; height: 44px;">
-                    <button id="searchBtnWrapper" onclick="toggleSearch()" class="w-11 h-11 shrink-0 flex items-center justify-center text-cyan-primary click-effect rounded-full z-10 outline-none transition-colors duration-300">
-                        <i id="searchToggleIcon" class="fas fa-search text-sm transition-transform duration-300"></i>
-                    </button>
-                    
-                    <div id="searchContent" class="flex items-center gap-1.5 pr-4 opacity-0 -translate-x-3 pointer-events-none transition-all duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)] whitespace-nowrap">
-                        <input type="date" id="searchDate" onchange="applySearch(false, true)" class="bg-transparent border-none outline-none text-white text-[13px] font-bold cursor-pointer p-0 w-[105px]" style="color-scheme: dark;">
-                        <button id="clearSearchBtn" onclick="clearSearch()" class="hidden text-slate-500 hover:text-red-400 click-effect ml-1 flex items-center justify-center">
-                            <i class="fas fa-times-circle"></i>
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="flex gap-2 shrink-0">
-                    <button onclick="exportData('pdf')" class="click-effect w-11 h-11 rounded-full bg-dark-card border border-dark-border text-red-400 hover:bg-red-500/10 hover:border-red-500/30 flex items-center justify-center shadow-sm">
-                        <i class="fas fa-file-pdf"></i>
-                    </button>
-                    <button onclick="exportData('png')" class="click-effect w-11 h-11 rounded-full bg-dark-card border border-dark-border text-cyan-primary hover:bg-cyan-primary/10 hover:border-cyan-primary/30 flex items-center justify-center shadow-sm">
-                        <i class="fas fa-image"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- List Area -->
-            <div class="dark-card flex-1 overflow-hidden flex flex-col border border-dark-border">
-                <div class="px-5 py-3.5 border-b border-dark-border flex justify-between items-center bg-dark-card z-10">
-                    <h2 id="listTitle" class="text-xs font-bold text-slate-300 uppercase tracking-widest flex items-center gap-2">
-                        <i class="fas fa-list-ul text-cyan-primary"></i> ট্রানজেকশন সমূহ
-                    </h2>
-                    <span id="recordCount" class="bg-dark-bg text-cyan-primary border border-dark-border text-[10px] font-black px-2.5 py-1 rounded-md premium-number">০</span>
-                </div>
-                
-                <div class="flex-1 overflow-y-auto p-3 relative bg-dark-bg/50" id="paymentsList">
-                    
-                    <div id="loadingState" class="absolute inset-0 flex flex-col items-center justify-center z-10">
-                        <i class="fas fa-circle-notch fa-spin text-2xl text-cyan-primary mb-3"></i>
-                        <p id="loadingMsg" class="font-semibold text-xs text-slate-400 tracking-wide uppercase">লোড হচ্ছে...</p>
-                    </div>
-
-                    <div id="emptyState" class="hidden absolute inset-0 flex flex-col items-center justify-center text-center px-6">
-                        <div class="w-16 h-16 bg-dark-card rounded-full flex items-center justify-center mb-3 border border-dark-border">
-                            <i class="fas fa-file-invoice text-2xl text-slate-600"></i>
-                        </div>
-                        <p id="emptyStateMsg" class="text-base font-bold text-slate-300 mb-1">কোনো ডেটা নেই</p>
-                    </div>
-
-                    <ul id="listContainer" class="hidden pb-2 overflow-x-hidden">
-                        <!-- Items injected here -->
-                    </ul>
-                </div>
-            </div>
+        <div class="pt-2 pb-6">
+          <div class="bg-[#0b1120] border border-[#334155] border-b-0 text-white p-4 rounded-t-2xl flex justify-between items-center">
+            <span class="text-sm font-medium text-slate-400 uppercase tracking-wider">Grand Total</span>
+            <span id="grandTotalDisplay" class="text-2xl font-bold tracking-tight text-sky-400">৳ 0</span>
+          </div>
+          <button type="submit" id="submitBtn" class="w-full py-4 bg-sky-500 active:bg-sky-600 text-white font-bold rounded-b-2xl shadow-[0_4px_14px_rgba(14,165,233,0.3)] flex justify-center items-center gap-2 text-lg save-bounce">
+            <i class="fa-solid fa-check-circle"></i> Save Record
+          </button>
         </div>
-
+      </form>
     </div>
 
-    <!-- ========================================= -->
-    <!-- SLICK BOTTOM NAVIGATION                   -->
-    <!-- ========================================= -->
-    <div class="fixed bottom-0 left-0 right-0 z-40 bg-dark-card/90 backdrop-blur-lg border-t border-dark-border pb-safe">
-        <div class="max-w-lg mx-auto flex justify-around items-center h-16 px-2">
-            <button onclick="switchTab('entry')" class="bottom-nav-btn flex-1 flex flex-col items-center justify-center gap-1 h-full outline-none group">
-                <i id="navIconEntry" class="fas fa-plus-square text-cyan-primary text-lg transition-colors"></i>
-                <span id="tabTextEntry" class="text-[10px] font-bold text-cyan-primary uppercase tracking-widest transition-colors">এন্ট্রি</span>
+    <!-- ==================== TAB 2: HISTORY ==================== -->
+    <div id="tab-history" class="tab-content w-full max-w-md mx-auto">
+      
+      <!-- Sticky Header with Search Icon and Receipt Theme Toggle -->
+      <div id="historyHeader" class="sticky top-0 bg-[#0f172a] pt-5 pb-2 px-4 z-30 transition-transform duration-300 w-full">
+        <div class="flex justify-between items-center mb-2">
+          <div class="flex items-center gap-2">
+            <h2 class="text-sm font-bold text-slate-300">History</h2>
+            <span id="recordCount" class="bg-sky-500/20 border border-sky-500/30 text-sky-400 text-[10px] font-bold px-2 py-0.5 rounded-full" title="Total Records">0</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <!-- Search Toggle Button (Bouncy) -->
+            <button onclick="window.toggleSearch(event)" id="searchToggleBtn" class="text-[12px] bg-[#1e293b] text-sky-400 border border-sky-500/30 w-8 h-8 rounded-full font-bold active:bg-[#334155] flex items-center justify-center shadow-sm ios-bounce">
+              <i class="fa-solid fa-magnifying-glass"></i>
             </button>
-
-            <button onclick="switchTab('history')" class="bottom-nav-btn flex-1 flex flex-col items-center justify-center gap-1 h-full outline-none group">
-                <i id="navIconHistory" class="fas fa-clock text-slate-500 text-lg transition-colors"></i>
-                <span id="tabTextHistory" class="text-[10px] font-bold text-slate-500 uppercase tracking-widest transition-colors">হিস্টোরি</span>
+            <button onclick="window.toggleReceiptTheme()" id="themeToggleBtn" class="text-[10px] bg-[#1e293b] text-sky-400 border border-sky-500/30 px-3 py-1.5 rounded-full font-bold active:bg-[#334155] flex items-center gap-1.5 whitespace-nowrap ios-bounce">
+              <i class="fa-solid fa-moon"></i> Dark Receipt
             </button>
+          </div>
         </div>
-    </div>
 
-    <!-- Animated Modal for Warnings/Alerts -->
-    <div id="messageModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 backdrop-blur-sm px-4 opacity-0 pointer-events-none transition-opacity duration-300">
-        <div id="modalBox" class="bg-dark-card border border-dark-border rounded-3xl p-6 sm:p-8 max-w-sm w-full shadow-2xl text-center opacity-0">
-            <div id="modalIconContainer" class="w-14 h-14 rounded-full bg-dark-bg border border-dark-border flex items-center justify-center mx-auto mb-4 text-cyan-primary text-2xl">
-                <i id="modalIcon" class="fas fa-exclamation-triangle text-amber-400"></i>
+        <!-- Premium Search Panel -->
+        <div id="searchContainer" class="search-panel overflow-hidden" style="max-height: 0px; opacity: 0; margin-bottom: 0px; transform: translateY(-10px) scale(0.95);">
+          <div class="bg-[#1e293b] p-3 rounded-xl border border-[#334155] shadow-sm space-y-3">
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                <i class="fa-solid fa-user text-xs"></i>
+              </div>
+              <input type="text" id="searchName" placeholder="Search by name or ID..." oninput="window.triggerSearch()" class="w-full pl-8 pr-3 py-2 bg-[#0b1120] border border-[#334155] text-white placeholder-slate-500 rounded-lg focus:border-sky-500 outline-none text-sm">
             </div>
-            <h3 id="modalTitle" class="text-xl font-black mb-2 text-white tracking-tight"></h3>
-            <p id="modalMessage" class="text-slate-400 mb-6 font-medium text-sm"></p>
-            <div class="flex justify-center gap-3 w-full" id="modalButtons">
-                <!-- Buttons injected dynamically -->
+            
+            <div class="flex gap-2">
+              <div class="relative flex-1">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                  <i class="fa-solid fa-phone text-xs"></i>
+                </div>
+                <input type="tel" id="searchNumber" placeholder="Number..." oninput="window.triggerSearch()" class="w-full pl-8 pr-3 py-2 bg-[#0b1120] border border-[#334155] text-white placeholder-slate-500 rounded-lg focus:border-sky-500 outline-none text-sm">
+              </div>
+              <div class="relative flex-1">
+                <input type="date" id="searchDate" onchange="window.triggerSearch()" class="w-full px-2 py-2 bg-[#0b1120] border border-[#334155] text-slate-300 rounded-lg focus:border-sky-500 outline-none text-[13px]">
+              </div>
             </div>
+            
+            <div class="flex justify-end">
+              <button onclick="window.clearFilters()" class="text-[10px] bg-slate-700/50 text-slate-300 border border-slate-600 px-3 py-1.5 rounded-md font-bold active:bg-slate-600 ios-bounce">
+                <i class="fa-solid fa-rotate-left mr-1"></i> Reset Filters
+              </button>
+            </div>
+          </div>
         </div>
+      </div>
+
+      <!-- Main History Records List -->
+      <div class="px-4 pt-2 pb-6 w-full">
+        <div id="emptyState" class="hidden bg-[#1e293b] p-10 text-center rounded-2xl border border-[#334155] shadow-sm mt-4">
+          <div class="w-16 h-16 bg-[#0b1120] rounded-full flex items-center justify-center mx-auto mb-3">
+            <i class="fa-solid fa-box-open text-2xl text-slate-600"></i>
+          </div>
+          <p class="font-medium text-slate-300 text-sm">No records found yet.</p>
+          <p class="text-xs text-slate-500 mt-1">Add a new entry to see it here.</p>
+        </div>
+
+        <div id="recordsContainer" class="w-full flex flex-col"></div>
+      </div>
     </div>
+  </main>
 
-    <!-- Hidden Printable Area for Exporting -->
-    <div id="printArea" style="background: white; color: black;"></div>
+  <!-- Bottom Navigation -->
+  <nav class="bg-[#1e293b] border-t border-[#334155] flex justify-around items-center pt-3 pb-5 shrink-0 z-20 relative">
+    <button onclick="window.switchTab('new')" id="nav-new" class="nav-item active flex flex-col items-center gap-1 w-20 pt-1">
+      <div class="nav-icon-bg flex flex-col items-center"><i class="fa-solid fa-plus text-lg"></i></div>
+      <span class="text-[10px] font-bold uppercase mt-1">New Entry</span>
+    </button>
+    <button onclick="window.switchTab('history')" id="nav-history" class="nav-item flex flex-col items-center gap-1 w-20 pt-1">
+      <div class="nav-icon-bg flex flex-col items-center"><i class="fa-solid fa-list text-lg"></i></div>
+      <span class="text-[10px] font-bold uppercase mt-1">History</span>
+    </button>
+  </nav>
 
-    <script>
-        // ==========================================
-        // Google Script URL
-        // ==========================================
-        const scriptUrl = 'https://script.google.com/macros/s/AKfycbx9AqLnnLvbEUl6zjluAbKiIbyZOZEBzuNXElatfzw54-NDNjudLZlMeIa_eARc8-FWvA/exec';
+  <!-- Delete Confirmation Modal -->
+  <div id="confirm-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden flex items-center justify-center opacity-0 transition-opacity duration-300 px-4">
+    <div class="bg-[#1e293b] border border-[#334155] rounded-2xl shadow-xl w-full max-w-xs p-6 transform scale-95 transition-transform duration-300 text-center">
+      <div class="w-16 h-16 bg-red-500/10 border border-red-500/30 rounded-full flex items-center justify-center mx-auto mb-4 text-red-400 text-3xl">
+        <i class="fa-solid fa-trash-can"></i>
+      </div>
+      <h3 class="text-lg font-bold text-white mb-1">Delete Record?</h3>
+      <p class="text-slate-400 mb-6 text-sm">Are you sure you want to delete this record? It cannot be restored.</p>
+      <div class="flex gap-3">
+        <button id="confirm-cancel" class="flex-1 py-3 text-slate-300 bg-[#334155] font-bold rounded-xl active:bg-slate-600 ios-bounce text-sm">No</button>
+        <button id="confirm-ok" class="flex-1 py-3 bg-red-500/10 text-red-400 border border-red-500/30 font-bold rounded-xl active:bg-red-500/20 ios-bounce text-sm">Yes, Delete</button>
+      </div>
+    </div>
+  </div>
 
-        // ==========================================
-        // Multi-Language System (i18n)
-        // ==========================================
-        const translations = {
-            bn: {
-                appSubtitle: "MD EMON",
-                appTitle: "পেমেন্ট ট্র্যাকার <i class='fas fa-check-circle text-cyan-primary text-sm'></i>",
-                totalPaymentLabel: "সর্বমোট ব্যালেন্স",
-                tabNewEntry: "এন্ট্রি",
-                tabHistory: "হিস্টোরি",
-                formTitleAdd: "নতুন পেমেন্ট যোগ",
-                formTitleEdit: "পেমেন্ট আপডেট",
-                sourceLabel: "উৎস / নাম <span class='text-red-500'>*</span>",
-                sourcePlaceholder: "যেমন: ইমন, প্রজেক্ট",
-                amountLabel: "পরিমাণ (৳) <span class='text-red-500'>*</span>",
-                dateLabel: "তারিখ <span class='text-red-500'>*</span>",
-                notesLabel: "বিবরণ (ঐচ্ছিক)",
-                notesPlaceholder: "কীসের টাকা...",
-                cancelBtn: "বাতিল",
-                submitBtnSave: "সেভ করুন",
-                submitBtnUpdate: "আপডেট করুন",
-                submitBtnLoading: "সেভ হচ্ছে...",
-                listTitle: "ট্রানজেকশন সমূহ",
-                records: "টি",
-                loadingMsg: "লোড হচ্ছে...",
-                emptyStateMsg: "কোনো পেমেন্ট নেই",
-                emptyStateDateMsg: "এই তারিখে পেমেন্ট নেই",
-                onlineText: "কানেক্টেড",
-                offlineText: "অফলাইন",
-                connectingText: "কানেক্ট হচ্ছে...",
-                editBtnTitle: "এডিট",
-                deleteBtnTitle: "ডিলিট",
-                modalOk: "ঠিক আছে",
-                modalCancel: "বাতিল",
-                modalConfirmDel: "মুছুন",
-                warnTitle: "সতর্কতা",
-                warnDelMsg: "আপনি কি সত্যিই এই রেকর্ডটি মুছে ফেলতে চান?",
-                successSaveMsg: "ডেটা সফলভাবে সেভ হয়েছে!",
-                successUpdateMsg: "ডেটা সফলভাবে আপডেট হয়েছে!",
-                successDeleteMsg: "রেকর্ডটি মুছে ফেলা হয়েছে!",
-                successExportPngMsg: "ইমেজ সফলভাবে ডাউনলোড হয়েছে!",
-                successExportPdfMsg: "পিডিএফ সফলভাবে ডাউনলোড হয়েছে!",
-                langChangeMsg: "ভাষা পরিবর্তন করা হয়েছে!",
-                exportNoData: "কোনো ডেটা নেই।",
-                exportErr: "ডাউনলোড ব্যর্থ হয়েছে।",
-                searchFoundMsg: "টি পেমেন্ট পাওয়া গেছে!",
-                searchNotFoundMsg: "এই তারিখে কোনো পেমেন্ট পাওয়া যায়নি!",
-                reportTitle: "পেমেন্ট রিপোর্ট",
-                reportAll: "সকল পেমেন্ট",
-                reportDateLabel: "তারিখ: ",
-                reportTotalRec: "মোট রেকর্ড: ",
-                reportTotalAmt: "সর্বমোট: ",
-                thDate: "তারিখ",
-                thSource: "উৎস / নাম",
-                thNotes: "বিবরণ",
-                thAmount: "পরিমাণ",
-                langText: "EN"
-            },
-            en: {
-                appSubtitle: "MD EMON",
-                appTitle: "Payment Tracker <i class='fas fa-check-circle text-cyan-primary text-sm'></i>",
-                totalPaymentLabel: "TOTAL BALANCE",
-                tabNewEntry: "ENTRY",
-                tabHistory: "HISTORY",
-                formTitleAdd: "Add Payment",
-                formTitleEdit: "Update Payment",
-                sourceLabel: "Source / Name <span class='text-red-500'>*</span>",
-                sourcePlaceholder: "e.g., Emon, Project",
-                amountLabel: "Amount (৳) <span class='text-red-500'>*</span>",
-                dateLabel: "Date <span class='text-red-500'>*</span>",
-                notesLabel: "Notes (Optional)",
-                notesPlaceholder: "Details...",
-                cancelBtn: "Cancel",
-                submitBtnSave: "Save",
-                submitBtnUpdate: "Update",
-                submitBtnLoading: "Saving...",
-                listTitle: "Transactions",
-                records: "Items",
-                loadingMsg: "Loading...",
-                emptyStateMsg: "No Data Found",
-                emptyStateDateMsg: "No Data on Date",
-                onlineText: "Connected",
-                offlineText: "Offline",
-                connectingText: "Connecting...",
-                editBtnTitle: "Edit",
-                deleteBtnTitle: "Delete",
-                modalOk: "OK",
-                modalCancel: "Cancel",
-                modalConfirmDel: "Delete",
-                warnTitle: "Warning",
-                warnDelMsg: "Are you sure you want to delete this record?",
-                successSaveMsg: "Data saved successfully!",
-                successUpdateMsg: "Data updated successfully!",
-                successDeleteMsg: "Record deleted successfully!",
-                successExportPngMsg: "Image downloaded successfully!",
-                successExportPdfMsg: "PDF downloaded successfully!",
-                langChangeMsg: "Language changed successfully!",
-                exportNoData: "No data to export.",
-                exportErr: "Export failed.",
-                searchFoundMsg: "payments found!",
-                searchNotFoundMsg: "No payments found on this date!",
-                reportTitle: "Payment Report",
-                reportAll: "All Payments",
-                reportDateLabel: "Date: ",
-                reportTotalRec: "Total Records: ",
-                reportTotalAmt: "Total Amount: ",
-                thDate: "Date",
-                thSource: "Source / Name",
-                thNotes: "Notes",
-                thAmount: "Amount",
-                langText: "বাংলা"
-            }
-        };
+  <!-- Cancel Edit Confirmation Modal (Red Theme) -->
+  <div id="cancel-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden flex items-center justify-center opacity-0 transition-opacity duration-300 px-4">
+    <div class="bg-[#1e293b] border border-[#334155] rounded-2xl shadow-xl w-full max-w-xs p-6 transform scale-95 transition-transform duration-300 text-center">
+      <div class="w-16 h-16 bg-red-500/10 border border-red-500/30 rounded-full flex items-center justify-center mx-auto mb-4 text-red-400 text-3xl">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+      </div>
+      <h3 class="text-lg font-bold text-red-400 mb-1">Cancel Edit?</h3>
+      <p class="text-slate-400 mb-6 text-sm">Are you sure you want to discard your changes? The original data will be kept.</p>
+      <div class="flex gap-3">
+        <button onclick="window.closeCancelModal()" class="flex-1 py-3 text-slate-300 bg-[#334155] font-bold rounded-xl active:bg-slate-600 ios-bounce text-sm">No</button>
+        <button onclick="window.confirmCancelEdit()" class="flex-1 py-3 bg-red-500/10 text-red-400 border border-red-500/30 font-bold rounded-xl active:bg-red-500/20 ios-bounce text-sm">Yes, Cancel</button>
+      </div>
+    </div>
+  </div>
 
-        let currentLang = localStorage.getItem('appLang') || 'bn';
+  <script>
+    const apiKey = ""; 
 
-        // Global State
-        let payments = []; 
-        let filteredPayments = []; 
-        let editingId = null;
-        let isAppOnline = false;
-        let currentDisplayedTotal = 0;
-        let animationFrameId = null; 
+    // ==========================================
+    // GOOGLE SHEETS URL & STATE
+    // ==========================================
+    const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbwLo4sl_VxRbxkvp3wXbN0k0jh2NhOJSR6-YxXXXCdtiG3kYgOasAEKEAcZxzpQBuRg_g/exec"; 
+    
+    const STORAGE_KEY = 'paymentTrackerMobile_Data';
+    let recordsData = [];
+    let editingId = null;
+    let expandedRecordIds = new Set(); 
+    let renderedRecordIds = new Set(); 
 
-        const saveToLocal = (data) => { try { localStorage.setItem('offline_payments_backup', JSON.stringify(data)); } catch(e) {} };
-        const loadFromLocal = () => { try { const data = localStorage.getItem('offline_payments_backup'); return data ? JSON.parse(data) : []; } catch(e) { return []; } };
+    const parseStatus = (str) => {
+      const s = String(str || '');
+      const parts = s.split('::');
+      return { status: parts[0] || 'N/A', playerId: parts[1] || '', itemTrxId: parts[2] || '' };
+    };
 
-        // ==========================================
-        // SUPER SMOOTH TOAST NOTIFICATIONS
-        // ==========================================
-        window.showToast = (message, type = 'success') => {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
+    const buildStatus = (status, playerId, itemTrxId) => {
+      return `${status}::${playerId || ''}::${itemTrxId || ''}`;
+    };
+
+    // ==========================================
+    // DYNAMIC ISLAND TOAST NOTIFICATION 
+    // ==========================================
+    window.showToast = (message, type = 'save') => {
+      const container = document.getElementById('toast-container');
+      
+      const wrapper = document.createElement('div');
+      wrapper.className = 'toast-wrapper';
+
+      let bg, icon;
+      const textColor = 'text-white';
+      
+      if (type === 'delete') {
+        bg = 'bg-red-500 border-red-400 shadow-[0_8px_16px_rgba(239,68,68,0.4)]';
+        icon = 'fa-trash-can';
+      } else if (type === 'reject' || type === 'error') {
+        bg = 'bg-red-500 border-red-400 shadow-[0_8px_16px_rgba(239,68,68,0.4)]';
+        icon = type === 'error' ? 'fa-circle-exclamation' : 'fa-ban';
+      } else if (type === 'save' || type === 'info') {
+        bg = 'bg-sky-500 border-sky-400 shadow-[0_8px_16px_rgba(14,165,233,0.4)]';
+        icon = type === 'info' ? 'fa-info-circle' : 'fa-check-circle';
+      } else if (type === 'update' || type === 'paid') {
+        bg = 'bg-emerald-500 border-emerald-400 shadow-[0_8px_16px_rgba(16,185,129,0.4)]';
+        icon = 'fa-check-circle';
+      } else {
+        bg = 'bg-slate-700 border-slate-600 shadow-sm';
+        icon = 'fa-check';
+      }
+
+      const toastContent = document.createElement('div');
+      toastContent.className = `${bg} px-5 py-3 rounded-full flex items-center justify-center gap-2 font-bold text-sm pointer-events-auto border mx-auto w-max z-50 relative`;
+      toastContent.innerHTML = `<i class="fa-solid ${icon} ${textColor}"></i> <span class="${textColor}">${message}</span>`;
+      
+      wrapper.appendChild(toastContent);
+      container.appendChild(wrapper);
+      
+      void wrapper.offsetWidth; 
+      wrapper.classList.add('toast-show');
+      
+      setTimeout(() => { 
+        wrapper.classList.remove('toast-show');
+        setTimeout(() => wrapper.remove(), 500); 
+      }, 3000);
+    };
+
+    let receiptTheme = 'dark'; 
+    window.toggleReceiptTheme = () => {
+      const btn = document.getElementById('themeToggleBtn');
+      if(receiptTheme === 'dark') {
+        receiptTheme = 'light';
+        btn.innerHTML = `<i class="fa-solid fa-sun"></i> Light Receipt`;
+        btn.className = "text-[10px] bg-slate-200 text-slate-700 border border-slate-300 px-3 py-1.5 rounded-full font-bold active:bg-slate-300 flex items-center gap-1.5 shadow-sm whitespace-nowrap ios-bounce";
+        window.showToast("Light Theme Selected", "info");
+      } else {
+        receiptTheme = 'dark';
+        btn.innerHTML = `<i class="fa-solid fa-moon"></i> Dark Receipt`;
+        btn.className = "text-[10px] bg-[#1e293b] text-sky-400 border border-sky-500/30 px-3 py-1.5 rounded-full font-bold active:bg-[#334155] flex items-center gap-1.5 whitespace-nowrap ios-bounce";
+        window.showToast("Dark Theme Selected", "info");
+      }
+    };
+
+    window.toggleSearch = (e) => {
+      if(e) e.stopPropagation();
+      const container = document.getElementById('searchContainer');
+      const btnIcon = document.querySelector('#searchToggleBtn i');
+      
+      if (container.style.maxHeight === '0px' || !container.style.maxHeight) {
+        container.style.maxHeight = '250px'; 
+        container.style.opacity = '1';
+        container.style.marginBottom = '12px';
+        container.style.transform = 'translateY(0) scale(1)';
+        btnIcon.className = 'fa-solid fa-times'; 
+        
+        window.showToast("Find records...", "info");
+      } else {
+        container.style.maxHeight = '0px';
+        container.style.opacity = '0';
+        container.style.marginBottom = '0px';
+        container.style.transform = 'translateY(-10px) scale(0.95)';
+        btnIcon.className = 'fa-solid fa-magnifying-glass'; 
+      }
+    };
+
+    // Close components when clicking outside
+    document.addEventListener('click', (e) => {
+      const searchContainer = document.getElementById('searchContainer');
+      const searchToggleBtn = document.getElementById('searchToggleBtn');
+      if (searchContainer && searchContainer.style.maxHeight !== '0px' && searchContainer.style.maxHeight !== '') {
+        if (!searchContainer.contains(e.target) && searchToggleBtn && !searchToggleBtn.contains(e.target)) {
+          window.toggleSearch();
+        }
+      }
+    });
+
+    const getNextId = () => {
+      if (recordsData.length === 0) return 1;
+      const ids = recordsData.map(r => Number(r.id) || 0);
+      return Math.max(...ids) + 1;
+    };
+
+    const updateConnectionUI = (isOnline) => {
+      const connIndicator = document.getElementById('connIndicator');
+      const syncStatus = document.getElementById('syncStatus');
+      
+      if(isOnline) {
+        connIndicator.innerHTML = `
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></span>
+        `;
+        syncStatus.innerHTML = '<i class="fa-solid fa-link text-emerald-400"></i> Connected';
+      } else {
+        connIndicator.innerHTML = `
+          <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)]"></span>
+        `;
+        syncStatus.innerHTML = '<i class="fa-solid fa-link-slash text-red-400"></i> Offline';
+      }
+    };
+
+    const normalizeDateData = (records) => {
+      return records.map(r => {
+        let raw = r.displayDate || r.date; 
+        let standard = '';
+        let display = raw;
+
+        if (raw) {
+          let d;
+          if (typeof raw === 'string' && raw.includes('-') && raw.length === 10) {
+            const parts = raw.split('-');
+            d = new Date(parts[0], parts[1] - 1, parts[2]);
+          } else {
+            d = new Date(raw);
+          }
+
+          if (!isNaN(d.getTime())) {
+            const yyyy = d.getFullYear();
+            const mm = String(d.getMonth() + 1).padStart(2, '0');
+            const dd = String(d.getDate()).padStart(2, '0');
+            standard = `${yyyy}-${mm}-${dd}`;
             
-            let iconClass, colorStyle;
-            if (type === 'delete') {
-                iconClass = 'fa-trash-alt';
-                colorStyle = 'bg-red-500/10 border-red-500/20 text-red-400';
-            } else if (type === 'update' || type === 'info') {
-                iconClass = 'fa-info-circle';
-                colorStyle = 'bg-cyan-primary/10 border-cyan-primary/20 text-cyan-primary';
-            } else if (type === 'pdf') {
-                iconClass = 'fa-file-pdf';
-                colorStyle = 'bg-red-500/10 border-red-500/20 text-red-400';
-            } else if (type === 'png') {
-                iconClass = 'fa-image';
-                colorStyle = 'bg-cyan-primary/10 border-cyan-primary/20 text-cyan-primary';
-            } else if (type === 'lang') {
-                iconClass = 'fa-globe';
-                colorStyle = 'bg-indigo-500/10 border-indigo-500/20 text-indigo-400';
-            } else if (type === 'warning') {
-                iconClass = 'fa-exclamation-circle';
-                colorStyle = 'bg-amber-500/10 border-amber-500/20 text-amber-400';
-            } else { // success / add
-                iconClass = 'fa-check-circle';
-                colorStyle = 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400';
-            }
+            const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            display = `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+          }
+        }
+        
+        let numStr = String(r.number || '').replace(/[^0-9+]/g, '');
+        if(numStr.length === 10 && !numStr.startsWith('+')) numStr = '0' + numStr;
+
+        return { ...r, date: standard, displayDate: display, number: numStr };
+      });
+    };
+
+    const syncDataFromSheet = async () => {
+      if(!navigator.onLine) {
+        updateConnectionUI(false);
+        loadLocalData();
+        return;
+      }
+      try {
+        const response = await fetch(GOOGLE_SHEET_URL);
+        const result = await response.json();
+        
+        if (result.status === 'success' && result.data) {
+          recordsData = normalizeDateData(result.data);
+          saveLocalData(); 
+          updateConnectionUI(true);
+        } else {
+          updateConnectionUI(false);
+        }
+      } catch(e) {
+        updateConnectionUI(false);
+        loadLocalData(); 
+      }
+    };
+
+    window.addEventListener('online', syncDataFromSheet);
+    window.addEventListener('offline', () => updateConnectionUI(false));
+
+    const formatDate = (dateString) => {
+      if(!dateString) return "";
+      const parts = dateString.split('-');
+      const d = new Date(parts[0], parts[1] - 1, parts[2]);
+      const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+      return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+    };
+
+    const setTodayDate = () => {
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      document.getElementById('dateInput').value = `${yyyy}-${mm}-${dd}`;
+    };
+
+    window.switchTab = (tabName) => {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+      document.getElementById(`tab-${tabName}`).classList.add('active');
+      document.getElementById(`nav-${tabName}`).classList.add('active');
+      document.getElementById('main-scroll').scrollTo(0, 0);
+      
+      if(tabName === 'history') {
+        renderedRecordIds.clear(); 
+        renderRecords();
+      }
+    };
+
+    let confirmCallback = null;
+    let cancelCallback = null;
+
+    const showConfirmModal = (onConfirm, onCancel) => {
+      const modal = document.getElementById('confirm-modal');
+      confirmCallback = onConfirm;
+      cancelCallback = onCancel;
+
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        modal.classList.remove('opacity-0');
+        modal.querySelector('div').classList.remove('scale-95');
+      }, 10);
+    };
+
+    window.closeConfirmModal = () => {
+      const modal = document.getElementById('confirm-modal');
+      modal.classList.add('opacity-0');
+      modal.querySelector('div').classList.add('scale-95');
+      setTimeout(() => { modal.classList.add('hidden'); }, 300);
+    };
+
+    window.showCancelModal = () => {
+      const modal = document.getElementById('cancel-modal');
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        modal.classList.remove('opacity-0');
+        modal.querySelector('div').classList.remove('scale-95');
+      }, 10);
+    };
+
+    window.closeCancelModal = () => {
+      const modal = document.getElementById('cancel-modal');
+      modal.classList.add('opacity-0');
+      modal.querySelector('div').classList.add('scale-95');
+      setTimeout(() => { modal.classList.add('hidden'); }, 300);
+    };
+
+    window.confirmCancelEdit = () => {
+      window.closeCancelModal();
+      resetForm();
+      window.showToast("Edit Cancelled", "info");
+    };
+
+    document.getElementById('confirm-cancel').addEventListener('click', () => {
+      if(cancelCallback) cancelCallback();
+      window.closeConfirmModal();
+    });
+
+    document.getElementById('confirm-ok').addEventListener('click', () => {
+      if(confirmCallback) confirmCallback();
+      window.closeConfirmModal();
+    });
+
+    window.toggleDetails = (id) => {
+      const numId = Number(id);
+      const detailsDiv = document.getElementById(`details-${id}`);
+      const icon = document.getElementById(`icon-${id}`);
+
+      if (expandedRecordIds.has(numId)) {
+        expandedRecordIds.delete(numId);
+        detailsDiv.style.maxHeight = '0px';
+        detailsDiv.style.opacity = '0';
+        detailsDiv.style.marginTop = '0px';
+        icon.style.transform = 'rotate(0deg)';
+      } else {
+        expandedRecordIds.add(numId);
+        detailsDiv.style.marginTop = '12px';
+        detailsDiv.style.maxHeight = detailsDiv.scrollHeight + 300 + 'px'; 
+        detailsDiv.style.opacity = '1';
+        icon.style.transform = 'rotate(180deg)';
+      }
+    };
+
+    window.clearFilters = () => {
+      document.getElementById('searchName').value = '';
+      document.getElementById('searchNumber').value = '';
+      document.getElementById('searchDate').value = '';
+      renderedRecordIds.clear(); 
+      renderRecords();
+    };
+
+    window.triggerSearch = () => {
+      renderedRecordIds.clear();
+      renderRecords();
+    };
+
+    // ==========================================
+    // INLINE EDIT LOGIC (Tap to edit Qty & Rate)
+    // ==========================================
+    window.editInline = (field, id, type, e) => {
+      if (e) e.stopPropagation();
+      const view = document.getElementById(`view-${field}-${id}-${type}`);
+      const input = document.getElementById(`inline-${field}-${id}-${type}`);
+      if (view && input) {
+        view.classList.add('hidden');
+        view.classList.remove('inline-block');
+        
+        input.classList.remove('hidden');
+        input.classList.add('inline-block', 'inline-pop');
+        input.focus();
+        input.select();
+      }
+    };
+
+    window.saveInline = (field, id, type) => {
+      const view = document.getElementById(`view-${field}-${id}-${type}`);
+      const input = document.getElementById(`inline-${field}-${id}-${type}`);
+      if (view && input) {
+        let val = input.value.trim();
+        view.innerText = val === '' ? '?' : val;
+        
+        input.classList.add('hidden');
+        input.classList.remove('inline-block', 'inline-pop');
+        
+        view.classList.remove('hidden');
+        view.classList.add('inline-block');
+      }
+    };
+
+    let lastScrollTop = 0;
+    const mainScroll = document.getElementById('main-scroll');
+    
+    mainScroll.addEventListener('scroll', () => {
+      const historyHeader = document.getElementById('historyHeader');
+      if (!historyHeader || !document.getElementById('tab-history').classList.contains('active')) return;
+      
+      let st = mainScroll.scrollTop;
+      
+      if (st > lastScrollTop && st > 60) {
+        historyHeader.style.transform = 'translateY(-100%)';
+      } 
+      else {
+        historyHeader.style.transform = 'translateY(0)';
+      }
+      
+      lastScrollTop = st <= 0 ? 0 : st;
+    }, { passive: true });
+
+    // ==========================================
+    // SWIPE TO DISMISS / DELETE LOGIC
+    // ==========================================
+    let swipeEventsAttached = false;
+    function initSwipeToDismiss() {
+        if (swipeEventsAttached) return;
+        const container = document.getElementById('recordsContainer');
+        if (!container) return;
+        swipeEventsAttached = true;
+        
+        let activeCardInner = null;
+        let activeWrapper = null;
+        let startX = 0, startY = 0, currentX = 0;
+        let isSwiping = false;
+        
+        let prevInner = null;
+        let nextInner = null;
+
+        let holdTimer = null;
+        let deleteTriggered = false;
+
+        container.addEventListener('touchstart', (e) => {
+            // FIX: Added closest('.record-wrapper') to ensure touches anywhere on the card work
+            const wrapperElement = e.target.closest('.record-wrapper');
+            if (!wrapperElement) return;
+            const innerCard = wrapperElement.querySelector('.record-card-inner');
+            if (!innerCard) return;
             
-            toast.className = `inline-flex items-center gap-2.5 px-5 py-3 rounded-full backdrop-blur-2xl border shadow-xl toast-enter ${colorStyle}`;
-            toast.innerHTML = `
-                <i class="fas ${iconClass} text-sm"></i>
-                <span class="font-bold text-[13px] tracking-wide text-white drop-shadow-sm">${message}</span>
-            `;
+            const id = Number(innerCard.getAttribute('data-id'));
+            if (expandedRecordIds.has(id)) return;
+
+            if (e.target.closest('button') || e.target.closest('input') || e.target.closest('.details-panel')) return;
+
+            activeCardInner = innerCard;
+            activeWrapper = activeCardInner.closest('.record-wrapper');
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+            isSwiping = false;
+            deleteTriggered = false;
+            if (holdTimer) clearTimeout(holdTimer);
             
-            container.appendChild(toast);
+            const prevWrapper = activeWrapper.previousElementSibling;
+            const nextWrapper = activeWrapper.nextElementSibling;
             
-            setTimeout(() => {
-                toast.classList.replace('toast-enter', 'toast-leave');
-                setTimeout(() => toast.remove(), 450); 
-            }, 3500); 
-        };
+            prevInner = prevWrapper ? prevWrapper.querySelector('.record-card-inner') : null;
+            nextInner = nextWrapper ? nextWrapper.querySelector('.record-card-inner') : null;
 
-        // Modal for Warnings (Animated M3 Spring)
-        window.showMessage = (title, message, buttonsHtml = null, icon = 'fa-exclamation-triangle', iconColor = 'text-amber-400') => {
-            const modal = document.getElementById('messageModal');
-            const modalBox = document.getElementById('modalBox');
-            
-            document.getElementById('modalTitle').innerText = title;
-            document.getElementById('modalMessage').innerHTML = message;
-            document.getElementById('modalIcon').className = `fas ${icon} ${iconColor}`;
-            
-            if(buttonsHtml) {
-                document.getElementById('modalButtons').innerHTML = buttonsHtml;
-            } else {
-                document.getElementById('modalButtons').innerHTML = `<button onclick="closeModal()" class="click-effect w-full bg-cyan-primary text-dark-bg font-bold py-3 rounded-xl uppercase text-sm">${translations[currentLang].modalOk}</button>`;
-            }
-            
-            modal.classList.remove('opacity-0', 'pointer-events-none');
-            modalBox.classList.remove('opacity-0');
-            modalBox.classList.add('modal-bounce-in');
-        };
+            activeCardInner.style.transition = 'none';
+            if (prevInner) prevInner.style.transition = 'none';
+            if (nextInner) nextInner.style.transition = 'none';
+        }, { passive: true });
 
-        window.closeModal = () => { 
-            const modal = document.getElementById('messageModal');
-            const modalBox = document.getElementById('modalBox');
-            
-            modalBox.classList.remove('modal-bounce-in');
-            modalBox.classList.add('opacity-0');
-            
-            setTimeout(() => {
-                modal.classList.add('opacity-0', 'pointer-events-none');
-            }, 300);
-        };
+        container.addEventListener('touchmove', (e) => {
+            if (!activeCardInner || deleteTriggered) return;
 
-        const updateStatusUI = (isOnline) => {
-            isAppOnline = isOnline;
-            const t = translations[currentLang];
-            const statusIcon = document.getElementById('statusIcon');
-            const statusText = document.getElementById('statusText');
-            if(isOnline) {
-                statusIcon.className = "fas fa-wifi text-[10px] text-emerald-400";
-                statusText.innerText = t.onlineText;
-            } else {
-                statusIcon.className = "fas fa-plane-slash text-[10px] text-amber-400";
-                statusText.innerText = t.offlineText;
-            }
-        };
+            const diffX = e.touches[0].clientX - startX;
+            const diffY = e.touches[0].clientY - startY;
 
-        const formatLocaleDigit = (num) => {
-            const parsed = Number(num);
-            if (isNaN(parsed)) return currentLang === 'en' ? '0' : '০';
-            const numStr = parsed.toLocaleString('en-IN', { maximumFractionDigits: 2 });
-            if(currentLang === 'en') return numStr;
-            const engToBng = {'0':'০','1':'১','2':'২','3':'৩','4':'৪','5':'৫','6':'৬','7':'৭','8':'৮','9':'৯'};
-            return numStr.replace(/[0-9]/g, match => engToBng[match]);
-        };
-
-        const formatLocaleDate = (dateString) => {
-            if(!dateString) return currentLang === 'bn' ? "অজানা" : "Unknown";
-            const dateObj = new Date(dateString);
-            const locale = currentLang === 'bn' ? 'bn-BD' : 'en-US';
-            const formatted = dateObj.toLocaleDateString(locale, { day: 'numeric', month: 'short', year: 'numeric' });
-            
-            if(currentLang === 'en') return formatted;
-            const engToBng = {'0':'০','1':'১','2':'২','3':'৩','4':'৪','5':'৫','6':'৬','7':'৭','8':'৮','9':'৯'};
-            return formatted.replace(/[0-9]/g, match => engToBng[match]);
-        };
-
-        // Date Normalizer to fix Timezone mismatch bugs from Google Apps Script
-        const normalizeDate = (dStr) => {
-            if (!dStr) return '';
-            // If already in YYYY-MM-DD format
-            if (/^\d{4}-\d{2}-\d{2}$/.test(dStr)) return dStr;
-            const d = new Date(dStr);
-            if (isNaN(d)) return dStr;
-            
-            const year = d.getFullYear();
-            const month = String(d.getMonth() + 1).padStart(2, '0');
-            const day = String(d.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        };
-
-        // ==========================================
-        // Live Number Counter Animation (Super Smooth)
-        // ==========================================
-        const animateValue = (obj, start, end, duration) => {
-            if (animationFrameId) cancelAnimationFrame(animationFrameId);
-            
-            let startTimestamp = null;
-            const step = (timestamp) => {
-                if (!startTimestamp) startTimestamp = timestamp;
-                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-                const ease = 1 - Math.pow(1 - progress, 3);
-                const current = start + (end - start) * ease;
-                
-                const isInteger = end % 1 === 0;
-                const val = isInteger ? Math.round(current) : current.toFixed(2);
-                
-                obj.innerText = formatLocaleDigit(val);
-                
-                if (progress < 1) {
-                    animationFrameId = window.requestAnimationFrame(step);
-                } else {
-                    obj.innerText = formatLocaleDigit(isInteger ? end : end.toFixed(2));
-                }
-            };
-            animationFrameId = window.requestAnimationFrame(step);
-        };
-
-        const applyLanguage = (forceAnimate = false) => {
-            const t = translations[currentLang];
-            
-            document.getElementById('appSubtitle').innerText = t.appSubtitle;
-            document.getElementById('appTitle').innerHTML = t.appTitle;
-            document.getElementById('totalPaymentLabel').innerText = t.totalPaymentLabel;
-            document.getElementById('tabTextEntry').innerText = t.tabNewEntry;
-            document.getElementById('tabTextHistory').innerText = t.tabHistory;
-            document.getElementById('formTitleText').innerText = editingId ? t.formTitleEdit : t.formTitleAdd;
-            document.getElementById('sourceLabel').innerHTML = t.sourceLabel;
-            document.getElementById('amountLabel').innerHTML = t.amountLabel;
-            document.getElementById('dateLabel').innerHTML = t.dateLabel;
-            document.getElementById('notesLabel').innerHTML = t.notesLabel;
-            document.getElementById('cancelEditBtn').innerText = t.cancelBtn;
-            document.getElementById('submitBtnText').innerText = editingId ? t.submitBtnUpdate : t.submitBtnSave;
-            document.getElementById('listTitle').innerHTML = `<i class="fas fa-list-ul text-cyan-primary"></i> ${t.listTitle}`;
-            document.getElementById('loadingMsg').innerText = t.loadingMsg;
-            document.getElementById('source').placeholder = t.sourcePlaceholder;
-            document.getElementById('notes').placeholder = t.notesPlaceholder;
-            
-            document.getElementById('langToggleText').innerText = t.langText;
-            document.documentElement.lang = currentLang;
-
-            updateStatusUI(isAppOnline);
-            applySearch(forceAnimate, false); 
-        };
-
-        window.toggleLanguage = () => {
-            currentLang = currentLang === 'bn' ? 'en' : 'bn';
-            localStorage.setItem('appLang', currentLang);
-            
-            currentDisplayedTotal = 0; // Force trigger animation from 0 when language changes
-            applyLanguage(true);
-            
-            const t = translations[currentLang];
-            showToast(t.langChangeMsg, 'lang');
-        };
-
-        // ==========================================
-        // View Navigation with Live Refresh Animation
-        // ==========================================
-        window.switchTab = (tab) => {
-            const viewEntry = document.getElementById('viewEntry');
-            const viewHistory = document.getElementById('viewHistory');
-            const navIconEntry = document.getElementById('navIconEntry');
-            const navIconHistory = document.getElementById('navIconHistory');
-            const tabTextEntry = document.getElementById('tabTextEntry');
-            const tabTextHistory = document.getElementById('tabTextHistory');
-
-            if (tab === 'entry') {
-                viewEntry.classList.remove('hidden');
-                viewHistory.classList.add('hidden');
-                viewHistory.classList.remove('flex');
-
-                // Re-trigger the soft bouncy animation for the Entry Box
-                viewEntry.classList.remove('animate-entry-box');
-                void viewEntry.offsetWidth; // Force Reflow to restart animation
-                viewEntry.classList.add('animate-entry-box');
-
-                navIconEntry.classList.add('text-cyan-primary');
-                navIconEntry.classList.remove('text-slate-500');
-                tabTextEntry.classList.add('text-cyan-primary');
-                tabTextEntry.classList.remove('text-slate-500');
-
-                navIconHistory.classList.remove('text-cyan-primary');
-                navIconHistory.classList.add('text-slate-500');
-                tabTextHistory.classList.remove('text-cyan-primary');
-                tabTextHistory.classList.add('text-slate-500');
-                
-            } else {
-                viewEntry.classList.add('hidden');
-                viewHistory.classList.remove('hidden');
-                viewHistory.classList.add('flex');
-
-                navIconHistory.classList.add('text-cyan-primary');
-                navIconHistory.classList.remove('text-slate-500');
-                tabTextHistory.classList.add('text-cyan-primary');
-                tabTextHistory.classList.remove('text-slate-500');
-
-                navIconEntry.classList.remove('text-cyan-primary');
-                navIconEntry.classList.add('text-slate-500');
-                tabTextEntry.classList.remove('text-cyan-primary');
-                tabTextEntry.classList.add('text-slate-500');
-            }
-            
-            // ALWAYS trigger live amount animation from 0 on tab change 
-            let total = 0;
-            payments.forEach(p => total += parseFloat(p.amount || 0));
-            animateValue(document.getElementById('totalAmount'), 0, total, 900); // 900ms smooth roll
-            currentDisplayedTotal = total;
-        };
-
-        window.cancelEdit = () => {
-            editingId = null;
-            document.getElementById('paymentForm').reset();
-            document.getElementById('date').valueAsDate = new Date();
-            document.getElementById('formTitleText').innerText = translations[currentLang].formTitleAdd;
-            document.getElementById('formIcon').className = 'fas fa-plus text-xs';
-            document.getElementById('submitBtnText').innerText = translations[currentLang].submitBtnSave;
-            document.getElementById('cancelEditBtn').classList.add('hidden');
-        };
-
-        window.editPayment = (id) => {
-            const payment = payments.find(p => p.id.toString() === id.toString());
-            if(!payment) return;
-            
-            document.getElementById('source').value = payment.source;
-            document.getElementById('amount').value = payment.amount;
-            document.getElementById('date').value = payment.date;
-            document.getElementById('notes').value = payment.notes || '';
-            
-            editingId = id;
-            document.getElementById('formTitleText').innerText = translations[currentLang].formTitleEdit;
-            document.getElementById('formIcon').className = 'fas fa-pen text-xs';
-            document.getElementById('submitBtnText').innerText = translations[currentLang].submitBtnUpdate;
-            document.getElementById('cancelEditBtn').classList.remove('hidden');
-            
-            switchTab('entry');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
-
-        window.confirmDelete = (id) => {
-            const t = translations[currentLang];
-            const buttonsHtml = `
-                <button onclick="closeModal()" class="click-effect bg-dark-bg border border-dark-border text-slate-300 px-5 py-3 rounded-xl font-bold flex-1 text-sm">${t.modalCancel}</button>
-                <button onclick="executeDelete('${id}')" class="click-effect bg-red-500/20 border border-red-500/50 text-red-400 px-5 py-3 rounded-xl font-bold flex-1 text-sm">${t.modalConfirmDel}</button>
-            `;
-            window.showMessage(t.warnTitle, t.warnDelMsg, buttonsHtml, 'fa-exclamation-triangle', 'text-amber-400');
-        };
-
-        window.executeDelete = async (id) => {
-            closeModal();
-            const t = translations[currentLang];
-            document.getElementById('loadingState').classList.remove('hidden');
-            document.getElementById('listContainer').classList.add('hidden');
-
-            try {
-                const response = await fetch(scriptUrl, { method: 'POST', body: JSON.stringify({ action: 'delete', id: id }) });
-                const result = await response.json();
-                if (result.status === "success") {
-                    payments = payments.filter(p => p.id.toString() !== id.toString());
-                    saveToLocal(payments);
-                    showToast(t.successDeleteMsg, 'delete');
-                }
-            } catch (error) {
-                // Silent catch, offline fallback
-                payments = payments.filter(p => p.id.toString() !== id.toString());
-                saveToLocal(payments);
-                updateStatusUI(false);
-                showToast(t.successDeleteMsg, 'delete');
-            } finally {
-                applySearch(true, false); 
-            }
-        };
-
-        window.applySearch = (forceAnimate = false, showToastMsg = false) => {
-            const searchVal = document.getElementById('searchDate').value;
-            const t = translations[currentLang];
-            const clearSearchBtn = document.getElementById('clearSearchBtn');
-            const emptyStateMsg = document.getElementById('emptyStateMsg');
-            
-            if (searchVal) {
-                // Normalize dates to ensure YYYY-MM-DD matches seamlessly
-                filteredPayments = payments.filter(p => normalizeDate(p.date) === searchVal);
-                clearSearchBtn.classList.remove('hidden');
-                emptyStateMsg.innerText = t.emptyStateDateMsg;
-                
-                // Show dynamic search result toast
-                if (showToastMsg) {
-                    if (filteredPayments.length > 0) {
-                        const countStr = formatLocaleDigit(filteredPayments.length);
-                        showToast(`${countStr} ${t.searchFoundMsg}`, 'info');
-                    } else {
-                        showToast(t.searchNotFoundMsg, 'warning');
-                    }
-                }
-            } else {
-                filteredPayments = [...payments];
-                clearSearchBtn.classList.add('hidden');
-                emptyStateMsg.innerText = t.emptyStateMsg;
-            }
-            renderPayments(filteredPayments, forceAnimate);
-        };
-
-        window.clearSearch = () => {
-            document.getElementById('searchDate').value = '';
-            applySearch(false, false);
-        };
-
-        // ==========================================
-        // Animated Expandable Search Logic
-        // ==========================================
-        let isSearchOpen = false;
-        window.toggleSearch = () => {
-            const container = document.getElementById('searchContainer');
-            const content = document.getElementById('searchContent');
-            const icon = document.getElementById('searchToggleIcon');
-            const btnWrapper = document.getElementById('searchBtnWrapper');
-            
-            isSearchOpen = !isSearchOpen;
-            
-            if (isSearchOpen) {
-                // Open State
-                container.style.maxWidth = '220px';
-                content.classList.remove('opacity-0', '-translate-x-3', 'pointer-events-none');
-                content.classList.add('opacity-100', 'translate-x-0', 'pointer-events-auto');
-                
-                // Change Icon to Red Cross
-                icon.classList.remove('fa-search');
-                icon.classList.add('fa-times');
-                btnWrapper.classList.remove('text-cyan-primary');
-                btnWrapper.classList.add('text-red-500');
-                
-                setTimeout(() => document.getElementById('searchDate').focus(), 300);
-            } else {
-                // Close State
-                container.style.maxWidth = '44px';
-                content.classList.add('opacity-0', '-translate-x-3', 'pointer-events-none');
-                content.classList.remove('opacity-100', 'translate-x-0', 'pointer-events-auto');
-                
-                // Change Icon back to Search
-                icon.classList.remove('fa-times');
-                icon.classList.add('fa-search');
-                btnWrapper.classList.remove('text-red-500');
-                btnWrapper.classList.add('text-cyan-primary');
-                
-                // Reset search results if closed
-                if(document.getElementById('searchDate').value !== '') {
-                    window.clearSearch();
+            if (!isSwiping) {
+                if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 10) {
+                    isSwiping = true;
+                } else if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > 10) {
+                    activeCardInner = null;
+                    return;
                 }
             }
-        };
 
-        // ==========================================
-        // ANDROID 16 STYLE SWIPE TO DELETE LOGIC
-        // ==========================================
-        const setupSwipeToDelete = () => {
-            const listContainer = document.getElementById('listContainer');
-            if(listContainer.dataset.swipeInitialized) return; 
-            listContainer.dataset.swipeInitialized = 'true';
-
-            let startX = 0;
-            let startY = 0;
-            let currentX = 0;
-            let draggingItem = null;
-            let isDragging = false;
-            let isSwiping = null; 
-            let adjacentItems = { prev: null, next: null };
-
-            const getClientX = (e) => e.touches ? e.touches[0].clientX : e.clientX;
-            const getClientY = (e) => e.touches ? e.touches[0].clientY : e.clientY;
-
-            const onDragStart = (e) => {
-                const item = e.target.closest('.swipe-item');
-                if (!item || e.target.closest('button') || e.target.closest('input')) return; 
-                
-                draggingItem = item;
-                startX = getClientX(e);
-                startY = getClientY(e);
-                currentX = 0;
-                isDragging = true;
-                isSwiping = null;
-                
-                draggingItem.style.transition = 'none'; 
-                
-                const li = draggingItem.closest('li');
-                adjacentItems.prev = li.previousElementSibling ? li.previousElementSibling.querySelector('.swipe-item') : null;
-                adjacentItems.next = li.nextElementSibling ? li.nextElementSibling.querySelector('.swipe-item') : null;
-                
-                if (adjacentItems.prev) adjacentItems.prev.style.transition = 'none';
-                if (adjacentItems.next) adjacentItems.next.style.transition = 'none';
-            };
-
-            const onDragMove = (e) => {
-                if (!isDragging || !draggingItem) return;
-                
-                const x = getClientX(e);
-                const y = getClientY(e);
-                const deltaX = x - startX;
-                const deltaY = y - startY;
-
-                if (isSwiping === null) {
-                    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 5) {
-                        isSwiping = true; 
-                    } else if (Math.abs(deltaY) > 5) {
-                        isSwiping = false; 
-                    }
-                }
-
-                if (isSwiping === true && deltaX < 0) {
+            if (isSwiping) {
+                if (diffX < 0) { 
                     if(e.cancelable) e.preventDefault(); 
+                    currentX = diffX;
                     
-                    currentX = deltaX * 0.7; 
-                    draggingItem.style.transform = `translateX(${currentX}px)`;
+                    const translateVal = diffX > -75 ? diffX : -75 + (diffX + 75) * 0.2;
+                    activeCardInner.style.transform = `translateX(${translateVal}px)`;
+
+                    const pullForce = 0.08; 
+                    const nudge = translateVal * pullForce;
                     
-                    const pull = Math.max(currentX * 0.15, -12);
-                    const scale = Math.max(1 + (currentX * 0.0004), 0.97);
-                    
-                    if (adjacentItems.prev) {
-                        adjacentItems.prev.style.transform = `translateX(${pull * 0.5}px) scale(${scale})`;
+                    if (prevInner) prevInner.style.transform = `translateX(${nudge}px)`;
+                    if (nextInner) nextInner.style.transform = `translateX(${nudge}px)`;
+
+                    if (currentX < -70 && !holdTimer && !deleteTriggered) {
+                        holdTimer = setTimeout(() => {
+                            deleteTriggered = true;
+                            
+                            const springTransition = 'transform 0.4s cubic-bezier(0.34, 1.15, 0.64, 1)';
+                            activeCardInner.style.transition = springTransition;
+                            activeCardInner.style.transform = `translateX(-100px)`;
+
+                            if (prevInner) {
+                                prevInner.style.transition = springTransition;
+                                prevInner.style.transform = 'translateX(0px)';
+                            }
+                            if (nextInner) {
+                                nextInner.style.transition = springTransition;
+                                nextInner.style.transform = 'translateX(0px)';
+                            }
+
+                            const id = Number(activeCardInner.getAttribute('data-id'));
+                            const swipedElement = activeCardInner;
+                            
+                            if (typeof window.deleteRecord === 'function') {
+                                window.deleteRecord(id, swipedElement);
+                            }
+                        }, 400); 
+                    } else if (currentX >= -70 && holdTimer) {
+                        clearTimeout(holdTimer);
+                        holdTimer = null;
                     }
-                    if (adjacentItems.next) {
-                        adjacentItems.next.style.transform = `translateX(${pull * 0.5}px) scale(${scale})`;
-                    }
-                    
-                    const bgIcon = draggingItem.parentElement.querySelector('.bg-delete-icon');
-                    if (bgIcon) {
-                        if (currentX < -80) { 
-                            bgIcon.style.transform = 'scale(1.2)';
-                            bgIcon.classList.add('text-red-500');
-                            bgIcon.classList.remove('text-red-400');
-                        } else {
-                            bgIcon.style.transform = 'scale(1)';
-                            bgIcon.classList.add('text-red-400');
-                            bgIcon.classList.remove('text-red-500');
-                        }
-                    }
                 }
-            };
-
-            const onDragEnd = () => {
-                if (!isDragging || !draggingItem) return;
-                isDragging = false;
-                
-                const springTransition = 'transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
-                
-                draggingItem.style.transition = springTransition;
-                if (adjacentItems.prev) {
-                    adjacentItems.prev.style.transition = springTransition;
-                    adjacentItems.prev.style.transform = 'translateX(0) scale(1)';
-                }
-                if (adjacentItems.next) {
-                    adjacentItems.next.style.transition = springTransition;
-                    adjacentItems.next.style.transform = 'translateX(0) scale(1)';
-                }
-                
-                const bgIcon = draggingItem.parentElement.querySelector('.bg-delete-icon');
-                if (bgIcon) {
-                    bgIcon.style.transform = 'scale(1)';
-                    bgIcon.classList.add('text-red-400');
-                    bgIcon.classList.remove('text-red-500');
-                }
-
-                if (currentX < -80) {
-                    const id = draggingItem.dataset.id;
-                    draggingItem.style.transform = 'translateX(0)'; 
-                    confirmDelete(id);
-                } else {
-                    draggingItem.style.transform = 'translateX(0)'; 
-                }
-                
-                draggingItem = null;
-                adjacentItems = { prev: null, next: null };
-            };
-
-            listContainer.addEventListener('touchstart', onDragStart, { passive: true });
-            listContainer.addEventListener('touchmove', onDragMove, { passive: false });
-            listContainer.addEventListener('touchend', onDragEnd);
-            
-            listContainer.addEventListener('mousedown', onDragStart);
-            document.addEventListener('mousemove', onDragMove, { passive: false });
-            document.addEventListener('mouseup', onDragEnd);
-        };
-
-
-        // ==========================================
-        // Dark Theme Professional List Render
-        // ==========================================
-        const renderPayments = (dataToRender = payments, forceAnimate = false) => {
-            const t = translations[currentLang];
-            document.getElementById('loadingState').classList.add('hidden');
-            const totalAmountEl = document.getElementById('totalAmount');
-            const recordCount = document.getElementById('recordCount');
-            const emptyState = document.getElementById('emptyState');
-            const listContainer = document.getElementById('listContainer');
-            
-            let total = 0;
-            payments.forEach(p => total += parseFloat(p.amount || 0));
-            
-            // Trigger Live Counter Animation when changed or explicitly forced
-            if (currentDisplayedTotal !== total || forceAnimate) {
-                animateValue(totalAmountEl, 0, total, 1000); 
-                currentDisplayedTotal = total;
-            } else {
-                totalAmountEl.innerText = formatLocaleDigit(total);
             }
-            
-            recordCount.innerText = formatLocaleDigit(filteredPayments.length);
+        }, { passive: false });
 
-            if (dataToRender.length === 0) {
-                emptyState.classList.remove('hidden');
-                listContainer.classList.add('hidden');
-                return;
+        container.addEventListener('touchend', (e) => {
+            if (!activeCardInner) return;
+            
+            if (holdTimer) {
+                clearTimeout(holdTimer);
+                holdTimer = null;
             }
 
-            emptyState.classList.add('hidden');
-            listContainer.classList.remove('hidden');
-            listContainer.innerHTML = '';
-
-            dataToRender.forEach((payment, index) => {
-                const li = document.createElement('li');
-                // Added relative wrapper for the swipe logic
-                li.className = `relative w-full group animate-item mb-3`;
-                li.style.animationDelay = `${index * 0.05}s`;
-                
-                const firstLetter = payment.source ? payment.source.charAt(0).toUpperCase() : 'P';
-                
-                li.innerHTML = `
-                    <!-- Swipe Delete Background (Revealed on swipe) -->
-                    <div class="absolute inset-0 bg-gradient-to-r from-dark-bg via-red-500/10 to-red-500/20 border border-red-500/30 rounded-2xl flex items-center justify-end px-6 z-0 overflow-hidden">
-                        <div class="bg-delete-icon transition-transform duration-300 flex flex-col items-center justify-center text-red-400">
-                            <i class="fas fa-trash-alt text-xl"></i>
-                            <span class="text-[9px] font-bold mt-1 uppercase tracking-widest">${t.deleteBtnTitle}</span>
-                        </div>
-                    </div>
-                    
-                    <!-- Foreground Swipeable Card -->
-                    <div class="swipe-item relative z-10 bg-dark-card border border-dark-border p-3.5 sm:p-4 rounded-2xl flex items-center w-full gap-2 transition-transform cursor-grab active:cursor-grabbing" data-id="${payment.id}">
-                        
-                        <div class="flex items-center gap-3 min-w-0 shrink max-w-[45%] sm:max-w-[50%] pointer-events-none">
-                            <div class="w-10 h-10 rounded-xl bg-dark-bg border border-dark-border text-cyan-primary flex items-center justify-center shrink-0 font-black text-lg shadow-sm">
-                                ${firstLetter}
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <h3 class="font-bold text-white text-[15px] truncate leading-tight">${payment.source}</h3>
-                                <div class="flex items-center gap-1.5 text-xs font-medium text-slate-400 truncate mt-0.5">
-                                    <span class="shrink-0">${formatLocaleDate(payment.date)}</span>
-                                    ${payment.notes ? `<span class="text-[8px] text-slate-600 shrink-0">•</span><span class="truncate italic">${payment.notes}</span>` : ''}
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="mx-auto px-1 shrink-0 pointer-events-none">
-                            <span class="font-black text-cyan-primary text-base sm:text-lg premium-number tracking-tight">৳ ${formatLocaleDigit(parseFloat(payment.amount || 0))}</span>
-                        </div>
-                        
-                        <div class="flex items-center gap-1.5 shrink-0 pl-1 z-20">
-                            <button onclick="editPayment('${payment.id}')" class="click-effect w-8 h-8 rounded-lg bg-dark-bg border border-dark-border text-slate-400 hover:text-amber-400 flex items-center justify-center transition-colors shadow-sm" title="${t.editBtnTitle}">
-                                <i class="fas fa-pen text-xs"></i>
-                            </button>
-                            <!-- Kept regular delete button for desktop users, though swipe also works -->
-                            <button onclick="confirmDelete('${payment.id}')" class="click-effect w-8 h-8 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/30 flex items-center justify-center transition-colors shadow-sm" title="${t.deleteBtnTitle}">
-                                <i class="fas fa-trash text-xs"></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
-                listContainer.appendChild(li);
-            });
-
-            // Initialize swipe logic after rendering list
-            setupSwipeToDelete();
-        };
-
-        const loadData = async () => {
-            const t = translations[currentLang];
-            document.getElementById('loadingState').classList.remove('hidden');
-            document.getElementById('listContainer').classList.add('hidden');
-            document.getElementById('emptyState').classList.add('hidden');
-            document.getElementById('loadingMsg').innerText = t.connectingText;
-            
-            try {
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 10000); 
-                const response = await fetch(scriptUrl, { signal: controller.signal });
-                clearTimeout(timeoutId);
-
-                if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
-                const result = await response.json();
-                
-                if (result.status === "success") {
-                    payments = result.data || [];
-                    saveToLocal(payments);
-                    updateStatusUI(true);
-                }
-            } catch (error) {
-                console.error("Crash Log: Fetch Error", error);
-                payments = loadFromLocal() || [];
-                updateStatusUI(false);
-            } finally {
-                applySearch(true, false); 
-            }
-        };
-
-        const addPayment = async (e) => {
-            e.preventDefault();
-            const t = translations[currentLang];
-            
-            const source = document.getElementById('source').value.trim();
-            const amount = document.getElementById('amount').value;
-            const date = document.getElementById('date').value;
-            const notes = document.getElementById('notes').value.trim();
-
-            if (!source || !amount || !date) return;
-
-            const actionType = editingId ? 'edit' : 'add';
-            let nextId = 1;
-            if (!editingId && payments.length > 0) {
-                const maxId = Math.max(...payments.map(p => parseInt(p.id) || 0));
-                nextId = maxId + 1;
-            }
-            const recordId = editingId || nextId.toString();
-
-            const newPayment = { action: actionType, id: recordId, source, amount: parseFloat(amount), date, notes };
-
-            const submitBtn = document.getElementById('submitBtn');
-            submitBtn.disabled = true;
-            document.getElementById('submitBtnText').innerText = t.submitBtnLoading;
-            document.querySelector('#submitBtn i').className = 'fas fa-spinner fa-spin';
-            submitBtn.classList.add('opacity-80', 'cursor-not-allowed');
-
-            try {
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 10000);
-                const response = await fetch(scriptUrl, { method: 'POST', body: JSON.stringify(newPayment), signal: controller.signal });
-                clearTimeout(timeoutId);
-
-                const result = await response.json();
-                
-                if (result.status === "success" || result.id) {
-                    if(actionType === 'edit') {
-                        const index = payments.findIndex(p => p.id.toString() === recordId.toString());
-                        if(index !== -1) payments[index] = newPayment;
-                    } else {
-                        newPayment.id = result.id || recordId;
-                        payments.unshift(newPayment);
-                    }
-                    saveToLocal(payments);
-                    updateStatusUI(true);
-                    
-                    showToast(actionType === 'edit' ? t.successUpdateMsg : t.successSaveMsg, actionType === 'edit' ? 'update' : 'success');
-                    switchTab('history'); 
-                } 
-            } catch (error) {
-                console.error("Crash Log: Post Error", error);
-                if(actionType === 'edit') {
-                    const index = payments.findIndex(p => p.id.toString() === recordId.toString());
-                    if(index !== -1) payments[index] = newPayment;
-                } else payments.unshift(newPayment);
-
-                saveToLocal(payments);
-                updateStatusUI(false);
-                
-                showToast(actionType === 'edit' ? t.successUpdateMsg : t.successSaveMsg, actionType === 'edit' ? 'update' : 'success');
-                switchTab('history');
-            } finally {
-                applySearch(false, false);
-                cancelEdit();
-                submitBtn.disabled = false;
-                submitBtn.classList.remove('opacity-80', 'cursor-not-allowed');
-                document.querySelector('#submitBtn i').className = 'fas fa-check-circle';
-            }
-        };
-
-        window.exportData = async (format) => {
-            const t = translations[currentLang];
-            
-            if(filteredPayments.length === 0) {
-                window.showMessage(t.warnTitle, t.exportNoData);
+            if (!isSwiping) {
+                activeCardInner = null;
+                activeWrapper = null;
+                prevInner = null;
+                nextInner = null;
+                deleteTriggered = false;
                 return;
             }
             
-            document.getElementById('loadingState').classList.remove('hidden');
-            
-            const printDiv = document.getElementById('printArea');
-            let totalAmount = 0;
-            let rowsHtml = '';
-            
-            filteredPayments.forEach((p, idx) => {
-                totalAmount += parseFloat(p.amount || 0);
-                rowsHtml += `
-                    <tr style="border-bottom: 1px solid #e2e8f0; background-color: ${idx % 2 === 0 ? '#f8fafc' : '#ffffff'};">
-                        <td style="padding: 12px 16px; font-weight: 600;">${formatLocaleDate(p.date)}</td>
-                        <td style="padding: 12px 16px; font-weight: bold; color: #0ea5e9;">${p.source}</td>
-                        <td style="padding: 12px 16px; color: #475569;">${p.notes || '-'}</td>
-                        <td style="padding: 12px 16px; text-align: right; font-weight: 800; color: #0f172a;">৳ ${formatLocaleDigit(parseFloat(p.amount || 0))}</td>
-                    </tr>
-                `;
-            });
+            if (!deleteTriggered) {
+                const springTransition = 'transform 0.6s cubic-bezier(0.34, 1.3, 0.64, 1)';
+                activeCardInner.style.transition = springTransition;
+                activeCardInner.style.transform = `translateX(0px)`;
 
-            const searchFilterText = document.getElementById('searchDate').value ? `${t.reportDateLabel} ${formatLocaleDate(document.getElementById('searchDate').value)}` : t.reportAll;
-            const totalStr = formatLocaleDigit(totalAmount);
-            const countStr = formatLocaleDigit(filteredPayments.length);
-
-            printDiv.innerHTML = `
-                <div style="font-family: 'Hind Siliguri', sans-serif; padding: 20px;">
-                    <div style="text-align: center; margin-bottom: 30px; border-bottom: 3px solid #0ea5e9; padding-bottom: 20px;">
-                        <h1 style="font-size: 32px; color: #0f172a; margin: 0 0 10px 0;">${t.reportTitle}</h1>
-                        <p style="font-size: 16px; color: #64748b; margin: 0;">${searchFilterText}</p>
-                    </div>
-                    
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 20px; background: #f8fafc; padding: 15px; border-radius: 10px; border: 1px solid #e2e8f0;">
-                        <div style="font-size: 18px; font-weight: bold; color: #0f172a;">${t.reportTotalRec} ${countStr}</div>
-                        <div style="font-size: 18px; font-weight: bold; color: #0f172a;">${t.reportTotalAmt} ৳ ${totalStr}</div>
-                    </div>
-
-                    <table style="width: 100%; border-collapse: collapse; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                        <thead>
-                            <tr style="background-color: #0ea5e9; color: white; text-align: left;">
-                                <th style="padding: 15px 16px; font-weight: bold;">${t.thDate}</th>
-                                <th style="padding: 15px 16px; font-weight: bold;">${t.thSource}</th>
-                                <th style="padding: 15px 16px; font-weight: bold;">${t.thNotes}</th>
-                                <th style="padding: 15px 16px; font-weight: bold; text-align: right;">${t.thAmount}</th>
-                            </tr>
-                        </thead>
-                        <tbody>${rowsHtml}</tbody>
-                    </table>
-                </div>
-            `;
-
-            try {
-                await new Promise(r => setTimeout(r, 100)); 
-                const canvas = await html2canvas(printDiv, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
-                if (format === 'png') {
-                    const link = document.createElement('a');
-                    link.download = `Payment_Report_${Date.now()}.png`;
-                    link.href = canvas.toDataURL('image/png');
-                    link.click();
-                } else if (format === 'pdf') {
-                    const { jsPDF } = window.jspdf;
-                    const pdf = new jsPDF('p', 'mm', 'a4');
-                    const imgData = canvas.toDataURL('image/png');
-                    const pdfWidth = pdf.internal.pageSize.getWidth();
-                    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-                    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-                    pdf.save(`Payment_Report_${Date.now()}.pdf`);
+                if (prevInner) {
+                    prevInner.style.transition = springTransition;
+                    prevInner.style.transform = 'translateX(0px)';
                 }
-                showToast(format === 'png' ? t.successExportPngMsg : t.successExportPdfMsg, format);
-            } catch(e) {
-                console.error("Crash Log: Export Failed", e);
-                window.showMessage(t.warnTitle, t.exportErr);
-            } finally {
-                printDiv.innerHTML = ''; 
-                document.getElementById('loadingState').classList.add('hidden');
-                document.getElementById('loadingMsg').innerText = t.loadingMsg; 
+                if (nextInner) {
+                    nextInner.style.transition = springTransition;
+                    nextInner.style.transform = 'translateX(0px)';
+                }
             }
-        };
-
-        // Initialize App
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('date').valueAsDate = new Date();
-            document.getElementById('paymentForm').addEventListener('submit', addPayment);
-            applyLanguage();
-            loadData();
+            
+            activeCardInner = null;
+            activeWrapper = null;
+            prevInner = null;
+            nextInner = null;
+            isSwiping = false;
+            currentX = 0;
         });
-    </script>
+    }
+
+    const renderRecords = () => {
+      const recordsContainer = document.getElementById('recordsContainer');
+      const recordCount = document.getElementById('recordCount');
+      const headerTotalPaid = document.getElementById('headerTotalPaid'); 
+      
+      const nameTerm = document.getElementById('searchName').value.toLowerCase().trim();
+      const numTerm = document.getElementById('searchNumber').value.replace(/\D/g, ''); 
+      const dateTerm = document.getElementById('searchDate').value;
+      
+      let totalPaid = 0;
+
+      const filtered = recordsData.filter(r => {
+        let isMatch = true;
+
+        if (nameTerm) {
+          const uName = String(r.userName || '').toLowerCase();
+          const p1000 = parseStatus(r.status1000x).playerId.toLowerCase();
+          const p615 = parseStatus(r.status615x).playerId.toLowerCase();
+          const mainTrx = String(r.trxId || '').toLowerCase();
+          const p1000Trx = parseStatus(r.status1000x).itemTrxId.toLowerCase();
+          const p615Trx = parseStatus(r.status615x).itemTrxId.toLowerCase();
+          
+          const nameMatch = uName.includes(nameTerm) || 
+                            p1000.includes(nameTerm) || 
+                            p615.includes(nameTerm) || 
+                            mainTrx.includes(nameTerm) || 
+                            p1000Trx.includes(nameTerm) || 
+                            p615Trx.includes(nameTerm);
+                            
+          if (!nameMatch) {
+             isMatch = false;
+          }
+        }
+        
+        if (numTerm) {
+          const uNum = String(r.number || '').replace(/\D/g, '');
+          if (!uNum.includes(numTerm)) {
+             isMatch = false;
+          }
+        }
+        
+        if (dateTerm) {
+          if (r.date !== dateTerm) {
+             isMatch = false;
+          }
+        }
+
+        if (isMatch) {
+          const stat1000x = parseStatus(r.status1000x).status;
+          const stat615x = parseStatus(r.status615x).status;
+          if (stat1000x === 'Paid') totalPaid += (Number(r.total1000x) || 0);
+          if (stat615x === 'Paid') totalPaid += (Number(r.total615x) || 0);
+        }
+
+        return isMatch;
+      });
+      
+      recordCount.innerText = filtered.length;
+      if (headerTotalPaid) headerTotalPaid.innerText = `৳${totalPaid.toLocaleString('en-US')}`; 
+
+      if (filtered.length === 0) { 
+        recordsContainer.innerHTML = ''; 
+        document.getElementById('emptyState').classList.remove('hidden'); 
+        return; 
+      }
+      document.getElementById('emptyState').classList.add('hidden');
+      
+      let html = '';
+      filtered.forEach((record, index) => {
+        
+        const p1000Card = parseStatus(record.status1000x);
+        const p615Card = parseStatus(record.status615x);
+        const hasDue = p1000Card.status === 'Pending' || p615Card.status === 'Pending';
+        const dueBadgeHtml = hasDue ? `<span class="bg-amber-500/20 border border-amber-500/30 text-amber-400 text-[8px] font-black px-1.5 py-0.5 rounded ml-2 uppercase tracking-widest">Due</span>` : '';
+
+        const renderAction = (type, total, statusStr) => {
+          const parsed = parseStatus(statusStr);
+          if(parsed.status === 'N/A') return '';
+          
+          let isPaid = parsed.status === 'Paid';
+          let isRejected = parsed.status === 'Rejected';
+          
+          let statusText = isPaid ? 'PAID' : (isRejected ? 'REJECTED' : 'DUE');
+          let badgeClass = isPaid ? 'text-emerald-400' : (isRejected ? 'text-red-500' : 'text-amber-400');
+          let iconClass = isPaid ? 'fa-check-double' : (isRejected ? 'fa-ban' : 'fa-hourglass-half');
+          
+          let statusBadge = `<span class="text-[11px] font-black tracking-wider uppercase flex items-center gap-1 ${badgeClass}"><i class="fa-solid ${iconClass}"></i> ${statusText}</span>`;
+          
+          let playerIdHtml = parsed.playerId ? `<div class="text-[11px] text-slate-400 mt-1 font-mono"><span class="text-slate-500">ID:</span> ${parsed.playerId}</div>` : '';
+          let itemTrxIdHtml = parsed.itemTrxId ? `<div class="text-[11px] text-sky-400 mt-0.5 font-mono"><span class="text-slate-500">TrxID:</span> ${parsed.itemTrxId}</div>` : '';
+
+          // ==========================================
+          // INLINE EDIT QTY & RATE FOR PENDING ITEMS
+          // ==========================================
+          let qtyRateHtml = '';
+          if (parsed.status === 'Pending') {
+              let currentQty = record['qty'+type] || '';
+              let currentRate = record['rate'+type] || '';
+              let displayQty = currentQty || '?';
+              let displayRate = currentRate || '?';
+              
+              qtyRateHtml = `
+                <span id="view-qty-${record.id}-${type}" onclick="window.editInline('qty', ${record.id}, '${type}', event)" class="cursor-pointer text-sky-300 hover:text-sky-200 transition-colors ios-bounce inline-block min-w-[14px] text-center ml-1" title="Tap to edit">${displayQty}</span>
+                <input type="number" id="inline-qty-${record.id}-${type}" value="${currentQty}" onblur="window.saveInline('qty', ${record.id}, '${type}')" onkeypress="if(event.key === 'Enter') this.blur();" placeholder="Qty" class="hidden w-10 h-5 bg-[#0b1120] border border-sky-500/40 rounded text-center text-[11px] text-sky-100 outline-none focus:border-sky-400 shadow-sm ml-1"> 
+                
+                <span class="text-slate-400 text-[11px] mx-1">x</span> 
+                
+                <span class="text-slate-400 text-[11px] mr-0.5">৳</span>
+                <span id="view-rate-${record.id}-${type}" onclick="window.editInline('rate', ${record.id}, '${type}', event)" class="cursor-pointer text-sky-300 hover:text-sky-200 transition-colors ios-bounce inline-block min-w-[16px] text-center" title="Tap to edit">${displayRate}</span>
+                <input type="number" id="inline-rate-${record.id}-${type}" value="${currentRate}" onblur="window.saveInline('rate', ${record.id}, '${type}')" onkeypress="if(event.key === 'Enter') this.blur();" placeholder="Rate" class="hidden w-12 h-5 bg-[#0b1120] border border-sky-500/40 rounded text-center text-[11px] text-sky-100 outline-none focus:border-sky-400 shadow-sm mr-1">
+              `;
+          } else {
+              let qtyDisp = record['qty'+type] || '?';
+              let rateDisp = record['rate'+type] ? `৳${record['rate'+type]}` : '?';
+              qtyRateHtml = ` <span class="text-slate-400 ml-1">${qtyDisp} x ${rateDisp}</span>`;
+          }
+
+          let inlineTrxInput = '';
+          if(parsed.status === 'Pending') {
+            inlineTrxInput = `
+              <div class="mt-2.5">
+                <input type="text" id="inline-trx-${record.id}-${type}" placeholder="Paste TrxID for ${type}..." class="w-full px-3 py-2 bg-[#0b1120] border border-[#334155] border-dashed focus:border-solid text-sky-100 placeholder-slate-500 rounded-lg focus:border-sky-500 outline-none text-[11px] font-mono">
+              </div>
+            `;
+          }
+
+          let actionBtns = parsed.status === 'Pending' ? `
+            ${inlineTrxInput}
+            <div class="flex gap-2 mt-2 w-full">
+              <button onclick="window.updateStatus(${record.id}, '${type}', 'Paid')" class="flex-1 py-1.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded text-xs font-bold active:bg-emerald-500/20 ios-bounce">Mark Paid</button>
+              <button onclick="window.updateStatus(${record.id}, '${type}', 'Rejected')" class="flex-1 py-1.5 bg-red-500/10 text-red-400 border border-red-500/30 rounded text-xs font-bold active:bg-red-500/20 ios-bounce">Reject</button>
+            </div>` : '';
+            
+          let totalHtml = total > 0 ? `৳${total.toLocaleString()}` : `<span class="text-[10px] text-amber-400 border border-amber-500/30 px-1.5 py-0.5 rounded">TBD</span>`;
+
+          return `<div class="p-3 rounded-xl border ${type === '1000x' ? 'bg-[#0b1120] border-[#334155]' : 'bg-[#0b1120] border-[#334155]'} mt-2">
+            <div class="flex justify-between items-start">
+              <div>
+                <span class="text-xs font-bold text-slate-300 flex items-center">${type} ID: ${qtyRateHtml}</span>
+                ${playerIdHtml}
+                ${itemTrxIdHtml}
+              </div>
+              <div class="flex flex-col items-end gap-1.5">
+                <span class="text-sm font-black text-sky-400 leading-none">${totalHtml}</span>
+                ${statusBadge}
+              </div>
+            </div>
+            ${actionBtns}
+          </div>`;
+        };
+
+        const mBadge = { bKash: 'bg-pink-500/20 text-pink-400 border border-pink-500/30', Nagad: 'bg-orange-500/20 text-orange-400 border border-orange-500/30', Rocket: 'bg-purple-500/20 text-purple-400 border border-purple-500/30', Binance: 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30' }[record.method] || 'bg-slate-700 text-slate-300 border border-slate-600';
+
+        const isExpanded = expandedRecordIds.has(Number(record.id));
+        const detailsStyle = isExpanded 
+          ? "max-height: 2000px; opacity: 1; margin-top: 12px;" 
+          : "max-height: 0px; opacity: 0; margin-top: 0px;";
+        const iconTransform = isExpanded ? "rotate(180deg)" : "rotate(0deg)";
+        
+        const animClass = !renderedRecordIds.has(record.id) ? 'new-record-anim' : '';
+        renderedRecordIds.add(record.id);
+
+        html += `
+          <div id="record-wrapper-${record.id}" class="record-wrapper ${animClass} relative mb-4 rounded-2xl w-full" style="background-color: #ef4444;">
+            
+            <div class="absolute inset-y-0 right-0 w-1/2 flex items-center justify-end px-6 text-white z-0">
+              <i class="fa-solid fa-trash-can text-2xl drop-shadow-md"></i>
+            </div>
+            
+            <div class="record-card-inner relative w-full h-full bg-[#1e293b] rounded-2xl shadow-sm border border-[#334155] p-4 z-10 transition-transform duration-300 overflow-hidden" data-id="${record.id}">
+              <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-sky-500"></div>
+              
+              <div class="flex justify-between items-start cursor-pointer select-none ios-bounce" onclick="window.toggleDetails(${record.id})">
+                <div>
+                  <h3 class="text-base font-bold text-white leading-tight flex items-center flex-wrap">
+                    ${record.userName}
+                    ${dueBadgeHtml}
+                  </h3>
+                  <p class="text-[11px] text-slate-400 font-medium mt-1.5"><i class="fa-regular fa-calendar-days"></i> ${record.displayDate}</p>
+                </div>
+                <div class="text-right flex flex-col items-end">
+                  <p class="text-lg font-black text-sky-400 leading-none mb-1.5">৳${record.grandTotal.toLocaleString()}</p>
+                  <div class="flex items-center gap-1 text-[10px] font-bold text-slate-400 bg-[#0b1120] border border-[#334155] px-2 py-1 rounded-full">
+                    Details <i id="icon-${record.id}" class="fa-solid fa-chevron-down transition-transform duration-300" style="transform: ${iconTransform}"></i>
+                  </div>
+                </div>
+              </div>
+              
+              <div id="details-${record.id}" class="details-panel overflow-hidden" style="${detailsStyle}">
+                <div class="pt-3 border-t border-[#334155]">
+                  <div class="flex items-center gap-2 mb-3">
+                    <span class="${mBadge} px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide">${record.method}</span>
+                    <span class="text-xs font-mono font-bold text-slate-300">${record.number}</span>
+                  </div>
+                  
+                  ${record.trxId ? `<div class="bg-[#0b1120] border border-[#334155] rounded-md px-2 py-1.5 text-[11px] font-mono text-slate-400 mb-3">Main TrxID: <span class="text-white font-semibold">${record.trxId}</span></div>` : ''}
+                  
+                  <div class="mb-4">
+                    ${renderAction('1000x', record.total1000x, record.status1000x)}
+                    ${renderAction('615x', record.total615x, record.status615x)}
+                  </div>
+                  
+                  <div class="grid grid-cols-4 gap-2 border-t border-[#334155] pt-3">
+                    <button onclick="window.editRecord(${record.id})" class="col-span-1 py-2 bg-[#0b1120] text-slate-300 text-[10px] font-bold rounded-lg border border-[#334155] active:bg-slate-700 ios-bounce"><i class="fa-solid fa-pen"></i> Edit</button>
+                    <button onclick="window.deleteRecord(${record.id})" class="col-span-1 py-2 bg-red-500/10 text-red-400 text-[10px] font-bold rounded-lg border border-red-500/30 active:bg-red-500/20 ios-bounce"><i class="fa-solid fa-trash-can"></i> Del</button>
+                    <button onclick="window.downloadReceipt(${record.id})" class="col-span-1 py-2 bg-slate-700 text-white text-[10px] font-bold rounded-lg active:bg-slate-600 shadow-sm ios-bounce"><i class="fa-regular fa-image"></i> IMG</button>
+                    <button onclick="window.downloadPDF(${record.id})" class="col-span-1 py-2 bg-sky-500 text-white text-[10px] font-bold rounded-lg active:bg-sky-600 shadow-sm ios-bounce"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>`;
+      });
+      document.getElementById('recordsContainer').innerHTML = html;
+      initSwipeToDismiss(); 
+    };
+
+    const loadLocalData = () => {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) recordsData = normalizeDateData(JSON.parse(saved));
+      } catch (err) {}
+      renderRecords();
+    };
+
+    const saveLocalData = () => {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(recordsData));
+      renderRecords();
+    };
+
+    const sendActionToSheet = async (actionType, recordData) => {
+      try {
+        await fetch(GOOGLE_SHEET_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify({ action: actionType, data: recordData })
+        });
+        saveLocalData();
+        updateConnectionUI(navigator.onLine);
+      } catch (error) {
+        saveLocalData();
+        updateConnectionUI(false); 
+      }
+    };
+
+    const form = document.getElementById('paymentForm');
+    const dateInput = document.getElementById('dateInput');
+    const userNameInput = document.getElementById('userName');
+    const methodInput = document.getElementById('method');
+    const numberInput = document.getElementById('number');
+    const trxIdInput = document.getElementById('trxId');
+    
+    const qty1000x = document.getElementById('qty1000x');
+    const rate1000x = document.getElementById('rate1000x');
+    const playerId1000x = document.getElementById('playerId1000x');
+    
+    const qty615x = document.getElementById('qty615x');
+    const rate615x = document.getElementById('rate615x');
+    const playerId615x = document.getElementById('playerId615x'); 
+
+    const calculateTotals = () => {
+      const t1000x = (Number(qty1000x.value) || 0) * (Number(rate1000x.value) || 0);
+      const t615x = (Number(qty615x.value) || 0) * (Number(rate615x.value) || 0);
+      const total = t1000x + t615x;
+      document.getElementById('sub1000x').innerText = `৳ ${t1000x.toLocaleString()}`;
+      document.getElementById('sub615x').innerText = `৳ ${t615x.toLocaleString()}`;
+      document.getElementById('grandTotalDisplay').innerText = `৳ ${total.toLocaleString()}`;
+      return { t1000x, t615x, total };
+    };
+
+    document.querySelectorAll('.calc-input').forEach(input => input.addEventListener('input', calculateTotals));
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const totals = calculateTotals();
+      
+      const q1 = Number(qty1000x.value) || 0;
+      const r1 = Number(rate1000x.value) || 0;
+      const q2 = Number(qty615x.value) || 0;
+      const r2 = Number(rate615x.value) || 0;
+      let pid1 = playerId1000x.value.trim();
+      let pid2 = playerId615x.value.trim();
+
+      const isActive1 = q1 > 0 || r1 > 0 || pid1 !== '';
+      const isActive2 = q2 > 0 || r2 > 0 || pid2 !== '';
+
+      if (!isActive1 && !isActive2) {
+        return window.showToast("Please enter amount, rate, or at least one ID", "error");
+      }
+
+      window.showToast("Saving data...", "info");
+
+      const btn = document.getElementById('submitBtn');
+      btn.innerHTML = '<div class="loader"></div> <span class="ml-2">Saving...</span>';
+      btn.disabled = true;
+
+      const rawDate = dateInput.value;
+      const formattedDate = formatDate(rawDate);
+      
+      let itemTrx1 = '';
+      let itemTrx2 = '';
+      let oldStatus1 = 'N/A';
+      let oldStatus2 = 'N/A';
+
+      if (editingId) {
+        const index = recordsData.findIndex(r => r.id === editingId);
+        if (index !== -1) {
+          const old1 = parseStatus(recordsData[index].status1000x);
+          const old2 = parseStatus(recordsData[index].status615x);
+          itemTrx1 = old1.itemTrxId;
+          itemTrx2 = old2.itemTrxId;
+          oldStatus1 = old1.status;
+          oldStatus2 = old2.status;
+        }
+      }
+
+      let stat1InputVal = document.getElementById('status1000xInput').value;
+      let stat2InputVal = document.getElementById('status615xInput').value;
+
+      let stat1Final = isActive1 ? stat1InputVal : 'N/A';
+      let stat2Final = isActive2 ? stat2InputVal : 'N/A';
+
+      // ==========================================
+      // NEW LOGIC: Clear Item TrxID if reverting to Pending
+      // ==========================================
+      if (editingId && oldStatus1 !== 'Pending' && stat1Final === 'Pending') {
+          itemTrx1 = '';
+      }
+      if (editingId && oldStatus2 !== 'Pending' && stat2Final === 'Pending') {
+          itemTrx2 = '';
+      }
+
+      const recordToSave = {
+        id: editingId || getNextId(),
+        date: rawDate,
+        displayDate: formattedDate,
+        userName: userNameInput.value,
+        method: methodInput.value,
+        number: numberInput.value,
+        trxId: trxIdInput.value.trim(),
+        qty1000x: q1,
+        rate1000x: r1,
+        total1000x: totals.t1000x,
+        qty615x: q2,
+        rate615x: r2,
+        total615x: totals.t615x,
+        grandTotal: totals.total,
+        status1000x: buildStatus(stat1Final, pid1, itemTrx1),
+        status615x: buildStatus(stat2Final, pid2, itemTrx2)
+      };
+
+      if (editingId) {
+        const index = recordsData.findIndex(r => r.id === editingId);
+        if (index !== -1) {
+          recordsData[index] = recordToSave;
+        }
+        sendActionToSheet('updateRecord', recordToSave).then(() => {
+          window.showToast("Record Updated!", "update");
+          resetForm();
+        });
+      } else {
+        recordsData.unshift(recordToSave);
+        sendActionToSheet('addRecord', recordToSave).then(() => {
+          window.showToast("New Record Saved!", "save");
+          resetForm();
+        });
+      }
+    });
+
+    const resetForm = () => {
+      editingId = null;
+      form.reset();
+      setTodayDate();
+      
+      document.getElementById('statusContainer1000x').classList.add('hidden');
+      document.getElementById('statusContainer615x').classList.add('hidden');
+      document.getElementById('status1000xInput').value = 'Pending';
+      document.getElementById('status615xInput').value = 'Pending';
+
+      calculateTotals();
+      
+      document.getElementById('formTitleText').innerText = 'Basic Details';
+      const topCancelBtn = document.getElementById('topCancelBtn');
+      if (topCancelBtn) topCancelBtn.classList.add('hidden');
+
+      const btn = document.getElementById('submitBtn');
+      btn.innerHTML = `<i class="fa-solid fa-check-circle"></i> Save Record`;
+      btn.className = "w-full py-4 bg-sky-500 active:bg-sky-600 text-white font-bold rounded-b-2xl shadow-[0_4px_14px_rgba(14,165,233,0.3)] flex justify-center items-center gap-2 text-lg save-bounce";
+      btn.disabled = false;
+      
+      renderedRecordIds.clear();
+      window.switchTab('history');
+    };
+
+    window.editRecord = (id) => {
+      const r = recordsData.find(r => r.id === id);
+      if (!r) return;
+      editingId = id;
+      dateInput.value = r.date || '';
+      userNameInput.value = r.userName;
+      methodInput.value = r.method;
+      numberInput.value = r.number;
+      trxIdInput.value = r.trxId || '';
+      
+      const p1000 = parseStatus(r.status1000x);
+      const p615 = parseStatus(r.status615x);
+
+      qty1000x.value = r.qty1000x || '';
+      rate1000x.value = r.rate1000x || '';
+      playerId1000x.value = p1000.playerId;
+      
+      document.getElementById('statusContainer1000x').classList.remove('hidden');
+      document.getElementById('status1000xInput').value = p1000.status !== 'N/A' ? p1000.status : 'Pending';
+      
+      qty615x.value = r.qty615x || '';
+      rate615x.value = r.rate615x || '';
+      playerId615x.value = p615.playerId;
+      
+      document.getElementById('statusContainer615x').classList.remove('hidden');
+      document.getElementById('status615xInput').value = p615.status !== 'N/A' ? p615.status : 'Pending';
+      
+      calculateTotals();
+      window.switchTab('new');
+      
+      document.getElementById('formTitleText').innerText = 'Update Details';
+      const topCancelBtn = document.getElementById('topCancelBtn');
+      if (topCancelBtn) topCancelBtn.classList.remove('hidden');
+      
+      const btn = document.getElementById('submitBtn');
+      btn.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Update Details`;
+      btn.className = "w-full py-4 bg-emerald-500 active:bg-emerald-600 text-white font-bold rounded-b-2xl shadow-[0_4px_14px_rgba(16,185,129,0.3)] flex justify-center items-center gap-2 text-lg save-bounce";
+    };
+
+    window.deleteRecord = (id, swipedCardElement = null) => {
+      const innerCard = swipedCardElement || document.querySelector(`.record-card-inner[data-id="${id}"]`);
+
+      showConfirmModal(
+        () => {
+          const wrapper = document.getElementById(`record-wrapper-${id}`);
+          if (wrapper) {
+            wrapper.style.height = wrapper.offsetHeight + 'px'; 
+            wrapper.style.marginBottom = '1rem'; 
+            void wrapper.offsetWidth;
+            wrapper.classList.add('removing'); 
+
+            setTimeout(() => {
+              recordsData = recordsData.filter(r => r.id !== id);
+              renderRecords(); 
+              sendActionToSheet('deleteRecord', { id: id }).then(() => {
+                window.showToast("Record Deleted!", "delete");
+              });
+            }, 400);
+          } else {
+            recordsData = recordsData.filter(r => r.id !== id);
+            renderRecords(); 
+            sendActionToSheet('deleteRecord', { id: id }).then(() => {
+              window.showToast("Record Deleted!", "delete");
+            });
+          }
+        },
+        () => {
+          if (innerCard) {
+            innerCard.style.transform = 'translateX(0px)';
+          }
+        }
+      );
+    };
+
+    window.updateStatus = (id, type, status) => {
+      const cardInner = document.querySelector(`.record-card-inner[data-id="${id}"]`);
+      if (cardInner) {
+        cardInner.style.transition = 'transform 0.15s cubic-bezier(0.4, 0, 0.2, 1)';
+        cardInner.style.transform = 'scale(0.98)';
+        
+        const wrapper = cardInner.closest('.record-wrapper');
+        if(wrapper && wrapper.nextElementSibling) {
+          wrapper.nextElementSibling.style.transition = 'transform 0.15s cubic-bezier(0.4, 0, 0.2, 1)';
+          wrapper.nextElementSibling.style.transform = 'translateY(-2px)';
+        }
+        if(wrapper && wrapper.previousElementSibling) {
+          wrapper.previousElementSibling.style.transition = 'transform 0.15s cubic-bezier(0.4, 0, 0.2, 1)';
+          wrapper.previousElementSibling.style.transform = 'translateY(2px)';
+        }
+      }
+
+      setTimeout(() => {
+        const idx = recordsData.findIndex(r => r.id === id);
+        if (idx !== -1) {
+          let rec = recordsData[idx];
+          const parsed = parseStatus(rec['status' + type]);
+          
+          const inlineTrxInput = document.getElementById(`inline-trx-${id}-${type}`);
+          let newItemTrxId = parsed.itemTrxId;
+          
+          if (inlineTrxInput && inlineTrxInput.value.trim() !== '') {
+            newItemTrxId = inlineTrxInput.value.trim();
+          }
+
+          // Fetch inline qty & rate if they exist
+          const inlineQtyInput = document.getElementById(`inline-qty-${id}-${type}`);
+          const inlineRateInput = document.getElementById(`inline-rate-${id}-${type}`);
+          
+          if (inlineQtyInput && inlineRateInput) {
+            rec['qty' + type] = Number(inlineQtyInput.value) || 0;
+            rec['rate' + type] = Number(inlineRateInput.value) || 0;
+            rec['total' + type] = rec['qty' + type] * rec['rate' + type];
+            
+            // Recalculate Grand Total
+            rec.grandTotal = (Number(rec.total1000x) || 0) + (Number(rec.total615x) || 0);
+          }
+
+          rec['status' + type] = buildStatus(status, parsed.playerId, newItemTrxId);
+          
+          saveLocalData(); 
+          sendActionToSheet('updateRecord', rec);
+          
+          window.showToast(status === 'Paid' ? "Payment Marked as Paid!" : "Payment Rejected!", status === 'Paid' ? "paid" : "reject");
+        }
+      }, 150);
+    };
+
+    // ==========================================
+    // MODERN HTML GENERATOR FOR RECEIPTS 
+    // ==========================================
+    const generateReceiptHTML = (record, isFullyPaid, isRejected) => {
+      const th = receiptTheme === 'dark' ? {
+        bg: '#0f172a', text: '#f8fafc', muted: '#94a3b8', border: '#334155', cardBg: '#1e293b', primary: '#0ea5e9', totalBg: '#0ea5e9', totalText: '#ffffff', trxBg: '#022c22', trxBorder: '#059669', trxText: '#34d399', badgePaidText: '#34d399', badgePendingText: '#fbbf24'
+      } : {
+        bg: '#ffffff', text: '#0f172a', muted: '#64748b', border: '#e2e8f0', cardBg: '#f8fafc', primary: '#2563eb', totalBg: '#0f172a', totalText: '#ffffff', trxBg: '#ecfdf5', trxBorder: '#10b981', trxText: '#047857', badgePaidText: '#059669', badgePendingText: '#d97706'
+      };
+
+      let overallStatusHtml = '';
+      if (isRejected) {
+          overallStatusHtml = `<div style="color: #ef4444; font-size: 14px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; margin-top: 4px;">✕ PAYMENT REJECTED</div>`;
+      } else if (isFullyPaid) {
+          overallStatusHtml = `<div style="color: ${th.badgePaidText}; font-size: 14px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; margin-top: 4px;">✓ PAID IN FULL</div>`;
+      } else {
+          overallStatusHtml = `<div style="color: ${th.badgePendingText}; font-size: 14px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; margin-top: 4px;">⏱ PAYMENT DUE</div>`;
+      }
+
+      const p1000 = parseStatus(record.status1000x);
+      const p615 = parseStatus(record.status615x);
+      
+      const getReceiptStatusHelper = (status) => {
+          if (status === 'Paid') return {text: '✓ PAID', color: th.badgePaidText};
+          if (status === 'Rejected') return {text: '✕ REJECTED', color: '#ef4444'};
+          return {text: '⏱ DUE', color: th.badgePendingText};
+      };
+
+      const s1000 = getReceiptStatusHelper(p1000.status);
+      const s615 = getReceiptStatusHelper(p615.status);
+
+      return `
+        <div id="receiptContent" style="width: 540px; padding: 40px; background: ${th.bg}; font-family: 'Inter', sans-serif; color: ${th.text}; border: 1px solid ${th.border}; box-sizing: border-box;">
+          
+          <table style="width: 100%; border-bottom: 2px dashed ${th.border}; padding-bottom: 25px; margin-bottom: 30px; border-collapse: collapse;">
+            <tr>
+              <td style="vertical-align: middle;">
+                <h1 style="margin: 0 0 8px 0; font-size: 32px; font-weight: 900; letter-spacing: -1px; color: ${th.primary};">RECEIPT</h1>
+                ${overallStatusHtml}
+              </td>
+              <td style="vertical-align: middle; text-align: right;">
+                <div style="color: ${th.muted}; font-size: 10px; text-transform: uppercase; font-weight: 800; letter-spacing: 1.5px; margin-bottom: 4px;">Date</div>
+                <div style="font-size: 16px; font-weight: 800; color: ${th.text};">${record.displayDate || 'N/A'}</div>
+              </td>
+            </tr>
+          </table>
+
+          ${record.trxId ? `
+          <div style="background: ${th.trxBg}; border: 1px dashed ${th.trxBorder}; padding: 16px; border-radius: 12px; text-align: center; margin-bottom: 30px;">
+            <p style="margin: 0; color: ${th.trxBorder}; font-size: 11px; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; margin-bottom: 4px;">Main Transaction ID</p>
+            <p style="margin: 0; font-size: 20px; font-weight: 800; color: ${th.trxText}; font-family: monospace; letter-spacing: 1px;">${record.trxId}</p>
+          </div>
+          ` : ''}
+
+          <table style="width: 100%; background: ${th.cardBg}; border-radius: 16px; margin-bottom: 35px; border-collapse: collapse; overflow: hidden;">
+            <tr>
+              <td style="width: 50%; padding: 24px; border-right: 1px solid ${th.border}; vertical-align: top;">
+                <p style="margin: 0 0 8px 0; color: ${th.muted}; font-size: 10px; text-transform: uppercase; font-weight: 800; letter-spacing: 1px;">Billed To</p>
+                <p style="margin: 0; font-size: 20px; font-weight: 800; color: ${th.text}; line-height: 1.3;">${record.userName}</p>
+              </td>
+              <td style="width: 50%; padding: 24px; text-align: center; vertical-align: top;">
+                <p style="margin: 0 0 8px 0; color: ${th.muted}; font-size: 10px; text-transform: uppercase; font-weight: 800; letter-spacing: 1px;">Payment Method</p>
+                <p style="margin: 0; font-size: 18px; font-weight: 800; color: ${th.text}; margin-bottom: 2px;">${record.method}</p>
+                <p style="margin: 0; color: ${th.primary}; font-weight: 800; font-size: 16px; font-family: monospace; letter-spacing: 1px;">${record.number}</p>
+              </td>
+            </tr>
+          </table>
+
+          <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
+            <tr>
+              <td style="padding-bottom: 12px; font-size: 11px; color: ${th.muted}; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; border-bottom: 2px solid ${th.border};">Item Details</td>
+              <td style="padding-bottom: 12px; font-size: 11px; color: ${th.muted}; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; text-align: center; width: 140px; border-bottom: 2px solid ${th.border};">Qty × Rate</td>
+              <td style="padding-bottom: 12px; font-size: 11px; color: ${th.muted}; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; text-align: right; width: 110px; border-bottom: 2px solid ${th.border};">Subtotal</td>
+            </tr>
+          </table>
+
+          <table style="width: 100%; border-collapse: collapse; margin-bottom: 40px;">
+            <tbody>
+              ${p1000.status !== 'N/A' ? `
+              <tr>
+                <td style="padding: 20px 0; border-bottom: 1px solid ${th.border}; vertical-align: middle;">
+                  <div style="font-weight: 800; font-size: 16px; color: ${th.text}; margin-bottom: ${p1000.playerId ? '4px' : '6px'};">1000x ID</div>
+                  ${p1000.playerId ? `<div style="font-size: 12px; color: ${th.muted}; font-family: monospace; margin-bottom: 4px; font-weight: 600;">ID: ${p1000.playerId}</div>` : ''}
+                  ${p1000.itemTrxId ? `<div style="font-size: 11px; color: ${th.primary}; font-family: monospace; margin-bottom: 8px; font-weight: 600;">Trx: ${p1000.itemTrxId}</div>` : ''}
+                  <div><span style="color: ${s1000.color}; font-weight: 900; font-size: 12px; letter-spacing: 1px; text-transform: uppercase;">${s1000.text}</span></div>
+                </td>
+                <td style="padding: 20px 0; border-bottom: 1px solid ${th.border}; text-align: center; color: ${th.text}; font-weight: 700; font-size: 15px;">
+                  ${record.total1000x > 0 ? `${record.qty1000x} <span style="color: ${th.muted}; font-size: 14px; margin: 0 4px;">×</span> ৳${record.rate1000x}` : `<span style="color: ${th.muted}; font-size: 12px;">--</span>`}
+                </td>
+                <td style="padding: 20px 0; border-bottom: 1px solid ${th.border}; text-align: right; font-weight: 800; font-size: 17px; color: ${th.text};">
+                  ${record.total1000x > 0 ? `৳${record.total1000x.toLocaleString('en-US')}` : `<span style="color: ${th.muted}; font-size: 12px;">--</span>`}
+                </td>
+              </tr>
+              ` : ''}
+              ${p615.status !== 'N/A' ? `
+              <tr>
+                <td style="padding: 20px 0; border-bottom: 1px solid ${th.border}; vertical-align: middle;">
+                  <div style="font-weight: 800; font-size: 16px; color: ${th.text}; margin-bottom: ${p615.playerId ? '4px' : '6px'};">615x ID</div>
+                  ${p615.playerId ? `<div style="font-size: 12px; color: ${th.muted}; font-family: monospace; margin-bottom: 4px; font-weight: 600;">ID: ${p615.playerId}</div>` : ''}
+                  ${p615.itemTrxId ? `<div style="font-size: 11px; color: ${th.primary}; font-family: monospace; margin-bottom: 8px; font-weight: 600;">Trx: ${p615.itemTrxId}</div>` : ''}
+                  <div><span style="color: ${s615.color}; font-weight: 900; font-size: 12px; letter-spacing: 1px; text-transform: uppercase;">${s615.text}</span></div>
+                </td>
+                <td style="padding: 20px 0; border-bottom: 1px solid ${th.border}; text-align: center; color: ${th.text}; font-weight: 700; font-size: 15px;">
+                  ${record.total615x > 0 ? `${record.qty615x} <span style="color: ${th.muted}; font-size: 14px; margin: 0 4px;">×</span> ৳${record.rate615x}` : `<span style="color: ${th.muted}; font-size: 12px;">--</span>`}
+                </td>
+                <td style="padding: 20px 0; border-bottom: 1px solid ${th.border}; text-align: right; font-weight: 800; font-size: 17px; color: ${th.text};">
+                  ${record.total615x > 0 ? `৳${record.total615x.toLocaleString('en-US')}` : `<span style="color: ${th.muted}; font-size: 12px;">--</span>`}
+                </td>
+              </tr>
+              ` : ''}
+            </tbody>
+          </table>
+
+          <!-- Grand Total -->
+          <div style="background: ${th.totalBg}; border-radius: 16px; padding: 24px 30px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; box-shadow: 0 10px 25px rgba(14, 165, 233, 0.2);">
+            <div style="color: rgba(255,255,255,0.8); font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Total Amount</div>
+            <div style="color: ${th.totalText}; font-size: 34px; font-weight: 900; letter-spacing: -1px;">৳${record.grandTotal.toLocaleString('en-US')}</div>
+          </div>
+
+          <!-- Footer -->
+          <div style="text-align: center; border-top: 2px dashed ${th.border}; pt-8; padding-top: 30px;">
+            <div style="display: inline-block; margin-bottom: 8px;">
+              <span style="font-size: 14px; font-weight: 800; color: ${th.text}; letter-spacing: 0.5px;">${isRejected ? 'Payment Cancelled/Rejected' : (isFullyPaid ? 'Payment Verified Successfully' : 'Payment Unverified')}</span>
+            </div>
+            <p style="margin: 0; font-size: 12px; color: ${th.muted}; font-weight: 600;">Generated Securely by <span style="color: ${th.primary}; font-weight: 800;">MK NETWORK</span></p>
+          </div>
+        </div>
+      `;
+    };
+
+    window.downloadReceipt = async (id) => {
+      const record = recordsData.find(r => r.id === id);
+      if(!record) return;
+      window.showToast("Generating Image...", "info");
+
+      let hasPending = false;
+      let hasPaid = false;
+      let hasRejected = false;
+
+      const p1000 = parseStatus(record.status1000x);
+      const p615 = parseStatus(record.status615x);
+
+      if (p1000.status !== 'N/A') {
+          if (p1000.status === 'Pending') hasPending = true;
+          else if (p1000.status === 'Paid') hasPaid = true;
+          else if (p1000.status === 'Rejected') hasRejected = true;
+      }
+      if (p615.status !== 'N/A') {
+          if (p615.status === 'Pending') hasPending = true;
+          else if (p615.status === 'Paid') hasPaid = true;
+          else if (p615.status === 'Rejected') hasRejected = true;
+      }
+
+      let isFullyPaid = false;
+      let isRejected = false;
+
+      if (hasPending) {
+          isFullyPaid = false;
+      } else if (hasPaid && !hasRejected) {
+          isFullyPaid = true;
+      } else if (hasRejected && !hasPaid) {
+          isRejected = true;
+      } else if (hasPaid && hasRejected) {
+          isFullyPaid = true; 
+      }
+
+      const wrapper = document.createElement('div');
+      wrapper.style.position = 'fixed';
+      wrapper.style.top = '0';
+      wrapper.style.left = '0';
+      wrapper.style.opacity = '0';
+      wrapper.style.zIndex = '-9999';
+      wrapper.style.pointerEvents = 'none';
+      wrapper.innerHTML = generateReceiptHTML(record, isFullyPaid, isRejected);
+      document.body.appendChild(wrapper);
+
+      void wrapper.offsetWidth; 
+
+      try {
+        const bgVal = receiptTheme === 'dark' ? '#0f172a' : '#ffffff';
+        html2canvas(wrapper.querySelector('#receiptContent'), { scale: 2.5, useCORS: true, logging: false, backgroundColor: bgVal }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = `Receipt_${record.userName.replace(/\s+/g, '_')}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            if (wrapper.parentNode) document.body.removeChild(wrapper);
+        }).catch(err => {
+            window.showToast("Error generating image", "error");
+            if (wrapper.parentNode) document.body.removeChild(wrapper);
+        });
+      } catch(err) { 
+        window.showToast("Error generating image", "error");
+        if (wrapper.parentNode) document.body.removeChild(wrapper);
+      }
+    };
+
+    window.downloadPDF = async (id) => {
+      const record = recordsData.find(r => r.id === id);
+      if(!record) return;
+      window.showToast("Generating PDF...", "info");
+
+      let hasPending = false;
+      let hasPaid = false;
+      let hasRejected = false;
+
+      const p1000 = parseStatus(record.status1000x);
+      const p615 = parseStatus(record.status615x);
+
+      if (p1000.status !== 'N/A') {
+          if (p1000.status === 'Pending') hasPending = true;
+          else if (p1000.status === 'Paid') hasPaid = true;
+          else if (p1000.status === 'Rejected') hasRejected = true;
+      }
+      if (p615.status !== 'N/A') {
+          if (p615.status === 'Pending') hasPending = true;
+          else if (p615.status === 'Paid') hasPaid = true;
+          else if (p615.status === 'Rejected') hasRejected = true;
+      }
+
+      let isFullyPaid = false;
+      let isRejected = false;
+
+      if (hasPending) {
+          isFullyPaid = false;
+      } else if (hasPaid && !hasRejected) {
+          isFullyPaid = true;
+      } else if (hasRejected && !hasPaid) {
+          isRejected = true;
+      } else if (hasPaid && hasRejected) {
+          isFullyPaid = true; 
+      }
+
+      const wrapper = document.createElement('div');
+      wrapper.style.position = 'fixed';
+      wrapper.style.top = '0';
+      wrapper.style.left = '0';
+      wrapper.style.opacity = '0';
+      wrapper.style.zIndex = '-9999';
+      wrapper.style.pointerEvents = 'none';
+      wrapper.innerHTML = generateReceiptHTML(record, isFullyPaid, isRejected);
+      document.body.appendChild(wrapper);
+
+      void wrapper.offsetWidth; 
+
+      const element = wrapper.querySelector('#receiptContent');
+      const opt = {
+        margin:       0.2,
+        filename:     `Receipt_${record.userName.replace(/\s+/g, '_')}.pdf`,
+        image:        { type: 'jpeg', quality: 1 },
+        html2canvas:  { scale: 2, useCORS: true, logging: false, backgroundColor: receiptTheme === 'dark' ? '#0f172a' : '#ffffff' },
+        jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+      };
+
+      try {
+        html2pdf().set(opt).from(element).save().then(() => {
+            if (wrapper.parentNode) document.body.removeChild(wrapper);
+            window.showToast("PDF Downloaded", "save");
+        }).catch(err => {
+            if (wrapper.parentNode) document.body.removeChild(wrapper);
+            window.showToast("Error generating PDF", "error");
+        });
+      } catch(err) {
+        if (wrapper.parentNode) document.body.removeChild(wrapper);
+        window.showToast("Error generating PDF", "error");
+      }
+    };
+
+    // Global Click Listener for resetting inline edits
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('input[id^="inline-qty-"]') && !e.target.closest('input[id^="inline-rate-"]') && !e.target.closest('span[id^="view-qty-"]') && !e.target.closest('span[id^="view-rate-"]')) {
+        document.querySelectorAll('input[id^="inline-qty-"], input[id^="inline-rate-"]').forEach(input => {
+          if (!input.classList.contains('hidden')) {
+            input.blur();
+          }
+        });
+      }
+    });
+
+    setTodayDate();
+    syncDataFromSheet(); 
+  </script>
 </body>
 </html>
