@@ -53,7 +53,6 @@
         /* M3 EXPRESSIVE BOUNCY & MAGNETIC EFFECTS (Android 16) */
         /* ==================================================== */
         
-        /* General Click Effect (Buttons, Icons) */
         .click-effect {
             transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
             will-change: transform;
@@ -62,11 +61,10 @@
             justify-content: center;
         }
         .click-effect:active {
-            transform: scale(0.85); /* Deep press for magnetic feel */
+            transform: scale(0.85);
             transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Main Submit Button Bouncy Effect */
         #submitBtn {
             transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, background-color 0.3s ease;
             will-change: transform;
@@ -77,7 +75,6 @@
             transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Bottom Nav Magnetic Bouncy Effect */
         .bottom-nav-btn {
             transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
             will-change: transform;
@@ -88,7 +85,6 @@
             transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Form Inputs Expressive Pop-out */
         .dark-input {
             background-color: #0f172a;
             border: 1px solid #334155;
@@ -101,7 +97,7 @@
             border-color: #0ea5e9;
             box-shadow: 0 10px 25px -5px rgba(14, 165, 233, 0.25);
             outline: none;
-            transform: scale(1.03) translateY(-2px); /* M3 Pop-out effect */
+            transform: scale(1.03) translateY(-2px);
             background-color: #1e293b;
         }
         
@@ -112,7 +108,6 @@
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
         }
 
-        /* List Item Bouncy Entry Animation */
         @keyframes slideInRightSpring {
             0% { opacity: 0; transform: translateX(40px) scale(0.9); }
             100% { opacity: 1; transform: translateX(0) scale(1); }
@@ -132,7 +127,6 @@
             transform: scale(0.7);
         }
 
-        /* Modal Bouncy Entry Animation */
         .modal-bounce-in {
             animation: modalSpring 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
@@ -225,10 +219,10 @@
             padding: 40px;
             color: black;
         }
-        
-        /* Swipe utilities */
+
         .swipe-item {
             touch-action: pan-y;
+            will-change: transform;
         }
     </style>
 </head>
@@ -349,7 +343,8 @@
                     
                     <div id="searchContent" class="flex items-center gap-1.5 pr-4 opacity-0 -translate-x-3 pointer-events-none transition-all duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)] whitespace-nowrap">
                         <input type="date" id="searchDate" onchange="applySearch(false, true)" class="bg-transparent border-none outline-none text-white text-[13px] font-bold cursor-pointer p-0 w-[105px]" style="color-scheme: dark;">
-                        <button id="clearSearchBtn" onclick="clearSearch()" class="hidden text-slate-500 hover:text-red-400 click-effect ml-1 flex items-center justify-center">
+                        <!-- Red cross button inside search box -->
+                        <button id="clearSearchBtn" onclick="clearSearch()" class="hidden text-red-500 hover:text-red-400 click-effect ml-1 flex items-center justify-center transition-colors">
                             <i class="fas fa-times-circle"></i>
                         </button>
                     </div>
@@ -388,7 +383,7 @@
                         <p id="emptyStateMsg" class="text-base font-bold text-slate-300 mb-1">কোনো ডেটা নেই</p>
                     </div>
 
-                    <ul id="listContainer" class="hidden pb-2 overflow-x-hidden">
+                    <ul id="listContainer" class="hidden pb-2 overflow-x-hidden relative">
                         <!-- Items injected here -->
                     </ul>
                 </div>
@@ -414,14 +409,14 @@
         </div>
     </div>
 
-    <!-- Animated Modal for Warnings/Alerts -->
+    <!-- Animated Modal for Warnings/Alerts & Details -->
     <div id="messageModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 backdrop-blur-sm px-4 opacity-0 pointer-events-none transition-opacity duration-300">
         <div id="modalBox" class="bg-dark-card border border-dark-border rounded-3xl p-6 sm:p-8 max-w-sm w-full shadow-2xl text-center opacity-0">
             <div id="modalIconContainer" class="w-14 h-14 rounded-full bg-dark-bg border border-dark-border flex items-center justify-center mx-auto mb-4 text-cyan-primary text-2xl">
                 <i id="modalIcon" class="fas fa-exclamation-triangle text-amber-400"></i>
             </div>
             <h3 id="modalTitle" class="text-xl font-black mb-2 text-white tracking-tight"></h3>
-            <p id="modalMessage" class="text-slate-400 mb-6 font-medium text-sm"></p>
+            <div id="modalMessage" class="text-slate-400 mb-6 font-medium text-sm overflow-hidden"></div>
             <div class="flex justify-center gap-3 w-full" id="modalButtons">
                 <!-- Buttons injected dynamically -->
             </div>
@@ -480,6 +475,9 @@
                 successExportPngMsg: "ইমেজ সফলভাবে ডাউনলোড হয়েছে!",
                 successExportPdfMsg: "পিডিএফ সফলভাবে ডাউনলোড হয়েছে!",
                 langChangeMsg: "ভাষা পরিবর্তন করা হয়েছে!",
+                cancelEditMsg: "এডিট বাতিল করা হয়েছে!",
+                savingDataMsg: "ডেটা সেভ হচ্ছে...",
+                searchActiveMsg: "তারিখ দিয়ে সার্চ করুন...",
                 exportNoData: "কোনো ডেটা নেই।",
                 exportErr: "ডাউনলোড ব্যর্থ হয়েছে।",
                 searchFoundMsg: "টি পেমেন্ট পাওয়া গেছে!",
@@ -493,7 +491,13 @@
                 thSource: "উৎস / নাম",
                 thNotes: "বিবরণ",
                 thAmount: "পরিমাণ",
-                langText: "EN"
+                langText: "EN",
+                detailTitle: "পেমেন্ট ডিটেলস",
+                detailName: "উৎস / নাম",
+                detailDate: "তারিখ",
+                detailAmount: "পরিমাণ",
+                detailNotes: "বিবরণ",
+                detailNoNotes: "কোনো বিবরণ নেই"
             },
             en: {
                 appSubtitle: "MD EMON",
@@ -534,6 +538,9 @@
                 successExportPngMsg: "Image downloaded successfully!",
                 successExportPdfMsg: "PDF downloaded successfully!",
                 langChangeMsg: "Language changed successfully!",
+                cancelEditMsg: "Edit cancelled!",
+                savingDataMsg: "Saving data...",
+                searchActiveMsg: "Search by date...",
                 exportNoData: "No data to export.",
                 exportErr: "Export failed.",
                 searchFoundMsg: "payments found!",
@@ -547,7 +554,13 @@
                 thSource: "Source / Name",
                 thNotes: "Notes",
                 thAmount: "Amount",
-                langText: "বাংলা"
+                langText: "বাংলা",
+                detailTitle: "Payment Details",
+                detailName: "Source / Name",
+                detailDate: "Date",
+                detailAmount: "Amount",
+                detailNotes: "Notes",
+                detailNoNotes: "No details available"
             }
         };
 
@@ -609,7 +622,7 @@
             }, 3500); 
         };
 
-        // Modal for Warnings (Animated M3 Spring)
+        // Modal for Warnings and Details (Animated M3 Spring)
         window.showMessage = (title, message, buttonsHtml = null, icon = 'fa-exclamation-triangle', iconColor = 'text-amber-400') => {
             const modal = document.getElementById('messageModal');
             const modalBox = document.getElementById('modalBox');
@@ -678,7 +691,6 @@
         // Date Normalizer to fix Timezone mismatch bugs from Google Apps Script
         const normalizeDate = (dStr) => {
             if (!dStr) return '';
-            // If already in YYYY-MM-DD format
             if (/^\d{4}-\d{2}-\d{2}$/.test(dStr)) return dStr;
             const d = new Date(dStr);
             if (isNaN(d)) return dStr;
@@ -747,7 +759,6 @@
             currentLang = currentLang === 'bn' ? 'en' : 'bn';
             localStorage.setItem('appLang', currentLang);
             
-            currentDisplayedTotal = 0; // Force trigger animation from 0 when language changes
             applyLanguage(true);
             
             const t = translations[currentLang];
@@ -755,7 +766,7 @@
         };
 
         // ==========================================
-        // View Navigation with Live Refresh Animation
+        // View Navigation with Info Retention (No Reset Scroll)
         // ==========================================
         window.switchTab = (tab) => {
             const viewEntry = document.getElementById('viewEntry');
@@ -770,9 +781,8 @@
                 viewHistory.classList.add('hidden');
                 viewHistory.classList.remove('flex');
 
-                // Re-trigger the soft bouncy animation for the Entry Box
                 viewEntry.classList.remove('animate-entry-box');
-                void viewEntry.offsetWidth; // Force Reflow to restart animation
+                void viewEntry.offsetWidth; 
                 viewEntry.classList.add('animate-entry-box');
 
                 navIconEntry.classList.add('text-cyan-primary');
@@ -801,14 +811,16 @@
                 tabTextEntry.classList.add('text-slate-500');
             }
             
-            // ALWAYS trigger live amount animation from 0 on tab change 
+            // Only update total amount smoothly if it has changed, no auto-scrolling to top to preserve user state
             let total = 0;
             payments.forEach(p => total += parseFloat(p.amount || 0));
-            animateValue(document.getElementById('totalAmount'), 0, total, 900); // 900ms smooth roll
-            currentDisplayedTotal = total;
+            if (currentDisplayedTotal !== total) {
+                animateValue(document.getElementById('totalAmount'), currentDisplayedTotal, total, 900); 
+                currentDisplayedTotal = total;
+            }
         };
 
-        window.cancelEdit = () => {
+        window.cancelEdit = (showMsg = true) => {
             editingId = null;
             document.getElementById('paymentForm').reset();
             document.getElementById('date').valueAsDate = new Date();
@@ -816,6 +828,10 @@
             document.getElementById('formIcon').className = 'fas fa-plus text-xs';
             document.getElementById('submitBtnText').innerText = translations[currentLang].submitBtnSave;
             document.getElementById('cancelEditBtn').classList.add('hidden');
+            
+            if (showMsg) {
+                showToast(translations[currentLang].cancelEditMsg, 'warning');
+            }
         };
 
         window.editPayment = (id) => {
@@ -834,7 +850,6 @@
             document.getElementById('cancelEditBtn').classList.remove('hidden');
             
             switchTab('entry');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
         window.confirmDelete = (id) => {
@@ -844,6 +859,34 @@
                 <button onclick="executeDelete('${id}')" class="click-effect bg-red-500/20 border border-red-500/50 text-red-400 px-5 py-3 rounded-xl font-bold flex-1 text-sm">${t.modalConfirmDel}</button>
             `;
             window.showMessage(t.warnTitle, t.warnDelMsg, buttonsHtml, 'fa-exclamation-triangle', 'text-amber-400');
+        };
+
+        window.showDetails = (id) => {
+            const p = payments.find(x => x.id.toString() === id.toString());
+            if(!p) return;
+            const t = translations[currentLang];
+            
+            const msgHtml = `
+                <div class="text-left bg-dark-bg p-4 rounded-xl border border-dark-border mt-3 space-y-3 shadow-inner">
+                    <div class="flex justify-between items-center border-b border-dark-border pb-2">
+                        <span class="text-slate-500 text-[10px] font-bold uppercase tracking-wider">${t.detailName}</span>
+                        <strong class="text-white text-sm">${p.source}</strong>
+                    </div>
+                    <div class="flex justify-between items-center border-b border-dark-border pb-2">
+                        <span class="text-slate-500 text-[10px] font-bold uppercase tracking-wider">${t.detailDate}</span>
+                        <strong class="text-white text-sm">${formatLocaleDate(p.date)}</strong>
+                    </div>
+                    <div class="flex justify-between items-center border-b border-dark-border pb-2">
+                        <span class="text-slate-500 text-[10px] font-bold uppercase tracking-wider">${t.detailAmount}</span>
+                        <strong class="text-cyan-primary text-base premium-number tracking-tight">৳ ${formatLocaleDigit(p.amount)}</strong>
+                    </div>
+                    <div class="flex flex-col gap-1 pt-1">
+                        <span class="text-slate-500 text-[10px] font-bold uppercase tracking-wider">${t.detailNotes}</span>
+                        <span class="text-slate-300 text-sm italic">${p.notes || t.detailNoNotes}</span>
+                    </div>
+                </div>
+            `;
+            window.showMessage(t.detailTitle, msgHtml, null, 'fa-info-circle', 'text-cyan-primary');
         };
 
         window.executeDelete = async (id) => {
@@ -861,7 +904,6 @@
                     showToast(t.successDeleteMsg, 'delete');
                 }
             } catch (error) {
-                // Silent catch, offline fallback
                 payments = payments.filter(p => p.id.toString() !== id.toString());
                 saveToLocal(payments);
                 updateStatusUI(false);
@@ -878,12 +920,10 @@
             const emptyStateMsg = document.getElementById('emptyStateMsg');
             
             if (searchVal) {
-                // Normalize dates to ensure YYYY-MM-DD matches seamlessly
                 filteredPayments = payments.filter(p => normalizeDate(p.date) === searchVal);
                 clearSearchBtn.classList.remove('hidden');
                 emptyStateMsg.innerText = t.emptyStateDateMsg;
                 
-                // Show dynamic search result toast
                 if (showToastMsg) {
                     if (filteredPayments.length > 0) {
                         const countStr = formatLocaleDigit(filteredPayments.length);
@@ -905,9 +945,6 @@
             applySearch(false, false);
         };
 
-        // ==========================================
-        // Animated Expandable Search Logic
-        // ==========================================
         let isSearchOpen = false;
         window.toggleSearch = () => {
             const container = document.getElementById('searchContainer');
@@ -918,31 +955,28 @@
             isSearchOpen = !isSearchOpen;
             
             if (isSearchOpen) {
-                // Open State
                 container.style.maxWidth = '220px';
                 content.classList.remove('opacity-0', '-translate-x-3', 'pointer-events-none');
                 content.classList.add('opacity-100', 'translate-x-0', 'pointer-events-auto');
                 
-                // Change Icon to Red Cross
                 icon.classList.remove('fa-search');
                 icon.classList.add('fa-times');
                 btnWrapper.classList.remove('text-cyan-primary');
                 btnWrapper.classList.add('text-red-500');
                 
                 setTimeout(() => document.getElementById('searchDate').focus(), 300);
+                
+                showToast(translations[currentLang].searchActiveMsg, 'info');
             } else {
-                // Close State
                 container.style.maxWidth = '44px';
                 content.classList.add('opacity-0', '-translate-x-3', 'pointer-events-none');
                 content.classList.remove('opacity-100', 'translate-x-0', 'pointer-events-auto');
                 
-                // Change Icon back to Search
                 icon.classList.remove('fa-times');
                 icon.classList.add('fa-search');
                 btnWrapper.classList.remove('text-red-500');
                 btnWrapper.classList.add('text-cyan-primary');
                 
-                // Reset search results if closed
                 if(document.getElementById('searchDate').value !== '') {
                     window.clearSearch();
                 }
@@ -950,27 +984,100 @@
         };
 
         // ==========================================
-        // ANDROID 16 STYLE SWIPE TO DELETE LOGIC
+        // ANDROID 16 STYLE SWIPE LOGIC: PUSH BACK, REVEAL & HOLD TO DELETE
         // ==========================================
-        const setupSwipeToDelete = () => {
+        const setupSwipeGestures = () => {
             const listContainer = document.getElementById('listContainer');
-            if(listContainer.dataset.swipeInitialized) return; 
+            if(listContainer.dataset.swipeInitialized) return;
             listContainer.dataset.swipeInitialized = 'true';
 
-            let startX = 0;
-            let startY = 0;
-            let currentX = 0;
-            let draggingItem = null;
-            let isDragging = false;
-            let isSwiping = null; 
+            let startX = 0, startY = 0, currentX = 0;
+            let draggingItem = null, isDragging = false, isSwiping = null;
             let adjacentItems = { prev: null, next: null };
+            let deleteHoldTimer = null; // Timer for Hold to Delete
+
+            const showBackgrounds = (item, x, isMain) => {
+                if (!item) return;
+                const parent = item.parentElement;
+                const delBg = parent.querySelector('.delete-bg');
+                const detBg = parent.querySelector('.details-bg');
+                
+                if (delBg) {
+                    delBg.style.transition = 'none';
+                    delBg.style.opacity = x < 0 ? '1' : '0';
+                    const icon = delBg.querySelector('.bg-delete-icon');
+                    if (icon) {
+                        // Show text/icon only on main dragged item, hide on adjacents
+                        if (isMain && x < 0) {
+                            if (!deleteHoldTimer) icon.style.opacity = '1';
+                        } else {
+                            icon.style.opacity = '0';
+                        }
+                    }
+                }
+                if (detBg) {
+                    detBg.style.transition = 'none';
+                    detBg.style.opacity = x > 0 ? '1' : '0';
+                    const icon = detBg.querySelector('.bg-details-icon');
+                    // Details still triggers normally, show instantly
+                    if (icon) icon.style.opacity = (isMain && x > 0) ? '1' : '0';
+                }
+            };
+
+            const hideBackgrounds = (item) => {
+                if (!item) return;
+                const parent = item.parentElement;
+                const delBg = parent.querySelector('.delete-bg');
+                const detBg = parent.querySelector('.details-bg');
+                if (delBg) {
+                    delBg.style.transition = 'opacity 0.4s ease';
+                    delBg.style.opacity = '0';
+                }
+                if (detBg) {
+                    detBg.style.transition = 'opacity 0.4s ease';
+                    detBg.style.opacity = '0';
+                }
+            };
+
+            const forceSnapBack = () => {
+                if (!draggingItem) return;
+                const item = draggingItem;
+                const prev = adjacentItems.prev;
+                const next = adjacentItems.next;
+                
+                const springTransition = 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                item.style.transition = springTransition;
+                item.style.transform = 'translateX(0) scale(1)';
+                
+                if (prev) {
+                    prev.style.transition = springTransition;
+                    prev.style.transform = 'translateX(0) scale(1)';
+                }
+                if (next) {
+                    next.style.transition = springTransition;
+                    next.style.transform = 'translateX(0) scale(1)';
+                }
+
+                hideBackgrounds(item);
+                hideBackgrounds(prev);
+                hideBackgrounds(next);
+                
+                if (deleteHoldTimer) {
+                    clearTimeout(deleteHoldTimer);
+                    deleteHoldTimer = null;
+                }
+                
+                draggingItem = null;
+                adjacentItems = { prev: null, next: null };
+                isDragging = false;
+            };
 
             const getClientX = (e) => e.touches ? e.touches[0].clientX : e.clientX;
             const getClientY = (e) => e.touches ? e.touches[0].clientY : e.clientY;
 
             const onDragStart = (e) => {
                 const item = e.target.closest('.swipe-item');
-                if (!item || e.target.closest('button') || e.target.closest('input')) return; 
+                if (!item || e.target.closest('button') || e.target.closest('input')) return;
                 
                 draggingItem = item;
                 startX = getClientX(e);
@@ -978,8 +1085,8 @@
                 currentX = 0;
                 isDragging = true;
                 isSwiping = null;
-                
-                draggingItem.style.transition = 'none'; 
+                deleteHoldTimer = null;
+                draggingItem.style.transition = 'none';
                 
                 const li = draggingItem.closest('li');
                 adjacentItems.prev = li.previousElementSibling ? li.previousElementSibling.querySelector('.swipe-item') : null;
@@ -991,46 +1098,83 @@
 
             const onDragMove = (e) => {
                 if (!isDragging || !draggingItem) return;
-                
-                const x = getClientX(e);
-                const y = getClientY(e);
-                const deltaX = x - startX;
-                const deltaY = y - startY;
+                const deltaX = getClientX(e) - startX;
+                const deltaY = getClientY(e) - startY;
 
                 if (isSwiping === null) {
-                    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 5) {
-                        isSwiping = true; 
-                    } else if (Math.abs(deltaY) > 5) {
-                        isSwiping = false; 
-                    }
+                    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 5) isSwiping = true;
+                    else if (Math.abs(deltaY) > 5) isSwiping = false;
                 }
 
-                if (isSwiping === true && deltaX < 0) {
-                    if(e.cancelable) e.preventDefault(); 
+                if (isSwiping === true) {
+                    if(e.cancelable) e.preventDefault();
                     
-                    currentX = deltaX * 0.7; 
-                    draggingItem.style.transform = `translateX(${currentX}px)`;
+                    // Delete side is harder to pull (0.45 friction) than Details side (0.7 friction)
+                    currentX = deltaX > 0 ? deltaX * 0.7 : deltaX * 0.45; 
                     
-                    const pull = Math.max(currentX * 0.15, -12);
-                    const scale = Math.max(1 + (currentX * 0.0004), 0.97);
+                    const mainScale = Math.max(1 - (Math.abs(currentX) * 0.0002), 0.97);
+                    draggingItem.style.transform = `translateX(${currentX}px) scale(${mainScale})`;
                     
-                    if (adjacentItems.prev) {
-                        adjacentItems.prev.style.transform = `translateX(${pull * 0.5}px) scale(${scale})`;
+                    // Greatly reduced neighbor movement (0.08 multiplier)
+                    const pull = currentX * 0.08; 
+                    const neighborScale = Math.max(1 - (Math.abs(currentX) * 0.00015), 0.97);
+                    
+                    if (adjacentItems.prev) adjacentItems.prev.style.transform = `translateX(${pull}px) scale(${neighborScale})`;
+                    if (adjacentItems.next) adjacentItems.next.style.transform = `translateX(${pull}px) scale(${neighborScale})`;
+
+                    showBackgrounds(draggingItem, currentX, true);
+                    showBackgrounds(adjacentItems.prev, currentX, false);
+                    showBackgrounds(adjacentItems.next, currentX, false);
+
+                    const parent = draggingItem.parentElement;
+                    
+                    // HOLD TO DELETE LOGIC
+                    if (currentX < -60) { 
+                        const bgIcon = parent.querySelector('.delete-bg .bg-delete-icon');
+                        
+                        if (!deleteHoldTimer) {
+                            if (bgIcon) {
+                                bgIcon.style.transform = 'scale(0.85)'; // Show tension
+                                bgIcon.style.opacity = '0.6';
+                            }
+                            
+                            // Require 600ms hold to trigger delete
+                            deleteHoldTimer = setTimeout(() => {
+                                if (bgIcon) {
+                                    bgIcon.style.transform = 'scale(1.3)'; // Pop!
+                                    bgIcon.style.opacity = '1';
+                                }
+                                const id = draggingItem.dataset.id;
+                                forceSnapBack(); // Snap back visually
+                                confirmDelete(id); // Show actual warning
+                            }, 600); 
+                        }
+                    } else {
+                        // Reset timer if they move back before 600ms
+                        if (deleteHoldTimer) {
+                            clearTimeout(deleteHoldTimer);
+                            deleteHoldTimer = null;
+                            const bgIcon = parent.querySelector('.delete-bg .bg-delete-icon');
+                            if (bgIcon) {
+                                bgIcon.style.transform = 'scale(1)';
+                                bgIcon.style.opacity = '1';
+                            }
+                        }
                     }
-                    if (adjacentItems.next) {
-                        adjacentItems.next.style.transform = `translateX(${pull * 0.5}px) scale(${scale})`;
-                    }
-                    
-                    const bgIcon = draggingItem.parentElement.querySelector('.bg-delete-icon');
-                    if (bgIcon) {
-                        if (currentX < -80) { 
-                            bgIcon.style.transform = 'scale(1.2)';
-                            bgIcon.classList.add('text-red-500');
-                            bgIcon.classList.remove('text-red-400');
-                        } else {
-                            bgIcon.style.transform = 'scale(1)';
-                            bgIcon.classList.add('text-red-400');
-                            bgIcon.classList.remove('text-red-500');
+
+                    // Details Logic (Instantly ready if pulled far enough)
+                    if (currentX > 0) {
+                        const bgIcon = parent.querySelector('.details-bg .bg-details-icon');
+                        if (bgIcon) {
+                            if (currentX > 80) { 
+                                bgIcon.style.transform = 'scale(1.2)';
+                                bgIcon.classList.add('text-cyan-400');
+                                bgIcon.classList.remove('text-cyan-500');
+                            } else {
+                                bgIcon.style.transform = 'scale(1)';
+                                bgIcon.classList.add('text-cyan-500');
+                                bgIcon.classList.remove('text-cyan-400');
+                            }
                         }
                     }
                 }
@@ -1038,66 +1182,44 @@
 
             const onDragEnd = () => {
                 if (!isDragging || !draggingItem) return;
-                isDragging = false;
                 
-                const springTransition = 'transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                const id = draggingItem.dataset.id;
+                const finalX = currentX;
                 
-                draggingItem.style.transition = springTransition;
-                if (adjacentItems.prev) {
-                    adjacentItems.prev.style.transition = springTransition;
-                    adjacentItems.prev.style.transform = 'translateX(0) scale(1)';
-                }
-                if (adjacentItems.next) {
-                    adjacentItems.next.style.transition = springTransition;
-                    adjacentItems.next.style.transform = 'translateX(0) scale(1)';
-                }
-                
-                const bgIcon = draggingItem.parentElement.querySelector('.bg-delete-icon');
-                if (bgIcon) {
-                    bgIcon.style.transform = 'scale(1)';
-                    bgIcon.classList.add('text-red-400');
-                    bgIcon.classList.remove('text-red-500');
-                }
+                forceSnapBack(); // Always snap back visually
 
-                if (currentX < -80) {
-                    const id = draggingItem.dataset.id;
-                    draggingItem.style.transform = 'translateX(0)'; 
-                    confirmDelete(id);
-                } else {
-                    draggingItem.style.transform = 'translateX(0)'; 
+                // Only trigger details on release. Delete is handled safely by the hold timer above.
+                if (finalX > 80) {
+                    showDetails(id);
                 }
-                
-                draggingItem = null;
-                adjacentItems = { prev: null, next: null };
             };
 
             listContainer.addEventListener('touchstart', onDragStart, { passive: true });
             listContainer.addEventListener('touchmove', onDragMove, { passive: false });
             listContainer.addEventListener('touchend', onDragEnd);
-            
             listContainer.addEventListener('mousedown', onDragStart);
             document.addEventListener('mousemove', onDragMove, { passive: false });
             document.addEventListener('mouseup', onDragEnd);
         };
-
 
         // ==========================================
         // Dark Theme Professional List Render
         // ==========================================
         const renderPayments = (dataToRender = payments, forceAnimate = false) => {
             const t = translations[currentLang];
-            document.getElementById('loadingState').classList.add('hidden');
+            const loadingState = document.getElementById('loadingState');
             const totalAmountEl = document.getElementById('totalAmount');
             const recordCount = document.getElementById('recordCount');
             const emptyState = document.getElementById('emptyState');
             const listContainer = document.getElementById('listContainer');
             
+            loadingState.classList.add('hidden');
+            
             let total = 0;
             payments.forEach(p => total += parseFloat(p.amount || 0));
             
-            // Trigger Live Counter Animation when changed or explicitly forced
             if (currentDisplayedTotal !== total || forceAnimate) {
-                animateValue(totalAmountEl, 0, total, 1000); 
+                animateValue(totalAmountEl, currentDisplayedTotal, total, 1000); 
                 currentDisplayedTotal = total;
             } else {
                 totalAmountEl.innerText = formatLocaleDigit(total);
@@ -1117,48 +1239,50 @@
 
             dataToRender.forEach((payment, index) => {
                 const li = document.createElement('li');
-                // Added relative wrapper for the swipe logic
-                li.className = `relative w-full group animate-item mb-3`;
+                li.className = `relative w-full animate-item mb-3`;
                 li.style.animationDelay = `${index * 0.05}s`;
                 
                 const firstLetter = payment.source ? payment.source.charAt(0).toUpperCase() : 'P';
                 
                 li.innerHTML = `
-                    <!-- Swipe Delete Background (Revealed on swipe) -->
-                    <div class="absolute inset-0 bg-gradient-to-r from-dark-bg via-red-500/10 to-red-500/20 border border-red-500/30 rounded-2xl flex items-center justify-end px-6 z-0 overflow-hidden">
-                        <div class="bg-delete-icon transition-transform duration-300 flex flex-col items-center justify-center text-red-400">
-                            <i class="fas fa-trash-alt text-xl"></i>
-                            <span class="text-[9px] font-bold mt-1 uppercase tracking-widest">${t.deleteBtnTitle}</span>
+                    <div class="absolute inset-0 rounded-2xl overflow-hidden">
+                        <!-- Details Background -->
+                        <div class="details-bg absolute inset-0 flex items-center justify-start px-6 z-0 opacity-0 transition-opacity duration-300">
+                            <div class="absolute inset-0 bg-gradient-to-r from-cyan-500/40 via-cyan-500/10 to-transparent rounded-2xl"></div>
+                            <div class="bg-details-icon transition-transform duration-300 flex flex-col items-center justify-center text-cyan-500 relative z-10">
+                                <i class="fas fa-info-circle text-xl"></i>
+                                <span class="text-[9px] font-bold mt-1 uppercase tracking-widest">${currentLang === 'bn' ? 'ডিটেলস' : 'DETAILS'}</span>
+                            </div>
+                        </div>
+                        <!-- Delete Background -->
+                        <div class="delete-bg absolute inset-0 flex items-center justify-end px-6 z-0 opacity-0 transition-opacity duration-300">
+                            <div class="absolute inset-0 bg-gradient-to-l from-red-500/40 via-red-500/10 to-transparent rounded-2xl"></div>
+                            <div class="bg-delete-icon transition-transform duration-300 flex flex-col items-center justify-center text-red-400 relative z-10">
+                                <i class="fas fa-trash-alt text-xl"></i>
+                                <span class="text-[9px] font-bold mt-1 uppercase tracking-widest">${t.deleteBtnTitle}</span>
+                            </div>
                         </div>
                     </div>
-                    
-                    <!-- Foreground Swipeable Card -->
-                    <div class="swipe-item relative z-10 bg-dark-card border border-dark-border p-3.5 sm:p-4 rounded-2xl flex items-center w-full gap-2 transition-transform cursor-grab active:cursor-grabbing" data-id="${payment.id}">
-                        
-                        <div class="flex items-center gap-3 min-w-0 shrink max-w-[45%] sm:max-w-[50%] pointer-events-none">
+
+                    <!-- Swipeable Card -->
+                    <div class="swipe-item relative z-10 bg-dark-card border border-dark-border p-3.5 sm:p-4 w-full flex items-center justify-between gap-2 rounded-2xl cursor-grab active:cursor-grabbing" data-id="${payment.id}">
+                        <div class="flex items-center gap-3 flex-1 min-w-0 pointer-events-none">
                             <div class="w-10 h-10 rounded-xl bg-dark-bg border border-dark-border text-cyan-primary flex items-center justify-center shrink-0 font-black text-lg shadow-sm">
                                 ${firstLetter}
                             </div>
-                            <div class="flex-1 min-w-0">
+                            <div class="flex flex-col min-w-0 flex-1">
                                 <h3 class="font-bold text-white text-[15px] truncate leading-tight">${payment.source}</h3>
-                                <div class="flex items-center gap-1.5 text-xs font-medium text-slate-400 truncate mt-0.5">
-                                    <span class="shrink-0">${formatLocaleDate(payment.date)}</span>
-                                    ${payment.notes ? `<span class="text-[8px] text-slate-600 shrink-0">•</span><span class="truncate italic">${payment.notes}</span>` : ''}
-                                </div>
+                                <span class="text-xs font-medium text-slate-400 mt-0.5 truncate">${formatLocaleDate(payment.date)}</span>
                             </div>
                         </div>
                         
-                        <div class="mx-auto px-1 shrink-0 pointer-events-none">
+                        <div class="shrink-0 text-right pointer-events-none whitespace-nowrap pl-1">
                             <span class="font-black text-cyan-primary text-base sm:text-lg premium-number tracking-tight">৳ ${formatLocaleDigit(parseFloat(payment.amount || 0))}</span>
                         </div>
                         
-                        <div class="flex items-center gap-1.5 shrink-0 pl-1 z-20">
+                        <div class="flex items-center shrink-0 pl-1 sm:pl-2 z-20">
                             <button onclick="editPayment('${payment.id}')" class="click-effect w-8 h-8 rounded-lg bg-dark-bg border border-dark-border text-slate-400 hover:text-amber-400 flex items-center justify-center transition-colors shadow-sm" title="${t.editBtnTitle}">
                                 <i class="fas fa-pen text-xs"></i>
-                            </button>
-                            <!-- Kept regular delete button for desktop users, though swipe also works -->
-                            <button onclick="confirmDelete('${payment.id}')" class="click-effect w-8 h-8 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/30 flex items-center justify-center transition-colors shadow-sm" title="${t.deleteBtnTitle}">
-                                <i class="fas fa-trash text-xs"></i>
                             </button>
                         </div>
                     </div>
@@ -1166,8 +1290,7 @@
                 listContainer.appendChild(li);
             });
 
-            // Initialize swipe logic after rendering list
-            setupSwipeToDelete();
+            setupSwipeGestures();
         };
 
         const loadData = async () => {
@@ -1192,7 +1315,9 @@
                     updateStatusUI(true);
                 }
             } catch (error) {
-                console.error("Crash Log: Fetch Error", error);
+                if (error.name !== 'AbortError') {
+                    console.log("Crash Log: App could not connect to database.", error);
+                }
                 payments = loadFromLocal() || [];
                 updateStatusUI(false);
             } finally {
@@ -1226,6 +1351,8 @@
             document.getElementById('submitBtnText').innerText = t.submitBtnLoading;
             document.querySelector('#submitBtn i').className = 'fas fa-spinner fa-spin';
             submitBtn.classList.add('opacity-80', 'cursor-not-allowed');
+            
+            showToast(t.savingDataMsg, 'info');
 
             try {
                 const controller = new AbortController();
@@ -1250,7 +1377,9 @@
                     switchTab('history'); 
                 } 
             } catch (error) {
-                console.error("Crash Log: Post Error", error);
+                if (error.name !== 'AbortError') {
+                    console.log("Crash Log: App could not connect to database.", error);
+                }
                 if(actionType === 'edit') {
                     const index = payments.findIndex(p => p.id.toString() === recordId.toString());
                     if(index !== -1) payments[index] = newPayment;
@@ -1263,7 +1392,7 @@
                 switchTab('history');
             } finally {
                 applySearch(false, false);
-                cancelEdit();
+                cancelEdit(false);
                 submitBtn.disabled = false;
                 submitBtn.classList.remove('opacity-80', 'cursor-not-allowed');
                 document.querySelector('#submitBtn i').className = 'fas fa-check-circle';
@@ -1345,7 +1474,7 @@
                 }
                 showToast(format === 'png' ? t.successExportPngMsg : t.successExportPdfMsg, format);
             } catch(e) {
-                console.error("Crash Log: Export Failed", e);
+                console.log("Crash Log: Export Failed", e);
                 window.showMessage(t.warnTitle, t.exportErr);
             } finally {
                 printDiv.innerHTML = ''; 
