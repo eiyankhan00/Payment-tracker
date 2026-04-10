@@ -136,7 +136,7 @@
         }
 
         /* ==================================================== */
-        /* PREMIUM LIVE AMOUNT ANIMATION (iOS/Android 16 Style) */
+        /* PREMIUM LIVE EFFECTS FOR SUMMARY CARD                */
         /* ==================================================== */
         
         .premium-number {
@@ -144,27 +144,83 @@
             letter-spacing: -0.02em;
         }
 
-        @keyframes siri-gradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        /* 1. Shine Sweep Animation */
+        @keyframes shine-sweep {
+            0% { left: -150%; }
+            30% { left: 150%; }
+            100% { left: 150%; }
         }
-        
-        .live-amount-text {
+        .shine-effect-card {
+            position: relative;
+            overflow: hidden;
+        }
+        .shine-effect-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 100%;
+            height: 100%;
             background: linear-gradient(
-                -45deg,
-                #ffffff 0%,
-                #e0f2fe 25%,
-                #38bdf8 50%,
-                #0284c7 75%,
-                #ffffff 100%
+                to right,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.05) 30%,
+                rgba(255, 255, 255, 0.4) 50%,
+                rgba(255, 255, 255, 0.05) 70%,
+                rgba(255, 255, 255, 0) 100%
             );
-            background-size: 250% 250%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            transform: skewX(-25deg);
+            animation: shine-sweep 6s cubic-bezier(0.25, 0.1, 0.25, 1) infinite;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        /* 2. Pulsating Live Dot */
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(56, 189, 248, 0); }
+            100% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
+        }
+        .live-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #38bdf8; /* cyan-400 */
+            margin-left: 6px;
+            animation: pulse-ring 2s infinite;
+        }
+
+        /* 3. Floating Background Orbs */
+        @keyframes float-orb-1 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-20px, 20px) scale(1.2); }
+        }
+        @keyframes float-orb-2 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(20px, -20px) scale(1.1); }
+        }
+        .anim-orb-1 { animation: float-orb-1 8s ease-in-out infinite; }
+        .anim-orb-2 { animation: float-orb-2 10s ease-in-out infinite; }
+
+        /* 4. Shimmering Text Effect */
+        @keyframes text-shimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+        .text-shimmer {
+            background: linear-gradient(
+                to right,
+                #38bdf8 20%,
+                #ffffff 40%,
+                #38bdf8 60%,
+                #38bdf8 80%
+            );
+            background-size: 200% auto;
             color: transparent;
-            animation: siri-gradient 4s ease infinite;
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation: text-shimmer 4s linear infinite;
         }
 
         @keyframes live-breathe {
@@ -247,12 +303,13 @@
         </div>
 
         <!-- ========================================= -->
-        <!-- PREMIUM DASHBOARD HERO CARD -->
+        <!-- PREMIUM DASHBOARD HERO CARD (WITH LIVE EFFECTS) -->
         <!-- ========================================= -->
-        <div class="dark-card p-6 sm:p-8 relative overflow-hidden mb-6 group shrink-0">
-            <div class="absolute top-0 right-0 w-32 h-32 bg-cyan-primary/10 rounded-full blur-2xl transform translate-x-10 -translate-y-10"></div>
-            <div class="absolute bottom-0 left-0 w-24 h-24 bg-cyan-primary/5 rounded-full blur-xl transform -translate-x-5 translate-y-5"></div>
-            <div class="absolute top-0 left-0 w-1 h-full bg-cyan-primary shadow-[0_0_10px_rgba(14,165,233,0.8)]"></div>
+        <div class="dark-card shine-effect-card p-6 sm:p-8 relative mb-6 group shrink-0">
+            <!-- Animated Background Orbs -->
+            <div class="anim-orb-1 absolute top-0 right-0 w-32 h-32 bg-cyan-primary/20 rounded-full blur-3xl transform translate-x-10 -translate-y-10 z-0"></div>
+            <div class="anim-orb-2 absolute bottom-0 left-0 w-24 h-24 bg-cyan-primary/10 rounded-full blur-2xl transform -translate-x-5 translate-y-5 z-0"></div>
+            <div class="absolute top-0 left-0 w-1 h-full bg-cyan-primary shadow-[0_0_15px_rgba(14,165,233,0.9)] z-10"></div>
             
             <div class="relative z-10 flex flex-col h-full justify-between">
                 <div class="flex justify-between items-start mb-6">
@@ -262,18 +319,23 @@
                             পেমেন্ট ট্র্যাকার <i class="fas fa-check-circle text-cyan-primary text-sm"></i>
                         </h1>
                     </div>
-                    <div class="w-10 h-10 bg-dark-bg rounded-xl flex items-center justify-center border border-dark-border">
+                    <div class="w-10 h-10 bg-dark-bg rounded-xl flex items-center justify-center border border-dark-border shadow-md">
                         <i class="fas fa-wallet text-lg text-cyan-primary"></i>
                     </div>
                 </div>
 
                 <div>
-                    <p id="totalPaymentLabel" class="text-slate-400 text-xs font-bold mb-1 tracking-widest uppercase">সর্বমোট ব্যালেন্স</p>
+                    <div class="flex items-center mb-1">
+                        <p id="totalPaymentLabel" class="text-slate-400 text-xs font-bold tracking-widest uppercase">সর্বমোট ব্যালেন্স</p>
+                        <!-- Live Pulsating Dot -->
+                        <span class="live-dot" title="Live Sync"></span>
+                    </div>
                     
                     <!-- LIVE AMOUNT WRAPPER -->
                     <div class="live-amount-wrapper">
                         <span class="text-xl font-bold text-cyan-primary">৳</span>
-                        <span id="totalAmount" class="text-4xl sm:text-5xl font-extrabold premium-number live-amount-text">০</span>
+                        <!-- Shimmering Text Applied Here -->
+                        <span id="totalAmount" class="text-4xl sm:text-5xl font-extrabold premium-number text-shimmer">০</span>
                     </div>
                 </div>
             </div>
@@ -906,6 +968,9 @@
                     showToast(t.successDeleteMsg, 'delete');
                 }
             } catch (error) {
+                if (error.name !== 'AbortError') {
+                    console.log("Crash Log: App could not connect to database.", error);
+                }
                 payments = payments.filter(p => p.id.toString() !== id.toString());
                 saveToLocal(payments);
                 updateStatusUI(false);
@@ -1009,7 +1074,6 @@
                     delBg.style.opacity = x < 0 ? '1' : '0';
                     const icon = delBg.querySelector('.bg-delete-icon');
                     if (icon) {
-                        // Show text/icon only on main dragged item, hide on adjacents
                         if (isMain && x < 0) {
                             if (!deleteHoldTimer) icon.style.opacity = '1';
                         } else {
@@ -1021,7 +1085,6 @@
                     detBg.style.transition = 'none';
                     detBg.style.opacity = x > 0 ? '1' : '0';
                     const icon = detBg.querySelector('.bg-details-icon');
-                    // Details still triggers normally, show instantly
                     if (icon) icon.style.opacity = (isMain && x > 0) ? '1' : '0';
                 }
             };
