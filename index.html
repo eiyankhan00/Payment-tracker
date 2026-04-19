@@ -280,6 +280,73 @@
             touch-action: pan-y;
             will-change: transform;
         }
+
+        /* ==================================================== */
+        /* MULTI-RING RAINDROP EFFECT (Global Click Animation)  */
+        /* ==================================================== */
+        .rain-drop-container {
+            position: fixed;
+            pointer-events: none; /* So it doesn't block other clicks */
+            z-index: 99999;
+            transform: translate(-50%, -50%);
+        }
+
+        .rain-ripple {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* First expanding ring */
+        .rain-ripple-1 {
+            border: 2px solid rgba(14, 165, 233, 0.8); /* Theme Cyan color */
+            animation: drop-expand 1.2s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+        }
+
+        /* Second expanding ring (slightly delayed) */
+        .rain-ripple-2 {
+            border: 1px solid rgba(56, 189, 248, 0.5); /* Theme Light Cyan color */
+            animation: drop-expand 1.4s cubic-bezier(0.1, 0.8, 0.3, 1) 0.2s forwards;
+        }
+
+        /* Center splash dot */
+        .rain-ripple-center {
+            width: 4px;
+            height: 4px;
+            background: #0ea5e9; /* Theme Cyan */
+            box-shadow: 0 0 8px 2px rgba(14, 165, 233, 0.8);
+            animation: drop-center 0.6s ease-out forwards;
+        }
+
+        /* Animation for expanding rings */
+        @keyframes drop-expand {
+            0% {
+                width: 0;
+                height: 0;
+                opacity: 1;
+                border-width: 4px;
+            }
+            100% {
+                width: 150px;
+                height: 150px;
+                opacity: 0;
+                border-width: 0;
+            }
+        }
+
+        /* Animation for center splash dot */
+        @keyframes drop-center {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -1554,6 +1621,57 @@
             document.getElementById('paymentForm').addEventListener('submit', addPayment);
             applyLanguage();
             loadData();
+
+            // ==========================================
+            // MULTI-RING RAINDROP EFFECT LOGIC
+            // ==========================================
+            const createRipple = (x, y) => {
+                // Create main container for the effect
+                const container = document.createElement('div');
+                container.className = 'rain-drop-container';
+                container.style.left = `${x}px`;
+                container.style.top = `${y}px`;
+
+                // Create the center splash dot
+                const centerDot = document.createElement('div');
+                centerDot.className = 'rain-ripple rain-ripple-center';
+                
+                // Create first ring
+                const ripple1 = document.createElement('div');
+                ripple1.className = 'rain-ripple rain-ripple-1';
+                
+                // Create second ring
+                const ripple2 = document.createElement('div');
+                ripple2.className = 'rain-ripple rain-ripple-2';
+
+                // Append elements
+                container.appendChild(centerDot);
+                container.appendChild(ripple1);
+                container.appendChild(ripple2);
+                document.body.appendChild(container);
+
+                // Remove the container from DOM after animation completes (1.6s)
+                setTimeout(() => {
+                    container.remove();
+                }, 1600);
+            };
+
+            // Listen for mouse clicks
+            document.addEventListener('click', (e) => {
+                createRipple(e.clientX, e.clientY);
+            });
+
+            // Listen for mobile touches
+            let lastTouchTime = 0;
+            document.addEventListener('touchstart', (e) => {
+                const now = Date.now();
+                if (now - lastTouchTime < 100) return; // Prevent double trigger with click
+                lastTouchTime = now;
+                
+                if (e.touches.length > 0) {
+                    createRipple(e.touches[0].clientX, e.touches[0].clientY);
+                }
+            }, { passive: true });
         });
     </script>
 </body>
