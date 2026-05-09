@@ -18,10 +18,10 @@
                 extend: {
                     colors: {
                         dark: {
-                            bg: '#0f172a', // slate-900
-                            card: '#1e293b', // slate-800
-                            border: '#334155', // slate-700
-                            hover: '#334155'
+                            bg: '#0b1121', // Slightly deeper background like iOS dark mode
+                            card: '#151e32', // Premium matte card
+                            border: 'rgba(255, 255, 255, 0.08)', // Soft borders
+                            hover: 'rgba(255, 255, 255, 0.05)'
                         },
                         cyan: {
                             primary: '#0ea5e9', // sky-500
@@ -39,81 +39,87 @@
         
         body {
             font-family: 'Outfit', 'Hind Siliguri', sans-serif;
-            background-color: #0f172a;
+            background-color: #0b1121;
             color: #f8fafc;
             -webkit-tap-highlight-color: transparent;
             overflow-x: hidden;
+            overscroll-behavior-y: none; /* Prevents bounce on scroll edge for app-like feel */
         }
 
         /* Hidden scrollbar */
         ::-webkit-scrollbar { width: 4px; background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 10px; }
         
         /* ==================================================== */
-        /* M3 EXPRESSIVE BOUNCY & MAGNETIC EFFECTS (Android 16) */
+        /* HYPEROS / IOS SPRING PHYSICS & TACTILE FEEDBACK      */
         /* ==================================================== */
         
         .click-effect {
-            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s ease, opacity 0.2s ease;
             will-change: transform;
             display: inline-flex;
             align-items: center;
             justify-content: center;
         }
+        /* Instant press-down, bouncy release */
         .click-effect:active {
-            transform: scale(0.85);
-            transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        #submitBtn {
-            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, background-color 0.3s ease;
-            will-change: transform;
-        }
-        #submitBtn:active {
-            transform: scale(0.92) translateY(4px);
-            box-shadow: 0 0 5px rgba(14,165,233,0.5);
-            transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: scale(0.92);
+            transition: transform 0.1s cubic-bezier(0.2, 0, 0, 1);
+            opacity: 0.8;
         }
 
         .bottom-nav-btn {
-            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease;
             will-change: transform;
         }
         .bottom-nav-btn:active {
-            transform: scale(0.82) translateY(6px);
-            opacity: 0.8;
-            transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: scale(0.85) translateY(4px);
+            opacity: 0.7;
+            transition: transform 0.1s cubic-bezier(0.2, 0, 0, 1);
         }
 
+        /* Input Fields - Smooth Focus */
         .dark-input {
-            background-color: #0f172a;
-            border: 1px solid #334155;
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             color: #f8fafc;
             border-radius: 1rem;
-            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            will-change: transform, box-shadow, border-color;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            will-change: transform, box-shadow, border-color, background-color;
         }
         .dark-input:focus {
             border-color: #0ea5e9;
-            box-shadow: 0 10px 25px -5px rgba(14, 165, 233, 0.25);
+            box-shadow: 0 8px 25px -5px rgba(14, 165, 233, 0.2), inset 0 0 0 1px rgba(14, 165, 233, 0.2);
             outline: none;
-            transform: scale(1.03) translateY(-2px);
-            background-color: #1e293b;
+            transform: scale(1.02) translateY(-2px);
+            background-color: rgba(255, 255, 255, 0.06);
         }
         
+        /* Cards */
         .dark-card {
-            background-color: #1e293b;
-            border: 1px solid #334155;
+            background-color: #151e32;
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 1.5rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.03);
         }
 
+        /* Fluid View Transitions */
+        .fade-in-view {
+            animation: fadeInSpring 0.5s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+            will-change: transform, opacity;
+        }
+        @keyframes fadeInSpring {
+            0% { opacity: 0; transform: scale(0.98) translateY(10px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* List Items Staggered Animation */
         @keyframes slideInRightSpring {
-            0% { opacity: 0; transform: translateX(40px) scale(0.9); }
+            0% { opacity: 0; transform: translateX(30px) scale(0.95); }
             100% { opacity: 1; transform: translateX(0) scale(1); }
         }
         .animate-item {
-            animation: slideInRightSpring 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation: slideInRightSpring 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
             will-change: transform, opacity;
         }
 
@@ -128,15 +134,15 @@
         }
 
         .modal-bounce-in {
-            animation: modalSpring 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation: modalSpring 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
         @keyframes modalSpring {
-            0% { opacity: 0; transform: scale(0.7) translateY(30px); }
+            0% { opacity: 0; transform: scale(0.85) translateY(20px); }
             100% { opacity: 1; transform: scale(1) translateY(0); }
         }
 
         /* ==================================================== */
-        /* PREMIUM LIVE EFFECTS FOR SUMMARY CARD                */
+        /* PREMIUM LIVE AMOUNT ANIMATION & EFFECTS              */
         /* ==================================================== */
         
         .premium-number {
@@ -144,7 +150,7 @@
             letter-spacing: -0.02em;
         }
 
-        /* 1. Shine Sweep Animation */
+        /* 1. Glass Shine Sweep Animation */
         @keyframes shine-sweep {
             0% { left: -150%; }
             30% { left: 150%; }
@@ -164,9 +170,9 @@
             background: linear-gradient(
                 to right,
                 rgba(255, 255, 255, 0) 0%,
-                rgba(255, 255, 255, 0.05) 30%,
-                rgba(255, 255, 255, 0.4) 50%,
-                rgba(255, 255, 255, 0.05) 70%,
+                rgba(255, 255, 255, 0.03) 30%,
+                rgba(255, 255, 255, 0.3) 50%,
+                rgba(255, 255, 255, 0.03) 70%,
                 rgba(255, 255, 255, 0) 100%
             );
             transform: skewX(-25deg);
@@ -186,24 +192,12 @@
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background-color: #38bdf8; /* cyan-400 */
-            margin-left: 6px;
+            background-color: #38bdf8;
+            margin-left: 8px;
             animation: pulse-ring 2s infinite;
         }
 
-        /* 3. Floating Background Orbs */
-        @keyframes float-orb-1 {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(-20px, 20px) scale(1.2); }
-        }
-        @keyframes float-orb-2 {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(20px, -20px) scale(1.1); }
-        }
-        .anim-orb-1 { animation: float-orb-1 8s ease-in-out infinite; }
-        .anim-orb-2 { animation: float-orb-2 10s ease-in-out infinite; }
-
-        /* 4. Shimmering Text Effect */
+        /* 3. Shimmering Text Effect */
         @keyframes text-shimmer {
             0% { background-position: -200% center; }
             100% { background-position: 200% center; }
@@ -223,6 +217,7 @@
             animation: text-shimmer 4s linear infinite;
         }
 
+        /* 4. Glowing Breathe Effect */
         @keyframes live-breathe {
             0%, 100% { filter: drop-shadow(0 0 12px rgba(14, 165, 233, 0.3)); transform: scale(1); }
             50% { filter: drop-shadow(0 0 25px rgba(56, 189, 248, 0.7)); transform: scale(1.02); }
@@ -248,22 +243,12 @@
             100% { opacity: 0; transform: translateY(-30px) scale(0.9); filter: blur(4px); }
         }
         .toast-enter {
-            animation: islandEnter 0.65s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            animation: islandEnter 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
             will-change: transform, opacity, filter;
         }
         .toast-leave {
-            animation: islandLeave 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            animation: islandLeave 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
             will-change: transform, opacity, filter;
-        }
-
-        /* Entry Box Smooth Animation */
-        @keyframes entryBoxSpring {
-            0% { opacity: 0; transform: scale(0.92) translateY(20px); }
-            100% { opacity: 1; transform: scale(1) translateY(0); }
-        }
-        .animate-entry-box {
-            animation: entryBoxSpring 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-            will-change: transform, opacity;
         }
 
         #printArea {
@@ -276,13 +261,21 @@
             color: black;
         }
 
+        /* GPU Accelerated Swipe */
         .swipe-item {
             touch-action: pan-y;
             will-change: transform;
         }
+        
+        /* GPU Accelerated Smooth Pill (iOS segment control) */
+        .animated-pill {
+            transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), width 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.3s ease, border-color 0.3s ease;
+            will-change: transform, width;
+            left: 0; /* Base for translateX */
+        }
     </style>
 </head>
-<body class="antialiased">
+<body class="antialiased relative overflow-x-hidden">
 
     <!-- Toast Notification Container (Dynamic Island Style) -->
     <div id="toastContainer" class="fixed top-6 left-0 right-0 z-[70] flex flex-col items-center gap-2 px-4 pointer-events-none"></div>
@@ -303,13 +296,11 @@
         </div>
 
         <!-- ========================================= -->
-        <!-- PREMIUM DASHBOARD HERO CARD (WITH LIVE EFFECTS) -->
+        <!-- PREMIUM DASHBOARD HERO CARD -->
         <!-- ========================================= -->
-        <div class="dark-card shine-effect-card p-6 sm:p-8 relative mb-6 group shrink-0">
-            <!-- Animated Background Orbs -->
-            <div class="anim-orb-1 absolute top-0 right-0 w-32 h-32 bg-cyan-primary/20 rounded-full blur-3xl transform translate-x-10 -translate-y-10 z-0"></div>
-            <div class="anim-orb-2 absolute bottom-0 left-0 w-24 h-24 bg-cyan-primary/10 rounded-full blur-2xl transform -translate-x-5 translate-y-5 z-0"></div>
-            <div class="absolute top-0 left-0 w-1 h-full bg-cyan-primary shadow-[0_0_15px_rgba(14,165,233,0.9)] z-10"></div>
+        <div class="dark-card shine-effect-card p-6 sm:p-8 relative overflow-hidden mb-6 group shrink-0">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-cyan-primary/10 rounded-full blur-2xl transform translate-x-10 -translate-y-10"></div>
+            <div class="absolute bottom-0 left-0 w-24 h-24 bg-cyan-primary/5 rounded-full blur-xl transform -translate-x-5 translate-y-5"></div>
             
             <div class="relative z-10 flex flex-col h-full justify-between">
                 <div class="flex justify-between items-start mb-6">
@@ -319,23 +310,34 @@
                             পেমেন্ট ট্র্যাকার <i class="fas fa-check-circle text-cyan-primary text-sm"></i>
                         </h1>
                     </div>
-                    <div class="w-10 h-10 bg-dark-bg rounded-xl flex items-center justify-center border border-dark-border shadow-md">
+                    <div class="w-10 h-10 bg-dark-bg/50 backdrop-blur-md rounded-xl flex items-center justify-center border border-dark-border shadow-md">
                         <i class="fas fa-wallet text-lg text-cyan-primary"></i>
                     </div>
                 </div>
 
                 <div>
                     <div class="flex items-center mb-1">
-                        <p id="totalPaymentLabel" class="text-slate-400 text-xs font-bold tracking-widest uppercase">সর্বমোট ব্যালেন্স</p>
+                        <p id="totalPaymentLabel" class="text-slate-400 text-xs font-bold tracking-widest uppercase">বর্তমান ব্যালেন্স</p>
                         <!-- Live Pulsating Dot -->
                         <span class="live-dot" title="Live Sync"></span>
                     </div>
                     
-                    <!-- LIVE AMOUNT WRAPPER -->
+                    <!-- LIVE AMOUNT WRAPPER (With Glow and Shimmer) -->
                     <div class="live-amount-wrapper">
                         <span class="text-xl font-bold text-cyan-primary">৳</span>
-                        <!-- Shimmering Text Applied Here -->
                         <span id="totalAmount" class="text-4xl sm:text-5xl font-extrabold premium-number text-shimmer">০</span>
+                    </div>
+                    
+                    <!-- INCOME / EXPENSE SUMMARY -->
+                    <div class="flex justify-between mt-5 border-t border-dark-border pt-4 w-full gap-4">
+                        <div class="flex-1 bg-dark-bg/40 rounded-xl p-3 border border-dark-border/50 shadow-inner">
+                            <p id="totalIncomeLabel" class="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5"><i class="fas fa-arrow-down text-emerald-400 mr-1"></i> মোট আয়</p>
+                            <p class="text-sm sm:text-base font-bold text-emerald-400 premium-number">৳ <span id="totalIncomeDisplay">০</span></p>
+                        </div>
+                        <div class="flex-1 bg-dark-bg/40 rounded-xl p-3 border border-dark-border/50 shadow-inner text-right">
+                            <p id="totalExpenseLabel" class="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">মোট খরচ <i class="fas fa-arrow-up text-rose-400 ml-1"></i></p>
+                            <p class="text-sm sm:text-base font-bold text-rose-400 premium-number">৳ <span id="totalExpenseDisplay">০</span></p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -344,14 +346,14 @@
         <!-- ========================================= -->
         <!-- VIEW 1: ENTRY FORM -->
         <!-- ========================================= -->
-        <div id="viewEntry" class="dark-card p-5 sm:p-7 relative shrink-0 animate-entry-box">
+        <div id="viewEntry" class="dark-card p-5 sm:p-7 relative shrink-0 fade-in-view">
             
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-lg font-bold text-white flex items-center gap-2.5">
                     <div class="w-7 h-7 rounded-lg bg-cyan-primary/20 flex items-center justify-center text-cyan-primary">
                         <i class="fas fa-plus text-xs" id="formIcon"></i>
                     </div>
-                    <span id="formTitleText">নতুন পেমেন্ট যোগ</span>
+                    <span id="formTitleText">নতুন এন্ট্রি যোগ</span>
                 </h2>
                 <button type="button" id="cancelEditBtn" onclick="cancelEdit()" class="hidden text-xs font-bold text-red-400 bg-red-400/10 border border-red-400/20 hover:bg-red-400/20 px-3 py-1.5 rounded-full click-effect">
                     বাতিল
@@ -360,9 +362,17 @@
 
             <form id="paymentForm" class="space-y-4">
                 
+                <!-- HARDWARE ACCELERATED TYPE TOGGLE (Income / Expense) -->
+                <div class="flex bg-dark-bg p-1.5 rounded-xl border border-dark-border shadow-inner relative mb-2" id="typeContainer">
+                    <div id="typeActiveBg" class="animated-pill absolute top-1.5 bottom-1.5 bg-cyan-primary/20 border border-cyan-primary/30 rounded-lg pointer-events-none z-0" style="transform: translateX(6px); width: calc(50% - 9px);"></div>
+                    
+                    <button type="button" id="btnTypeIncome" onclick="setEntryType('income')" class="flex-1 py-2.5 text-sm font-bold text-cyan-primary relative z-10 transition-colors duration-300">আয় (Income)</button>
+                    <button type="button" id="btnTypeExpense" onclick="setEntryType('expense')" class="flex-1 py-2.5 text-sm font-bold text-slate-400 hover:text-slate-200 relative z-10 transition-colors duration-300">খরচ (Expense)</button>
+                </div>
+
                 <div>
-                    <label id="sourceLabel" class="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">উৎস / নাম <span class="text-red-500">*</span></label>
-                    <input type="text" id="source" required class="dark-input w-full px-4 py-3.5 text-sm" placeholder="যেমন: ইমন, প্রজেক্ট">
+                    <label id="sourceLabel" class="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">উৎস / খাত <span class="text-red-500">*</span></label>
+                    <input type="text" id="source" required class="dark-input w-full px-4 py-3.5 text-sm" placeholder="যেমন: বেতন, বিল, শপিং">
                 </div>
                 
                 <div class="grid grid-cols-2 gap-3">
@@ -382,7 +392,7 @@
                 </div>
                 
                 <div class="pt-3">
-                    <button type="submit" id="submitBtn" class="w-full bg-cyan-primary text-dark-bg font-black py-3.5 rounded-xl flex items-center justify-center gap-2 text-sm uppercase tracking-wide click-effect">
+                    <button type="submit" id="submitBtn" class="w-full bg-cyan-primary text-dark-bg font-black py-3.5 rounded-xl flex items-center justify-center gap-2 text-sm uppercase tracking-wide click-effect shadow-[0_4px_14px_rgba(14,165,233,0.3)]">
                         <i class="fas fa-check-circle"></i> <span id="submitBtnText">সেভ করুন</span>
                     </button>
                 </div>
@@ -398,12 +408,12 @@
             <div class="flex gap-2 items-center mb-4 z-20 justify-between">
                 
                 <!-- Animated Expandable Search -->
-                <div id="searchContainer" class="flex items-center bg-dark-card rounded-full border border-dark-border transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] overflow-hidden" style="max-width: 44px; min-width: 44px; height: 44px;">
+                <div id="searchContainer" class="flex items-center bg-dark-card rounded-full border border-dark-border transition-all duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)] overflow-hidden" style="max-width: 44px; min-width: 44px; height: 44px;">
                     <button id="searchBtnWrapper" onclick="toggleSearch()" class="w-11 h-11 shrink-0 flex items-center justify-center text-cyan-primary click-effect rounded-full z-10 outline-none transition-colors duration-300">
                         <i id="searchToggleIcon" class="fas fa-search text-sm transition-transform duration-300"></i>
                     </button>
                     
-                    <div id="searchContent" class="flex items-center gap-1.5 pr-4 opacity-0 -translate-x-3 pointer-events-none transition-all duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)] whitespace-nowrap">
+                    <div id="searchContent" class="flex items-center gap-1.5 pr-4 opacity-0 -translate-x-3 pointer-events-none transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] whitespace-nowrap">
                         <input type="date" id="searchDate" onchange="applySearch(false, true)" class="bg-transparent border-none outline-none text-white text-[13px] font-bold cursor-pointer p-0 w-[105px]" style="color-scheme: dark;">
                         <!-- Red cross button inside search box -->
                         <button id="clearSearchBtn" onclick="clearSearch()" class="hidden text-red-500 hover:text-red-400 click-effect ml-1 flex items-center justify-center transition-colors">
@@ -413,10 +423,10 @@
                 </div>
                 
                 <div class="flex gap-2 shrink-0">
-                    <button onclick="exportData('pdf')" class="click-effect w-11 h-11 rounded-full bg-dark-card border border-dark-border text-red-400 hover:bg-red-500/10 hover:border-red-500/30 flex items-center justify-center shadow-sm">
+                    <button onclick="exportData('pdf')" class="click-effect w-11 h-11 rounded-full bg-dark-card border border-dark-border text-red-400 hover:bg-dark-hover flex items-center justify-center shadow-sm">
                         <i class="fas fa-file-pdf"></i>
                     </button>
-                    <button onclick="exportData('png')" class="click-effect w-11 h-11 rounded-full bg-dark-card border border-dark-border text-cyan-primary hover:bg-cyan-primary/10 hover:border-cyan-primary/30 flex items-center justify-center shadow-sm">
+                    <button onclick="exportData('png')" class="click-effect w-11 h-11 rounded-full bg-dark-card border border-dark-border text-cyan-primary hover:bg-dark-hover flex items-center justify-center shadow-sm">
                         <i class="fas fa-image"></i>
                     </button>
                 </div>
@@ -424,14 +434,14 @@
 
             <!-- List Area -->
             <div class="dark-card flex-1 overflow-hidden flex flex-col border border-dark-border">
-                <div class="px-5 py-3.5 border-b border-dark-border flex justify-between items-center bg-dark-card z-10">
+                <div class="px-5 py-3.5 border-b border-dark-border flex justify-between items-center bg-transparent z-10">
                     <h2 id="listTitle" class="text-xs font-bold text-slate-300 uppercase tracking-widest flex items-center gap-2">
-                        <i class="fas fa-list-ul text-cyan-primary"></i> ট্রানজেকশন সমূহ
+                        <i class="fas fa-list-ul text-cyan-primary"></i> <span id="listTitleText">ট্রানজেকশন সমূহ</span>
                     </h2>
                     <span id="recordCount" class="bg-dark-bg text-cyan-primary border border-dark-border text-[10px] font-black px-2.5 py-1 rounded-md premium-number">০</span>
                 </div>
                 
-                <div class="flex-1 overflow-y-auto p-3 relative bg-dark-bg/50" id="paymentsList">
+                <div class="flex-1 overflow-y-auto p-3 relative bg-transparent" id="paymentsList">
                     
                     <div id="loadingState" class="absolute inset-0 flex flex-col items-center justify-center z-10">
                         <i class="fas fa-circle-notch fa-spin text-2xl text-cyan-primary mb-3"></i>
@@ -439,7 +449,7 @@
                     </div>
 
                     <div id="emptyState" class="hidden absolute inset-0 flex flex-col items-center justify-center text-center px-6">
-                        <div class="w-16 h-16 bg-dark-card rounded-full flex items-center justify-center mb-3 border border-dark-border">
+                        <div class="w-16 h-16 bg-dark-bg rounded-full border border-dark-border shadow-inner flex items-center justify-center mb-3">
                             <i class="fas fa-file-invoice text-2xl text-slate-600"></i>
                         </div>
                         <p id="emptyStateMsg" class="text-base font-bold text-slate-300 mb-1">কোনো ডেটা নেই</p>
@@ -455,7 +465,7 @@
     </div>
 
     <!-- ========================================= -->
-    <!-- SLICK BOTTOM NAVIGATION                   -->
+    <!-- SLICK BOTTOM NAVIGATION (FROSTED GLASS)   -->
     <!-- ========================================= -->
     <div class="fixed bottom-0 left-0 right-0 z-40 bg-dark-card/90 backdrop-blur-lg border-t border-dark-border pb-safe">
         <div class="max-w-lg mx-auto flex justify-around items-center h-16 px-2">
@@ -464,16 +474,21 @@
                 <span id="tabTextEntry" class="text-[10px] font-bold text-cyan-primary uppercase tracking-widest transition-colors">এন্ট্রি</span>
             </button>
 
-            <button onclick="switchTab('history')" class="bottom-nav-btn flex-1 flex flex-col items-center justify-center gap-1 h-full outline-none group">
-                <i id="navIconHistory" class="fas fa-clock text-slate-500 text-lg transition-colors"></i>
-                <span id="tabTextHistory" class="text-[10px] font-bold text-slate-500 uppercase tracking-widest transition-colors">হিস্টোরি</span>
+            <button onclick="switchTab('income')" class="bottom-nav-btn flex-1 flex flex-col items-center justify-center gap-1 h-full outline-none group">
+                <i id="navIconIncome" class="fas fa-arrow-down text-slate-500 text-lg transition-colors"></i>
+                <span id="tabTextIncome" class="text-[10px] font-bold text-slate-500 uppercase tracking-widest transition-colors">আয়</span>
+            </button>
+            
+            <button onclick="switchTab('expense')" class="bottom-nav-btn flex-1 flex flex-col items-center justify-center gap-1 h-full outline-none group">
+                <i id="navIconExpense" class="fas fa-arrow-up text-slate-500 text-lg transition-colors"></i>
+                <span id="tabTextExpense" class="text-[10px] font-bold text-slate-500 uppercase tracking-widest transition-colors">খরচ</span>
             </button>
         </div>
     </div>
 
     <!-- Animated Modal for Warnings/Alerts & Details -->
-    <div id="messageModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 backdrop-blur-sm px-4 opacity-0 pointer-events-none transition-opacity duration-300">
-        <div id="modalBox" class="bg-dark-card border border-dark-border rounded-3xl p-6 sm:p-8 max-w-sm w-full shadow-2xl text-center opacity-0">
+    <div id="messageModal" class="fixed inset-0 bg-slate-900/60 flex items-center justify-center z-50 backdrop-blur-md px-4 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div id="modalBox" class="dark-card border border-white/10 rounded-3xl p-6 sm:p-8 max-w-sm w-full shadow-2xl text-center opacity-0">
             <div id="modalIconContainer" class="w-14 h-14 rounded-full bg-dark-bg border border-dark-border flex items-center justify-center mx-auto mb-4 text-cyan-primary text-2xl">
                 <i id="modalIcon" class="fas fa-exclamation-triangle text-amber-400"></i>
             </div>
@@ -501,13 +516,21 @@
             bn: {
                 appSubtitle: "MD EMON",
                 appTitle: "পেমেন্ট ট্র্যাকার <i class='fas fa-check-circle text-cyan-primary text-sm'></i>",
-                totalPaymentLabel: "সর্বমোট ব্যালেন্স",
+                totalPaymentLabel: "বর্তমান ব্যালেন্স",
+                totalIncomeLabel: "মোট আয়",
+                totalExpenseLabel: "মোট খরচ",
+                typeIncome: "আয় (Income)",
+                typeExpense: "খরচ (Expense)",
                 tabNewEntry: "এন্ট্রি",
-                tabHistory: "হিস্টোরি",
-                formTitleAdd: "নতুন পেমেন্ট যোগ",
-                formTitleEdit: "পেমেন্ট আপডেট",
-                sourceLabel: "উৎস / নাম <span class='text-red-500'>*</span>",
-                sourcePlaceholder: "যেমন: ইমন, প্রজেক্ট",
+                tabIncome: "আয়",
+                tabExpense: "খরচ",
+                listTitleIncome: "আয়ের তালিকা",
+                listTitleExpense: "খরচের তালিকা",
+                listTitle: "ট্রানজেকশন সমূহ",
+                formTitleAdd: "নতুন এন্ট্রি যোগ",
+                formTitleEdit: "এন্ট্রি আপডেট",
+                sourceLabel: "উৎস / খাত <span class='text-red-500'>*</span>",
+                sourcePlaceholder: "যেমন: বেতন, বিল, শপিং",
                 amountLabel: "পরিমাণ (৳) <span class='text-red-500'>*</span>",
                 dateLabel: "তারিখ <span class='text-red-500'>*</span>",
                 notesLabel: "বিবরণ (ঐচ্ছিক)",
@@ -516,11 +539,10 @@
                 submitBtnSave: "সেভ করুন",
                 submitBtnUpdate: "আপডেট করুন",
                 submitBtnLoading: "সেভ হচ্ছে...",
-                listTitle: "ট্রানজেকশন সমূহ",
                 records: "টি",
                 loadingMsg: "লোড হচ্ছে...",
-                emptyStateMsg: "কোনো পেমেন্ট নেই",
-                emptyStateDateMsg: "এই তারিখে পেমেন্ট নেই",
+                emptyStateMsg: "কোনো ডেটা নেই",
+                emptyStateDateMsg: "এই তারিখে কোনো ডেটা নেই",
                 onlineText: "কানেক্টেড",
                 offlineText: "অফলাইন",
                 connectingText: "কানেক্ট হচ্ছে...",
@@ -542,35 +564,47 @@
                 searchActiveMsg: "তারিখ দিয়ে সার্চ করুন...",
                 exportNoData: "কোনো ডেটা নেই।",
                 exportErr: "ডাউনলোড ব্যর্থ হয়েছে।",
-                searchFoundMsg: "টি পেমেন্ট পাওয়া গেছে!",
-                searchNotFoundMsg: "এই তারিখে কোনো পেমেন্ট পাওয়া যায়নি!",
-                reportTitle: "পেমেন্ট রিপোর্ট",
-                reportAll: "সকল পেমেন্ট",
+                searchFoundMsg: "টি ডেটা পাওয়া গেছে!",
+                searchNotFoundMsg: "এই তারিখে কোনো ডেটা পাওয়া যায়নি!",
+                reportTitle: "ফাইন্যান্সিয়াল রিপোর্ট",
+                reportAll: "সকল ট্রানজেকশন",
                 reportDateLabel: "তারিখ: ",
                 reportTotalRec: "মোট রেকর্ড: ",
-                reportTotalAmt: "সর্বমোট: ",
+                reportTotalAmt: "বর্তমান ব্যালেন্স: ",
                 thDate: "তারিখ",
-                thSource: "উৎস / নাম",
+                thSource: "উৎস / খাত",
                 thNotes: "বিবরণ",
                 thAmount: "পরিমাণ",
                 langText: "EN",
-                detailTitle: "পেমেন্ট ডিটেলস",
-                detailName: "উৎস / নাম",
+                detailTitle: "ট্রানজেকশন ডিটেলস",
+                detailName: "উৎস / খাত",
                 detailDate: "তারিখ",
                 detailAmount: "পরিমাণ",
                 detailNotes: "বিবরণ",
-                detailNoNotes: "কোনো বিবরণ নেই"
+                detailNoNotes: "কোনো বিবরণ নেই",
+                filterTitle: "ফিল্টার রেকর্ডস",
+                filterAll: "সব রেকর্ড",
+                filterIncome: "আয়",
+                filterExpense: "খরচ"
             },
             en: {
                 appSubtitle: "MD EMON",
-                appTitle: "Payment Tracker <i class='fas fa-check-circle text-cyan-primary text-sm'></i>",
-                totalPaymentLabel: "TOTAL BALANCE",
+                appTitle: "Finance Tracker <i class='fas fa-check-circle text-cyan-primary text-sm'></i>",
+                totalPaymentLabel: "CURRENT BALANCE",
+                totalIncomeLabel: "TOTAL INCOME",
+                totalExpenseLabel: "TOTAL EXPENSE",
+                typeIncome: "Income",
+                typeExpense: "Expense",
                 tabNewEntry: "ENTRY",
-                tabHistory: "HISTORY",
-                formTitleAdd: "Add Payment",
-                formTitleEdit: "Update Payment",
-                sourceLabel: "Source / Name <span class='text-red-500'>*</span>",
-                sourcePlaceholder: "e.g., Emon, Project",
+                tabIncome: "INCOME",
+                tabExpense: "EXPENSE",
+                listTitleIncome: "Income List",
+                listTitleExpense: "Expense List",
+                listTitle: "Transactions",
+                formTitleAdd: "Add Entry",
+                formTitleEdit: "Update Entry",
+                sourceLabel: "Source / Category <span class='text-red-500'>*</span>",
+                sourcePlaceholder: "e.g., Salary, Bills, Shopping",
                 amountLabel: "Amount (৳) <span class='text-red-500'>*</span>",
                 dateLabel: "Date <span class='text-red-500'>*</span>",
                 notesLabel: "Notes (Optional)",
@@ -579,7 +613,6 @@
                 submitBtnSave: "Save",
                 submitBtnUpdate: "Update",
                 submitBtnLoading: "Saving...",
-                listTitle: "Transactions",
                 records: "Items",
                 loadingMsg: "Loading...",
                 emptyStateMsg: "No Data Found",
@@ -605,24 +638,28 @@
                 searchActiveMsg: "Search by date...",
                 exportNoData: "No data to export.",
                 exportErr: "Export failed.",
-                searchFoundMsg: "payments found!",
-                searchNotFoundMsg: "No payments found on this date!",
-                reportTitle: "Payment Report",
-                reportAll: "All Payments",
+                searchFoundMsg: "records found!",
+                searchNotFoundMsg: "No records found on this date!",
+                reportTitle: "Financial Report",
+                reportAll: "All Transactions",
                 reportDateLabel: "Date: ",
                 reportTotalRec: "Total Records: ",
-                reportTotalAmt: "Total Amount: ",
+                reportTotalAmt: "Current Balance: ",
                 thDate: "Date",
-                thSource: "Source / Name",
+                thSource: "Source / Category",
                 thNotes: "Notes",
                 thAmount: "Amount",
                 langText: "বাংলা",
                 detailTitle: "Payment Details",
-                detailName: "Source / Name",
+                detailName: "Source / Category",
                 detailDate: "Date",
                 detailAmount: "Amount",
                 detailNotes: "Notes",
-                detailNoNotes: "No details available"
+                detailNoNotes: "No details available",
+                filterTitle: "Filter Records",
+                filterAll: "All Records",
+                filterIncome: "Income",
+                filterExpense: "Expense"
             }
         };
 
@@ -633,14 +670,111 @@
         let filteredPayments = []; 
         let editingId = null;
         let isAppOnline = false;
+        
         let currentDisplayedTotal = 0;
-        let animationFrameId = null; 
+        let currentDisplayedIncome = 0;
+        let currentDisplayedExpense = 0;
+        
+        let currentEntryType = 'income'; 
+        let currentTab = 'entry'; 
+
+        let animationFrameIdTotal = null; 
+        let animationFrameIdInc = null; 
+        let animationFrameIdExp = null; 
 
         const saveToLocal = (data) => { try { localStorage.setItem('offline_payments_backup', JSON.stringify(data)); } catch(e) {} };
         const loadFromLocal = () => { try { const data = localStorage.getItem('offline_payments_backup'); return data ? JSON.parse(data) : []; } catch(e) { return []; } };
 
         // ==========================================
-        // SUPER SMOOTH TOAST NOTIFICATIONS
+        // GPU ACCELERATED PILL ANIMATION (iOS Style)
+        // ==========================================
+        window.applyPillTransform = (activeBg, container, targetBtn, typeColor) => {
+            const containerRect = container.getBoundingClientRect();
+            const targetRect = targetBtn.getBoundingClientRect();
+            
+            // Calculate absolute transform values
+            const newLeft = targetRect.left - containerRect.left;
+            const newWidth = targetRect.width;
+
+            // Change Colors
+            if (typeColor === 'rose') {
+                activeBg.classList.remove('bg-cyan-primary/20', 'border-cyan-primary/30');
+                activeBg.classList.add('bg-rose-500/20', 'border-rose-500/30');
+            } else {
+                activeBg.classList.remove('bg-rose-500/20', 'border-rose-500/30');
+                activeBg.classList.add('bg-cyan-primary/20', 'border-cyan-primary/30');
+            }
+
+            // GPU Accelerated Spring Animation
+            activeBg.style.transform = `translateX(${newLeft}px)`;
+            activeBg.style.width = `${newWidth}px`;
+        };
+
+        window.initPills = () => {
+            const typeBtn = currentEntryType === 'income' ? document.getElementById('btnTypeIncome') : document.getElementById('btnTypeExpense');
+            const typeBg = document.getElementById('typeActiveBg');
+            const typeContainer = document.getElementById('typeContainer');
+            
+            if (typeBtn && typeBg && typeContainer) {
+                // Disable transition for initial load snap
+                typeBg.style.transition = 'none';
+                
+                const containerRect = typeContainer.getBoundingClientRect();
+                const targetRect = typeBtn.getBoundingClientRect();
+                const initLeft = targetRect.left - containerRect.left;
+                
+                typeBg.style.transform = `translateX(${initLeft}px)`;
+                typeBg.style.width = `${targetRect.width}px`;
+                
+                // Re-enable smooth transition after a tiny delay
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        typeBg.style.transition = 'transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), width 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.3s ease';
+                    });
+                });
+            }
+        };
+
+        window.addEventListener('resize', () => {
+            if(window.resizeTimeout) clearTimeout(window.resizeTimeout);
+            window.resizeTimeout = setTimeout(window.initPills, 100);
+        });
+
+        // ==========================================
+        // TYPE TOGGLE LOGIC (INCOME / EXPENSE)
+        // ==========================================
+        window.setEntryType = (type) => {
+            if (currentEntryType === type) return;
+            currentEntryType = type;
+            
+            const btnInc = document.getElementById('btnTypeIncome');
+            const btnExp = document.getElementById('btnTypeExpense');
+            const activeBg = document.getElementById('typeActiveBg');
+            const container = document.getElementById('typeContainer');
+            const amountInput = document.getElementById('amount');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            const targetBtn = type === 'income' ? btnInc : btnExp;
+            
+            applyPillTransform(activeBg, container, targetBtn, type === 'expense' ? 'rose' : 'cyan');
+            
+            if (type === 'income') {
+                btnInc.className = 'flex-1 py-2.5 text-sm font-bold text-cyan-primary relative z-10 transition-colors duration-300';
+                btnExp.className = 'flex-1 py-2.5 text-sm font-bold text-slate-400 hover:text-slate-200 relative z-10 transition-colors duration-300';
+                amountInput.classList.remove('text-rose-400');
+                amountInput.classList.add('text-cyan-primary');
+                submitBtn.className = 'w-full bg-cyan-primary text-dark-bg font-black py-3.5 rounded-xl flex items-center justify-center gap-2 text-sm uppercase tracking-wide click-effect shadow-[0_4px_14px_rgba(14,165,233,0.3)]';
+            } else {
+                btnExp.className = 'flex-1 py-2.5 text-sm font-bold text-rose-400 relative z-10 transition-colors duration-300';
+                btnInc.className = 'flex-1 py-2.5 text-sm font-bold text-slate-400 hover:text-slate-200 relative z-10 transition-colors duration-300';
+                amountInput.classList.remove('text-cyan-primary');
+                amountInput.classList.add('text-rose-400');
+                submitBtn.className = 'w-full bg-rose-500 text-white font-black py-3.5 rounded-xl flex items-center justify-center gap-2 text-sm uppercase tracking-wide click-effect shadow-[0_4px_14px_rgba(244,63,94,0.3)]';
+            }
+        };
+
+        // ==========================================
+        // TOAST & MODAL LOGIC
         // ==========================================
         window.showToast = (message, type = 'success') => {
             const container = document.getElementById('toastContainer');
@@ -653,6 +787,9 @@
             } else if (type === 'update' || type === 'info') {
                 iconClass = 'fa-info-circle';
                 colorStyle = 'bg-cyan-primary/10 border-cyan-primary/20 text-cyan-primary';
+            } else if (type === 'expense') {
+                iconClass = 'fa-arrow-up';
+                colorStyle = 'bg-rose-500/10 border-rose-500/20 text-rose-400';
             } else if (type === 'pdf') {
                 iconClass = 'fa-file-pdf';
                 colorStyle = 'bg-red-500/10 border-red-500/20 text-red-400';
@@ -665,15 +802,15 @@
             } else if (type === 'warning') {
                 iconClass = 'fa-exclamation-circle';
                 colorStyle = 'bg-amber-500/10 border-amber-500/20 text-amber-400';
-            } else { // success / add
+            } else { // success / income
                 iconClass = 'fa-check-circle';
                 colorStyle = 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400';
             }
             
-            toast.className = `inline-flex items-center gap-2.5 px-5 py-3 rounded-full backdrop-blur-2xl border shadow-xl toast-enter ${colorStyle}`;
+            toast.className = `inline-flex items-center gap-2.5 px-5 py-3 rounded-full backdrop-blur-2xl border shadow-2xl toast-enter ${colorStyle}`;
             toast.innerHTML = `
                 <i class="fas ${iconClass} text-sm"></i>
-                <span class="font-bold text-[13px] tracking-wide text-white drop-shadow-sm">${message}</span>
+                <span class="font-bold text-[13px] tracking-wide text-white">${message}</span>
             `;
             
             container.appendChild(toast);
@@ -684,7 +821,6 @@
             }, 3500); 
         };
 
-        // Modal for Warnings and Details (Animated M3 Spring)
         window.showMessage = (title, message, buttonsHtml = null, icon = 'fa-exclamation-triangle', iconColor = 'text-amber-400') => {
             const modal = document.getElementById('messageModal');
             const modalBox = document.getElementById('modalBox');
@@ -750,7 +886,6 @@
             return formatted.replace(/[0-9]/g, match => engToBng[match]);
         };
 
-        // Date Normalizer to fix Timezone mismatch bugs from Google Apps Script
         const normalizeDate = (dStr) => {
             if (!dStr) return '';
             if (/^\d{4}-\d{2}-\d{2}$/.test(dStr)) return dStr;
@@ -766,8 +901,8 @@
         // ==========================================
         // Live Number Counter Animation (Super Smooth)
         // ==========================================
-        const animateValue = (obj, start, end, duration) => {
-            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+        const animateValue = (obj, start, end, duration, frameRefStr) => {
+            if (window[frameRefStr]) cancelAnimationFrame(window[frameRefStr]);
             
             let startTimestamp = null;
             const step = (timestamp) => {
@@ -779,15 +914,15 @@
                 const isInteger = end % 1 === 0;
                 const val = isInteger ? Math.round(current) : current.toFixed(2);
                 
-                obj.innerText = formatLocaleDigit(val);
+                if(obj) obj.innerText = formatLocaleDigit(val);
                 
                 if (progress < 1) {
-                    animationFrameId = window.requestAnimationFrame(step);
+                    window[frameRefStr] = window.requestAnimationFrame(step);
                 } else {
-                    obj.innerText = formatLocaleDigit(isInteger ? end : end.toFixed(2));
+                    if(obj) obj.innerText = formatLocaleDigit(isInteger ? end : end.toFixed(2));
                 }
             };
-            animationFrameId = window.requestAnimationFrame(step);
+            window[frameRefStr] = window.requestAnimationFrame(step);
         };
 
         const applyLanguage = (forceAnimate = false) => {
@@ -796,8 +931,29 @@
             document.getElementById('appSubtitle').innerText = t.appSubtitle;
             document.getElementById('appTitle').innerHTML = t.appTitle;
             document.getElementById('totalPaymentLabel').innerText = t.totalPaymentLabel;
+            
+            // New Dashboard Labels
+            document.getElementById('totalIncomeLabel').innerHTML = `<i class="fas fa-arrow-down text-emerald-400 mr-1"></i> ${t.totalIncomeLabel}`;
+            document.getElementById('totalExpenseLabel').innerHTML = `${t.totalExpenseLabel} <i class="fas fa-arrow-up text-rose-400 ml-1"></i>`;
+            document.getElementById('btnTypeIncome').innerText = t.typeIncome;
+            document.getElementById('btnTypeExpense').innerText = t.typeExpense;
+
+            // TABS
             document.getElementById('tabTextEntry').innerText = t.tabNewEntry;
-            document.getElementById('tabTextHistory').innerText = t.tabHistory;
+            document.getElementById('tabTextIncome').innerText = t.tabIncome;
+            document.getElementById('tabTextExpense').innerText = t.tabExpense;
+            
+            const listTitleTextEl = document.getElementById('listTitleText');
+            if (listTitleTextEl) {
+                if (currentTab === 'income') {
+                    listTitleTextEl.innerText = t.listTitleIncome;
+                } else if (currentTab === 'expense') {
+                    listTitleTextEl.innerText = t.listTitleExpense;
+                } else {
+                    listTitleTextEl.innerText = t.listTitle;
+                }
+            }
+            
             document.getElementById('formTitleText').innerText = editingId ? t.formTitleEdit : t.formTitleAdd;
             document.getElementById('sourceLabel').innerHTML = t.sourceLabel;
             document.getElementById('amountLabel').innerHTML = t.amountLabel;
@@ -805,7 +961,6 @@
             document.getElementById('notesLabel').innerHTML = t.notesLabel;
             document.getElementById('cancelEditBtn').innerText = t.cancelBtn;
             document.getElementById('submitBtnText').innerText = editingId ? t.submitBtnUpdate : t.submitBtnSave;
-            document.getElementById('listTitle').innerHTML = `<i class="fas fa-list-ul text-cyan-primary"></i> ${t.listTitle}`;
             document.getElementById('loadingMsg').innerText = t.loadingMsg;
             document.getElementById('source').placeholder = t.sourcePlaceholder;
             document.getElementById('notes').placeholder = t.notesPlaceholder;
@@ -821,6 +976,9 @@
             currentLang = currentLang === 'bn' ? 'en' : 'bn';
             localStorage.setItem('appLang', currentLang);
             
+            currentDisplayedTotal = 0; 
+            currentDisplayedIncome = 0;
+            currentDisplayedExpense = 0;
             applyLanguage(true);
             
             const t = translations[currentLang];
@@ -828,63 +986,105 @@
         };
 
         // ==========================================
-        // View Navigation with Info Retention (No Reset Scroll)
+        // View Navigation (Fluid Fade Transition)
         // ==========================================
         window.switchTab = (tab) => {
+            currentTab = tab;
             const viewEntry = document.getElementById('viewEntry');
             const viewHistory = document.getElementById('viewHistory');
+            
             const navIconEntry = document.getElementById('navIconEntry');
-            const navIconHistory = document.getElementById('navIconHistory');
+            const navIconIncome = document.getElementById('navIconIncome');
+            const navIconExpense = document.getElementById('navIconExpense');
+            
             const tabTextEntry = document.getElementById('tabTextEntry');
-            const tabTextHistory = document.getElementById('tabTextHistory');
+            const tabTextIncome = document.getElementById('tabTextIncome');
+            const tabTextExpense = document.getElementById('tabTextExpense');
+            
+            const listTitleTextEl = document.getElementById('listTitleText');
+
+            // Reset all nav icons
+            if(navIconEntry) navIconEntry.className = 'fas fa-plus-square text-slate-500 text-lg transition-colors duration-300';
+            if(tabTextEntry) tabTextEntry.className = 'text-[10px] font-bold text-slate-500 uppercase tracking-widest transition-colors duration-300';
+            
+            if(navIconIncome) navIconIncome.className = 'fas fa-arrow-down text-slate-500 text-lg transition-colors duration-300';
+            if(tabTextIncome) tabTextIncome.className = 'text-[10px] font-bold text-slate-500 uppercase tracking-widest transition-colors duration-300';
+            
+            if(navIconExpense) navIconExpense.className = 'fas fa-arrow-up text-slate-500 text-lg transition-colors duration-300';
+            if(tabTextExpense) tabTextExpense.className = 'text-[10px] font-bold text-slate-500 uppercase tracking-widest transition-colors duration-300';
 
             if (tab === 'entry') {
                 viewEntry.classList.remove('hidden');
                 viewHistory.classList.add('hidden');
                 viewHistory.classList.remove('flex');
 
-                viewEntry.classList.remove('animate-entry-box');
+                viewEntry.classList.remove('fade-in-view');
                 void viewEntry.offsetWidth; 
-                viewEntry.classList.add('animate-entry-box');
+                viewEntry.classList.add('fade-in-view');
 
-                navIconEntry.classList.add('text-cyan-primary');
-                navIconEntry.classList.remove('text-slate-500');
-                tabTextEntry.classList.add('text-cyan-primary');
-                tabTextEntry.classList.remove('text-slate-500');
-
-                navIconHistory.classList.remove('text-cyan-primary');
-                navIconHistory.classList.add('text-slate-500');
-                tabTextHistory.classList.remove('text-cyan-primary');
-                tabTextHistory.classList.add('text-slate-500');
+                if(navIconEntry) navIconEntry.classList.add('text-cyan-primary');
+                if(navIconEntry) navIconEntry.classList.remove('text-slate-500');
+                if(tabTextEntry) tabTextEntry.classList.add('text-cyan-primary');
+                if(tabTextEntry) tabTextEntry.classList.remove('text-slate-500');
                 
             } else {
                 viewEntry.classList.add('hidden');
                 viewHistory.classList.remove('hidden');
                 viewHistory.classList.add('flex');
+                
+                viewHistory.classList.remove('fade-in-view');
+                void viewHistory.offsetWidth; 
+                viewHistory.classList.add('fade-in-view');
 
-                navIconHistory.classList.add('text-cyan-primary');
-                navIconHistory.classList.remove('text-slate-500');
-                tabTextHistory.classList.add('text-cyan-primary');
-                tabTextHistory.classList.remove('text-slate-500');
-
-                navIconEntry.classList.remove('text-cyan-primary');
-                navIconEntry.classList.add('text-slate-500');
-                tabTextEntry.classList.remove('text-cyan-primary');
-                tabTextEntry.classList.add('text-slate-500');
+                if (tab === 'income') {
+                    if(navIconIncome) navIconIncome.classList.add('text-emerald-400');
+                    if(navIconIncome) navIconIncome.classList.remove('text-slate-500');
+                    if(tabTextIncome) tabTextIncome.classList.add('text-emerald-400');
+                    if(tabTextIncome) tabTextIncome.classList.remove('text-slate-500');
+                    if(listTitleTextEl) listTitleTextEl.innerText = translations[currentLang].listTitleIncome;
+                } else if (tab === 'expense') {
+                    if(navIconExpense) navIconExpense.classList.add('text-rose-400');
+                    if(navIconExpense) navIconExpense.classList.remove('text-slate-500');
+                    if(tabTextExpense) tabTextExpense.classList.add('text-rose-400');
+                    if(tabTextExpense) tabTextExpense.classList.remove('text-slate-500');
+                    if(listTitleTextEl) listTitleTextEl.innerText = translations[currentLang].listTitleExpense;
+                }
+                
+                applySearch(true, false); // Filter and re-render list
             }
             
-            // Only update total amount smoothly if it has changed, no auto-scrolling to top to preserve user state
-            let total = 0;
-            payments.forEach(p => total += parseFloat(p.amount || 0));
+            // Dashboard calculations
+            let total = 0, income = 0, expense = 0;
+            payments.forEach(p => {
+                let amt = parseFloat(p.amount || 0);
+                total += amt;
+                if(amt >= 0) income += amt;
+                else expense += Math.abs(amt);
+            });
+
             if (currentDisplayedTotal !== total) {
-                animateValue(document.getElementById('totalAmount'), currentDisplayedTotal, total, 900); 
+                animateValue(document.getElementById('totalAmount'), currentDisplayedTotal, total, 900, 'animationFrameIdTotal'); 
                 currentDisplayedTotal = total;
             }
+            if (currentDisplayedIncome !== income) {
+                animateValue(document.getElementById('totalIncomeDisplay'), currentDisplayedIncome, income, 900, 'animationFrameIdInc');
+                currentDisplayedIncome = income;
+            }
+            if (currentDisplayedExpense !== expense) {
+                animateValue(document.getElementById('totalExpenseDisplay'), currentDisplayedExpense, expense, 900, 'animationFrameIdExp');
+                currentDisplayedExpense = expense;
+            }
+            
+            // Re-align pill seamlessly
+            requestAnimationFrame(() => {
+                window.initPills();
+            });
         };
 
         window.cancelEdit = (showMsg = true) => {
             editingId = null;
             document.getElementById('paymentForm').reset();
+            setEntryType('income'); // Reset toggle
             document.getElementById('date').valueAsDate = new Date();
             document.getElementById('formTitleText').innerText = translations[currentLang].formTitleAdd;
             document.getElementById('formIcon').className = 'fas fa-plus text-xs';
@@ -895,17 +1095,21 @@
                 showToast(translations[currentLang].cancelEditMsg, 'warning');
             }
 
-            switchTab('history');
+            switchTab('income'); // Go to income tab natively
         };
 
         window.editPayment = (id) => {
             const payment = payments.find(p => p.id.toString() === id.toString());
             if(!payment) return;
             
+            const amtVal = parseFloat(payment.amount || 0);
+            
             document.getElementById('source').value = payment.source;
-            document.getElementById('amount').value = payment.amount;
+            document.getElementById('amount').value = Math.abs(amtVal);
             document.getElementById('date').value = payment.date;
             document.getElementById('notes').value = payment.notes || '';
+            
+            setEntryType(amtVal < 0 ? 'expense' : 'income'); // Set toggle based on value
             
             editingId = id;
             document.getElementById('formTitleText').innerText = translations[currentLang].formTitleEdit;
@@ -919,8 +1123,8 @@
         window.confirmDelete = (id) => {
             const t = translations[currentLang];
             const buttonsHtml = `
-                <button onclick="closeModal()" class="click-effect bg-dark-bg border border-dark-border text-slate-300 px-5 py-3 rounded-xl font-bold flex-1 text-sm">${t.modalCancel}</button>
-                <button onclick="executeDelete('${id}')" class="click-effect bg-red-500/20 border border-red-500/50 text-red-400 px-5 py-3 rounded-xl font-bold flex-1 text-sm">${t.modalConfirmDel}</button>
+                <button onclick="closeModal()" class="click-effect bg-white/5 backdrop-blur-md border border-white/10 text-slate-300 px-5 py-3 rounded-xl font-bold flex-1 text-sm">${t.modalCancel}</button>
+                <button onclick="executeDelete('${id}')" class="click-effect bg-rose-500/20 border border-rose-500/50 text-rose-400 px-5 py-3 rounded-xl font-bold flex-1 text-sm">${t.modalConfirmDel}</button>
             `;
             window.showMessage(t.warnTitle, t.warnDelMsg, buttonsHtml, 'fa-exclamation-triangle', 'text-amber-400');
         };
@@ -930,11 +1134,20 @@
             if(!p) return;
             const t = translations[currentLang];
             
+            const amtVal = parseFloat(p.amount || 0);
+            const isExpense = amtVal < 0;
+            const typeStr = isExpense ? `<span class="text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded text-[10px]"><i class="fas fa-arrow-up"></i> ${t.typeExpense}</span>` : `<span class="text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded text-[10px]"><i class="fas fa-arrow-down"></i> ${t.typeIncome}</span>`;
+            const colorClass = isExpense ? 'text-rose-400' : 'text-emerald-400';
+            const sign = isExpense ? '-' : '+';
+            
             const msgHtml = `
                 <div class="text-left bg-dark-bg p-4 rounded-xl border border-dark-border mt-3 space-y-3 shadow-inner">
                     <div class="flex justify-between items-center border-b border-dark-border pb-2">
                         <span class="text-slate-500 text-[10px] font-bold uppercase tracking-wider">${t.detailName}</span>
-                        <strong class="text-white text-sm">${p.source}</strong>
+                        <div class="flex items-center gap-2">
+                            ${typeStr}
+                            <strong class="text-white text-sm">${p.source}</strong>
+                        </div>
                     </div>
                     <div class="flex justify-between items-center border-b border-dark-border pb-2">
                         <span class="text-slate-500 text-[10px] font-bold uppercase tracking-wider">${t.detailDate}</span>
@@ -942,7 +1155,7 @@
                     </div>
                     <div class="flex justify-between items-center border-b border-dark-border pb-2">
                         <span class="text-slate-500 text-[10px] font-bold uppercase tracking-wider">${t.detailAmount}</span>
-                        <strong class="text-cyan-primary text-base premium-number tracking-tight">৳ ${formatLocaleDigit(p.amount)}</strong>
+                        <strong class="${colorClass} text-base premium-number tracking-tight">${sign} ৳ ${formatLocaleDigit(Math.abs(amtVal))}</strong>
                     </div>
                     <div class="flex flex-col gap-1 pt-1">
                         <span class="text-slate-500 text-[10px] font-bold uppercase tracking-wider">${t.detailNotes}</span>
@@ -950,7 +1163,7 @@
                     </div>
                 </div>
             `;
-            window.showMessage(t.detailTitle, msgHtml, null, 'fa-info-circle', 'text-cyan-primary');
+            window.showMessage(t.detailTitle, msgHtml, null, isExpense ? 'fa-arrow-up' : 'fa-info-circle', colorClass);
         };
 
         window.executeDelete = async (id) => {
@@ -986,24 +1199,35 @@
             const clearSearchBtn = document.getElementById('clearSearchBtn');
             const emptyStateMsg = document.getElementById('emptyStateMsg');
             
+            let tempPayments = [...payments];
+            
             if (searchVal) {
-                filteredPayments = payments.filter(p => normalizeDate(p.date) === searchVal);
-                clearSearchBtn.classList.remove('hidden');
-                emptyStateMsg.innerText = t.emptyStateDateMsg;
-                
-                if (showToastMsg) {
-                    if (filteredPayments.length > 0) {
-                        const countStr = formatLocaleDigit(filteredPayments.length);
-                        showToast(`${countStr} ${t.searchFoundMsg}`, 'info');
-                    } else {
-                        showToast(t.searchNotFoundMsg, 'warning');
-                    }
-                }
+                tempPayments = tempPayments.filter(p => normalizeDate(p.date) === searchVal);
+                if(clearSearchBtn) clearSearchBtn.classList.remove('hidden');
+                if(emptyStateMsg) emptyStateMsg.innerText = t.emptyStateDateMsg;
             } else {
-                filteredPayments = [...payments];
-                clearSearchBtn.classList.add('hidden');
-                emptyStateMsg.innerText = t.emptyStateMsg;
+                if(clearSearchBtn) clearSearchBtn.classList.add('hidden');
+                if(emptyStateMsg) emptyStateMsg.innerText = t.emptyStateMsg;
             }
+
+            // Filter by active tab
+            if (currentTab === 'income') {
+                tempPayments = tempPayments.filter(p => parseFloat(p.amount || 0) >= 0);
+            } else if (currentTab === 'expense') {
+                tempPayments = tempPayments.filter(p => parseFloat(p.amount || 0) < 0);
+            }
+
+            filteredPayments = tempPayments;
+
+            if (searchVal && showToastMsg) {
+                if (filteredPayments.length > 0) {
+                    const countStr = formatLocaleDigit(filteredPayments.length);
+                    showToast(`${countStr} ${t.searchFoundMsg}`, 'info');
+                } else {
+                    showToast(t.searchNotFoundMsg, 'warning');
+                }
+            }
+            
             renderPayments(filteredPayments, forceAnimate);
         };
 
@@ -1029,7 +1253,7 @@
                 icon.classList.remove('fa-search');
                 icon.classList.add('fa-times');
                 btnWrapper.classList.remove('text-cyan-primary');
-                btnWrapper.classList.add('text-red-500');
+                btnWrapper.classList.add('text-rose-500');
                 
                 setTimeout(() => document.getElementById('searchDate').focus(), 300);
                 
@@ -1041,7 +1265,7 @@
                 
                 icon.classList.remove('fa-times');
                 icon.classList.add('fa-search');
-                btnWrapper.classList.remove('text-red-500');
+                btnWrapper.classList.remove('text-rose-500');
                 btnWrapper.classList.add('text-cyan-primary');
                 
                 if(document.getElementById('searchDate').value !== '') {
@@ -1051,7 +1275,7 @@
         };
 
         // ==========================================
-        // ANDROID 16 STYLE SWIPE LOGIC: PUSH BACK, REVEAL & HOLD TO DELETE
+        // ANDROID 16 / iOS SWIPE LOGIC
         // ==========================================
         const setupSwipeGestures = () => {
             const listContainer = document.getElementById('listContainer');
@@ -1061,7 +1285,7 @@
             let startX = 0, startY = 0, currentX = 0;
             let draggingItem = null, isDragging = false, isSwiping = null;
             let adjacentItems = { prev: null, next: null };
-            let deleteHoldTimer = null; // Timer for Hold to Delete
+            let deleteHoldTimer = null; 
 
             const showBackgrounds = (item, x, isMain) => {
                 if (!item) return;
@@ -1112,15 +1336,15 @@
                 
                 const springTransition = 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
                 item.style.transition = springTransition;
-                item.style.transform = 'translateX(0) scale(1)';
+                item.style.transform = 'translate3d(0, 0, 0) scale(1)';
                 
                 if (prev) {
                     prev.style.transition = springTransition;
-                    prev.style.transform = 'translateX(0) scale(1)';
+                    prev.style.transform = 'translate3d(0, 0, 0) scale(1)';
                 }
                 if (next) {
                     next.style.transition = springTransition;
-                    next.style.transform = 'translateX(0) scale(1)';
+                    next.style.transform = 'translate3d(0, 0, 0) scale(1)';
                 }
 
                 hideBackgrounds(item);
@@ -1174,18 +1398,17 @@
                 if (isSwiping === true) {
                     if(e.cancelable) e.preventDefault();
                     
-                    // Delete side is harder to pull (0.45 friction) than Details side (0.7 friction)
+                    // Hardware accelerated transform
                     currentX = deltaX > 0 ? deltaX * 0.7 : deltaX * 0.45; 
                     
                     const mainScale = Math.max(1 - (Math.abs(currentX) * 0.0002), 0.97);
-                    draggingItem.style.transform = `translateX(${currentX}px) scale(${mainScale})`;
+                    draggingItem.style.transform = `translate3d(${currentX}px, 0, 0) scale(${mainScale})`;
                     
-                    // Greatly reduced neighbor movement (0.08 multiplier)
                     const pull = currentX * 0.08; 
                     const neighborScale = Math.max(1 - (Math.abs(currentX) * 0.00015), 0.97);
                     
-                    if (adjacentItems.prev) adjacentItems.prev.style.transform = `translateX(${pull}px) scale(${neighborScale})`;
-                    if (adjacentItems.next) adjacentItems.next.style.transform = `translateX(${pull}px) scale(${neighborScale})`;
+                    if (adjacentItems.prev) adjacentItems.prev.style.transform = `translate3d(${pull}px, 0, 0) scale(${neighborScale})`;
+                    if (adjacentItems.next) adjacentItems.next.style.transform = `translate3d(${pull}px, 0, 0) scale(${neighborScale})`;
 
                     showBackgrounds(draggingItem, currentX, true);
                     showBackgrounds(adjacentItems.prev, currentX, false);
@@ -1199,23 +1422,21 @@
                         
                         if (!deleteHoldTimer) {
                             if (bgIcon) {
-                                bgIcon.style.transform = 'scale(0.85)'; // Show tension
+                                bgIcon.style.transform = 'scale(0.85)'; 
                                 bgIcon.style.opacity = '0.6';
                             }
                             
-                            // Require 600ms hold to trigger delete
                             deleteHoldTimer = setTimeout(() => {
                                 if (bgIcon) {
-                                    bgIcon.style.transform = 'scale(1.3)'; // Pop!
+                                    bgIcon.style.transform = 'scale(1.3)'; 
                                     bgIcon.style.opacity = '1';
                                 }
                                 const id = draggingItem.dataset.id;
-                                forceSnapBack(); // Snap back visually
-                                confirmDelete(id); // Show actual warning
+                                forceSnapBack(); 
+                                confirmDelete(id); 
                             }, 600); 
                         }
                     } else {
-                        // Reset timer if they move back before 600ms
                         if (deleteHoldTimer) {
                             clearTimeout(deleteHoldTimer);
                             deleteHoldTimer = null;
@@ -1227,7 +1448,6 @@
                         }
                     }
 
-                    // Details Logic (Instantly ready if pulled far enough)
                     if (currentX > 0) {
                         const bgIcon = parent.querySelector('.details-bg .bg-details-icon');
                         if (bgIcon) {
@@ -1251,9 +1471,8 @@
                 const id = draggingItem.dataset.id;
                 const finalX = currentX;
                 
-                forceSnapBack(); // Always snap back visually
+                forceSnapBack(); 
 
-                // Only trigger details on release. Delete is handled safely by the hold timer above.
                 if (finalX > 80) {
                     showDetails(id);
                 }
@@ -1273,24 +1492,48 @@
         const renderPayments = (dataToRender = payments, forceAnimate = false) => {
             const t = translations[currentLang];
             const loadingState = document.getElementById('loadingState');
+            
             const totalAmountEl = document.getElementById('totalAmount');
+            const totalIncomeEl = document.getElementById('totalIncomeDisplay');
+            const totalExpenseEl = document.getElementById('totalExpenseDisplay');
+            
             const recordCount = document.getElementById('recordCount');
             const emptyState = document.getElementById('emptyState');
             const listContainer = document.getElementById('listContainer');
             
             loadingState.classList.add('hidden');
             
-            let total = 0;
-            payments.forEach(p => total += parseFloat(p.amount || 0));
+            let total = 0, income = 0, expense = 0;
+            payments.forEach(p => {
+                let amt = parseFloat(p.amount || 0);
+                total += amt;
+                if(amt >= 0) income += amt;
+                else expense += Math.abs(amt);
+            });
             
             if (currentDisplayedTotal !== total || forceAnimate) {
-                animateValue(totalAmountEl, currentDisplayedTotal, total, 1000); 
+                // Modified: Start from 0 if forceAnimate is true so count effect is clearly visible on load
+                animateValue(totalAmountEl, forceAnimate ? 0 : currentDisplayedTotal, total, 1000, 'animationFrameIdTotal'); 
                 currentDisplayedTotal = total;
             } else {
-                totalAmountEl.innerText = formatLocaleDigit(total);
+                if(totalAmountEl) totalAmountEl.innerText = formatLocaleDigit(total);
             }
             
-            recordCount.innerText = formatLocaleDigit(filteredPayments.length);
+            if (currentDisplayedIncome !== income || forceAnimate) {
+                animateValue(totalIncomeEl, forceAnimate ? 0 : currentDisplayedIncome, income, 1000, 'animationFrameIdInc');
+                currentDisplayedIncome = income;
+            } else {
+                if(totalIncomeEl) totalIncomeEl.innerText = formatLocaleDigit(income);
+            }
+
+            if (currentDisplayedExpense !== expense || forceAnimate) {
+                animateValue(totalExpenseEl, forceAnimate ? 0 : currentDisplayedExpense, expense, 1000, 'animationFrameIdExp');
+                currentDisplayedExpense = expense;
+            } else {
+                if(totalExpenseEl) totalExpenseEl.innerText = formatLocaleDigit(expense);
+            }
+            
+            if(recordCount) recordCount.innerText = formatLocaleDigit(filteredPayments.length);
 
             if (dataToRender.length === 0) {
                 emptyState.classList.remove('hidden');
@@ -1305,24 +1548,32 @@
             dataToRender.forEach((payment, index) => {
                 const li = document.createElement('li');
                 li.className = `relative w-full animate-item mb-3`;
-                li.style.animationDelay = `${index * 0.05}s`;
+                li.style.animationDelay = `${index * 0.04}s`; // Slightly faster stagger
                 
                 const firstLetter = payment.source ? payment.source.charAt(0).toUpperCase() : 'P';
                 
+                const amtVal = parseFloat(payment.amount || 0);
+                const isExpense = amtVal < 0;
+                const displayAmt = Math.abs(amtVal);
+                
+                const colorClass = isExpense ? 'text-rose-400' : 'text-emerald-400';
+                const sign = isExpense ? '-' : '+';
+                const iconColorClass = isExpense ? 'text-rose-400 bg-rose-500/10 border-rose-500/20' : 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20';
+                
                 li.innerHTML = `
-                    <div class="absolute inset-0 rounded-2xl overflow-hidden">
+                    <div class="absolute inset-0 bg-dark-bg border border-dark-border rounded-2xl overflow-hidden">
                         <!-- Details Background -->
                         <div class="details-bg absolute inset-0 flex items-center justify-start px-6 z-0 opacity-0 transition-opacity duration-300">
-                            <div class="absolute inset-0 bg-gradient-to-r from-cyan-500/40 via-cyan-500/10 to-transparent rounded-2xl"></div>
-                            <div class="bg-details-icon transition-transform duration-300 flex flex-col items-center justify-center text-cyan-500 relative z-10">
+                            <div class="absolute inset-0 bg-gradient-to-r from-emerald-500/40 via-emerald-500/10 to-transparent rounded-2xl"></div>
+                            <div class="bg-details-icon transition-transform duration-300 flex flex-col items-center justify-center text-emerald-400 relative z-10">
                                 <i class="fas fa-info-circle text-xl"></i>
                                 <span class="text-[9px] font-bold mt-1 uppercase tracking-widest">${currentLang === 'bn' ? 'ডিটেলস' : 'DETAILS'}</span>
                             </div>
                         </div>
                         <!-- Delete Background -->
                         <div class="delete-bg absolute inset-0 flex items-center justify-end px-6 z-0 opacity-0 transition-opacity duration-300">
-                            <div class="absolute inset-0 bg-gradient-to-l from-red-500/40 via-red-500/10 to-transparent rounded-2xl"></div>
-                            <div class="bg-delete-icon transition-transform duration-300 flex flex-col items-center justify-center text-red-400 relative z-10">
+                            <div class="absolute inset-0 bg-gradient-to-l from-rose-500/40 via-rose-500/10 to-transparent rounded-2xl"></div>
+                            <div class="bg-delete-icon transition-transform duration-300 flex flex-col items-center justify-center text-rose-400 relative z-10">
                                 <i class="fas fa-trash-alt text-xl"></i>
                                 <span class="text-[9px] font-bold mt-1 uppercase tracking-widest">${t.deleteBtnTitle}</span>
                             </div>
@@ -1332,7 +1583,7 @@
                     <!-- Swipeable Card -->
                     <div class="swipe-item relative z-10 bg-dark-card border border-dark-border p-3.5 sm:p-4 w-full flex items-center justify-between gap-2 rounded-2xl cursor-grab active:cursor-grabbing" data-id="${payment.id}">
                         <div class="flex items-center gap-3 flex-1 min-w-0 pointer-events-none">
-                            <div class="w-10 h-10 rounded-xl bg-dark-bg border border-dark-border text-cyan-primary flex items-center justify-center shrink-0 font-black text-lg shadow-sm">
+                            <div class="w-10 h-10 rounded-xl ${iconColorClass} flex items-center justify-center shrink-0 font-black text-lg shadow-sm">
                                 ${firstLetter}
                             </div>
                             <div class="flex flex-col min-w-0 flex-1">
@@ -1342,7 +1593,7 @@
                         </div>
                         
                         <div class="shrink-0 text-right pointer-events-none whitespace-nowrap pl-1">
-                            <span class="font-black text-cyan-primary text-base sm:text-lg premium-number tracking-tight">৳ ${formatLocaleDigit(parseFloat(payment.amount || 0))}</span>
+                            <span class="font-black ${colorClass} text-base sm:text-lg premium-number tracking-tight">${sign} ৳ ${formatLocaleDigit(displayAmt)}</span>
                         </div>
                         
                         <div class="flex items-center shrink-0 pl-1 sm:pl-2 z-20">
@@ -1395,11 +1646,18 @@
             const t = translations[currentLang];
             
             const source = document.getElementById('source').value.trim();
-            const amount = document.getElementById('amount').value;
+            let amountVal = parseFloat(document.getElementById('amount').value);
             const date = document.getElementById('date').value;
             const notes = document.getElementById('notes').value.trim();
 
-            if (!source || !amount || !date) return;
+            if (!source || isNaN(amountVal) || !date) return;
+            
+            // Adjust sign based on Income/Expense type toggle
+            if (currentEntryType === 'expense') {
+                amountVal = -Math.abs(amountVal);
+            } else {
+                amountVal = Math.abs(amountVal);
+            }
 
             const actionType = editingId ? 'edit' : 'add';
             let nextId = 1;
@@ -1409,7 +1667,7 @@
             }
             const recordId = editingId || nextId.toString();
 
-            const newPayment = { action: actionType, id: recordId, source, amount: parseFloat(amount), date, notes };
+            const newPayment = { action: actionType, id: recordId, source, amount: amountVal, date, notes };
 
             const submitBtn = document.getElementById('submitBtn');
             submitBtn.disabled = true;
@@ -1439,7 +1697,7 @@
                     updateStatusUI(true);
                     
                     showToast(actionType === 'edit' ? t.successUpdateMsg : t.successSaveMsg, actionType === 'edit' ? 'update' : 'success');
-                    switchTab('history'); 
+                    switchTab(currentEntryType); 
                 } 
             } catch (error) {
                 if (error.name !== 'AbortError') {
@@ -1454,7 +1712,7 @@
                 updateStatusUI(false);
                 
                 showToast(actionType === 'edit' ? t.successUpdateMsg : t.successSaveMsg, actionType === 'edit' ? 'update' : 'success');
-                switchTab('history');
+                switchTab(currentEntryType);
             } finally {
                 applySearch(false, false);
                 cancelEdit(false);
@@ -1479,13 +1737,19 @@
             let rowsHtml = '';
             
             filteredPayments.forEach((p, idx) => {
-                totalAmount += parseFloat(p.amount || 0);
+                let amtVal = parseFloat(p.amount || 0);
+                totalAmount += amtVal;
+                let isExp = amtVal < 0;
+                let displayAmt = Math.abs(amtVal);
+                let sign = isExp ? '-' : '+';
+                let color = isExp ? '#fb7185' : '#0f172a'; // rose-400 vs dark slate
+                
                 rowsHtml += `
                     <tr style="border-bottom: 1px solid #e2e8f0; background-color: ${idx % 2 === 0 ? '#f8fafc' : '#ffffff'};">
                         <td style="padding: 12px 16px; font-weight: 600;">${formatLocaleDate(p.date)}</td>
                         <td style="padding: 12px 16px; font-weight: bold; color: #0ea5e9;">${p.source}</td>
                         <td style="padding: 12px 16px; color: #475569;">${p.notes || '-'}</td>
-                        <td style="padding: 12px 16px; text-align: right; font-weight: 800; color: #0f172a;">৳ ${formatLocaleDigit(parseFloat(p.amount || 0))}</td>
+                        <td style="padding: 12px 16px; text-align: right; font-weight: 800; color: ${color};">${sign} ৳ ${formatLocaleDigit(displayAmt)}</td>
                     </tr>
                 `;
             });
@@ -1525,7 +1789,7 @@
                 const canvas = await html2canvas(printDiv, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
                 if (format === 'png') {
                     const link = document.createElement('a');
-                    link.download = `Payment_Report_${Date.now()}.png`;
+                    link.download = `Financial_Report_${Date.now()}.png`;
                     link.href = canvas.toDataURL('image/png');
                     link.click();
                 } else if (format === 'pdf') {
@@ -1535,7 +1799,7 @@
                     const pdfWidth = pdf.internal.pageSize.getWidth();
                     const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
                     pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-                    pdf.save(`Payment_Report_${Date.now()}.pdf`);
+                    pdf.save(`Financial_Report_${Date.now()}.pdf`);
                 }
                 showToast(format === 'png' ? t.successExportPngMsg : t.successExportPdfMsg, format);
             } catch(e) {
@@ -1554,6 +1818,11 @@
             document.getElementById('paymentForm').addEventListener('submit', addPayment);
             applyLanguage();
             loadData();
+            
+            // Re-align pill precisely after rendering
+            requestAnimationFrame(() => {
+                setTimeout(window.initPills, 150);
+            });
         });
     </script>
 </body>
